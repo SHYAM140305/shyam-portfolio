@@ -22,7 +22,7 @@ This portfolio website represents a **modern, high-performance** showcase of ski
 
 <div align="center">
 
-![Portfolio Preview](https://via.placeholder.com/800x400/0a0a0a/ffffff?text=Portfolio+Website+Preview)
+![Portfolio Preview](https://shyamj.vercel.app/portfolio-preview.png)
 
 *Built with ❤️ using Next.js 15 and TypeScript*
 

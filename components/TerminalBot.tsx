@@ -180,19 +180,19 @@ export function TerminalBot() {
     >
       <div className="rounded-xl overflow-hidden modern-glass border border-border/40 shadow-xl">
         {/* Terminal Header */}
-        <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 dark:from-zinc-900 dark:to-zinc-950 px-4 py-3 flex items-center gap-3 border-b border-zinc-700/50">
-          <div className="flex gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 dark:from-zinc-900 dark:to-zinc-950 px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 border-b border-zinc-700/50">
+          <div className="flex gap-1.5 sm:gap-2">
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
+            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
           </div>
-          <Terminal className="h-4 w-4 text-zinc-400 ml-2" />
-          <span className="text-xs font-medium text-zinc-400 ml-2">Ask Me Anything Terminal</span>
+          <Terminal className="h-3 w-3 sm:h-4 sm:w-4 text-zinc-400 ml-2" />
+          <span className="text-[10px] sm:text-xs font-medium text-zinc-400 ml-2">Ask Me Anything Terminal</span>
         </div>
 
         {/* Terminal Body */}
-        <div className="bg-zinc-950 dark:bg-black p-6 min-h-[400px] max-h-[500px] overflow-y-auto">
-          <div className="space-y-2 font-mono text-sm">
+        <div className="bg-zinc-950 dark:bg-black p-4 sm:p-6 min-h-[300px] sm:min-h-[400px] max-h-[400px] sm:max-h-[500px] overflow-y-auto">
+          <div className="space-y-2 font-mono text-xs sm:text-sm">
             {messages.map((message, index) => (
               <motion.div
                 key={index}

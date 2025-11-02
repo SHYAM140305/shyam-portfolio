@@ -527,7 +527,7 @@ export default function Home() {
             subtitle="Let&apos;s connect and build something amazing together"
             className="mb-8 sm:mb-10 text-center"
           />
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
             <ContactCard />
             <ContactForm />
           </div>

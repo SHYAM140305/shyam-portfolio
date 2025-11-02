@@ -7,6 +7,8 @@ export function AnimatedName() {
   const containerRef = useRef<HTMLHeadingElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [gyroTilt, setGyroTilt] = useState({ x: 0, y: 0 });
+  const [gyroEnabled, setGyroEnabled] = useState(false);
+  const permissionRequestedRef = useRef(false);
 
   // Different muted colors for each letter
   const letterColors = [
@@ -19,8 +21,17 @@ export function AnimatedName() {
     "#f87171", // Soft Red - J
   ];
 
-  // Mouse move tracking for 3D tilt
+  // Check if device is mobile
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    ) || window.innerWidth <= 768;
+  };
+
+  // Mouse move tracking for 3D tilt (desktop only)
   useEffect(() => {
+    if (isMobile()) return; // Skip mouse tracking on mobile
+
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       
@@ -53,8 +64,14 @@ export function AnimatedName() {
     }
   }, []);
 
-  // Gyroscope/device orientation tracking
-  useEffect(() => {
+  // Touch/Device orientation tracking for mobile
+  const enableGyroscope = async () => {
+    if (permissionRequestedRef.current || !window.DeviceOrientationEvent) {
+      return;
+    }
+
+    permissionRequestedRef.current = true;
+
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.beta !== null && e.gamma !== null) {
         // beta: front-to-back tilt (-180 to 180)
@@ -63,38 +80,55 @@ export function AnimatedName() {
         const gamma = Math.max(-90, Math.min(90, e.gamma || 0));
         
         setGyroTilt({
-          x: (gamma / 90) * 10, // Scale to max 10 degrees
-          y: (beta / 90) * 10,
+          x: (gamma / 90) * 15, // Scale to max 15 degrees (increased for better effect)
+          y: (beta / 90) * 15,
         });
       }
     };
 
-    // Check if device orientation is supported
-    if (window.DeviceOrientationEvent) {
-      // Request permission for iOS 13+
+    try {
+      // Request permission for iOS 13+ (must be triggered by user gesture)
       if (
         typeof (DeviceOrientationEvent as any).requestPermission === "function"
       ) {
-        (DeviceOrientationEvent as any)
-          .requestPermission()
-          .then((response: string) => {
-            if (response === "granted") {
-              window.addEventListener("deviceorientation", handleOrientation);
-            }
-          })
-          .catch(() => {
-            // Permission denied, continue without gyro
-          });
+        const permission = await (DeviceOrientationEvent as any).requestPermission();
+        if (permission === "granted") {
+          window.addEventListener("deviceorientation", handleOrientation);
+          setGyroEnabled(true);
+        }
       } else {
-        // Non-iOS devices
+        // Non-iOS devices - try to enable directly
+        // Some Android browsers require user interaction
         window.addEventListener("deviceorientation", handleOrientation);
+        setGyroEnabled(true);
       }
+    } catch (error) {
+      console.log("Gyroscope permission denied or not available");
+    }
+  };
+
+  // Request gyroscope permission on user interaction (mobile)
+  useEffect(() => {
+    if (!isMobile() || !window.DeviceOrientationEvent) return;
+
+    const handleUserInteraction = () => {
+      if (!gyroEnabled && !permissionRequestedRef.current) {
+        enableGyroscope();
+      }
+    };
+
+    // Try to enable on touch/click
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("touchstart", handleUserInteraction, { once: true });
+      container.addEventListener("click", handleUserInteraction, { once: true });
       
       return () => {
-        window.removeEventListener("deviceorientation", handleOrientation);
+        container.removeEventListener("touchstart", handleUserInteraction);
+        container.removeEventListener("click", handleUserInteraction);
       };
     }
-  }, []);
+  }, [gyroEnabled]);
 
   // Combine mouse and gyro tilt
   const combinedTilt = {

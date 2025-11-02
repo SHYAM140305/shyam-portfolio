@@ -36,6 +36,10 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/site.webmanifest",
+  metadataBase: new URL("https://shyamj.vercel.app"),
+  alternates: {
+    canonical: "https://shyamj.vercel.app",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",

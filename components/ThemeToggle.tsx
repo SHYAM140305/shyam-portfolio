@@ -24,7 +24,7 @@ export function ThemeToggle() {
   return (
     <motion.button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      whileHover={{ scale: 1.1, rotate: 15 }}
+      whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       className="w-10 h-10 rounded-lg bg-muted hover:bg-accent transition-colors flex items-center justify-center border border-border/50 hover:border-primary/50 shadow-md hover:shadow-lg hover:shadow-amber-500/6 relative overflow-hidden group"
       aria-label="Toggle theme"
@@ -33,7 +33,7 @@ export function ThemeToggle() {
         className="absolute inset-0 bg-gradient-to-br from-amber-500/4 to-orange-500/4 opacity-0 group-hover:opacity-100 transition-opacity"
       />
       <motion.div
-        animate={{ rotate: theme === "dark" ? 0 : 180 }}
+        animate={{ rotate: theme === "dark" ? 180 : 0 }}
         transition={{ duration: 0.3 }}
         className="relative z-10"
       >

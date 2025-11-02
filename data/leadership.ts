@@ -20,7 +20,7 @@ export const leadership: Leadership[] = [
     current: true,
     description: "Directing organization strategy and fostering industry partnerships",
     highlights: [
-      "Directing the organization's overall strategy, overseeing 400+ members and fostering key industry partnerships",
+      "Directed organizational strategy for 400+ members and industry partnerships",
     ],
   },
   {
@@ -32,7 +32,7 @@ export const leadership: Leadership[] = [
     current: false,
     description: "Led organization growth and event management",
     highlights: [
-      "Led 350+ members, organized 5 events, managed a Rs. 1,00,000 budget, and drove a 40% membership growth",
+      "Led 350+ members, organized 5 events, and managed ₹1,00,000 budget",
     ],
   },
   {
@@ -44,7 +44,7 @@ export const leadership: Leadership[] = [
     current: false,
     description: "Led AI solutions development and hackathons",
     highlights: [
-      "Led a team of 8 researchers in AI solutions development and coordinated with industry partners on hackathons with 350+ participants",
+      "Supervised team of 8 researchers and coordinated industry hackathons",
     ],
   },
   {
@@ -56,7 +56,7 @@ export const leadership: Leadership[] = [
     current: false,
     description: "Researched emerging AI technologies and mentored students",
     highlights: [
-      "Researched emerging AI technologies, conducted technical workshops, and mentored students",
+      "Conducted AI research and mentored students on emerging technologies",
     ],
   },
 ];

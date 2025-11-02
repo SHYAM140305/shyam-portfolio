@@ -4,15 +4,20 @@ import { motion } from "framer-motion";
 import { ArrowDown, Download, Code, Brain, Sparkles, Briefcase } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SkillCard } from "@/components/SkillCard";
+import { CompactSkills } from "@/components/CompactSkills";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Timeline } from "@/components/Timeline";
 import { ContactForm } from "@/components/ContactForm";
+import { ContactCard } from "@/components/ContactCard";
+import { TerminalBot } from "@/components/TerminalBot";
+import { AnimatedName } from "@/components/AnimatedName";
+import { AchievementsSection } from "@/components/AchievementCard";
 import { skills, Skill } from "@/data/skills";
 import { projects } from "@/data/projects";
 import { experiences } from "@/data/experience";
 import { education } from "@/data/education";
+import { hackathons } from "@/data/hackathons";
 import { fadeInUp, staggerContainer } from "@/lib/utils";
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -122,69 +127,8 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-center max-w-5xl mx-auto"
           >
-            <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
-              className="mb-8"
-            >
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 p-1 sm:p-1.5"
-                >
-                  <div className="w-full h-full rounded-full bg-background flex items-center justify-center" />
-                </motion.div>
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-full overflow-hidden shadow-2xl glow border-2 sm:border-4 border-background">
-                    <Image
-                      src="https://github.com/SHYAM140305.png"
-                      alt="Shyam J"
-                      fill
-                      sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 160px"
-                      className="object-cover"
-                      priority
-                      quality={100}
-                    />
-                  </div>
-                </div>
-                {/* Floating particles */}
-                {[...Array(6)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    animate={{
-                      y: [0, -20, 0],
-                      x: [0, Math.sin(i) * 30, 0],
-                      opacity: [0.3, 0.7, 0.3],
-                      scale: [1, 1.2, 1],
-                    }}
-                    transition={{
-                      duration: 3 + i * 0.5,
-                      repeat: Infinity,
-                      delay: i * 0.3,
-                    }}
-                    className="absolute w-2 h-2 rounded-full bg-amber-400/25 blur-sm"
-                    style={{
-                      top: `${20 + i * 15}%`,
-                      left: `${20 + i * 12}%`,
-                    }}
-                  />
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-extrabold mb-6 sm:mb-8 tracking-tight leading-[1.2] overflow-visible px-4 pb-2"
-              style={{ lineHeight: '1.2' }}
-            >
-              <span className="gradient-text inline-block overflow-visible drop-shadow-[0_0_20px_rgba(251,191,36,0.06)] dark:drop-shadow-[0_0_25px_rgba(253,224,71,0.4)] pb-1" style={{ lineHeight: '1.3', paddingBottom: '0.1em' }}>
-                Shyam J
-              </span>
-            </motion.h1>
+            {/* Animated Name - Similar to itsvg.in */}
+            <AnimatedName />
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -193,7 +137,7 @@ export default function Home() {
               className="mb-4 sm:mb-6"
             >
               <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-foreground mb-3 sm:mb-4 leading-relaxed px-4 pb-1" style={{ lineHeight: '1.4' }}>
-                AI/ML Engineer & Full Stack Developer
+                AI Engineer | Digital Twin | Innovator
               </p>
               <motion.div
                 initial={{ width: 0 }}
@@ -390,7 +334,7 @@ export default function Home() {
                         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-md">
                           <Sparkles className="h-5 w-5 lg:h-6 lg:w-6 text-primary-foreground" />
                         </div>
-                        <h3 className="text-xl lg:text-2xl font-bold text-black dark:gradient-text dark:text-transparent">Key Highlights</h3>
+                        <h3 className="text-xl lg:text-2xl font-bold text-black dark:text-amber-400">Key Highlights</h3>
                       </div>
                       <ul className="space-y-3 lg:space-y-4">
                         {[
@@ -407,7 +351,7 @@ export default function Home() {
                             transition={{ delay: index * 0.05 }}
                             className="flex items-start gap-3 lg:gap-4"
                           >
-                            <div className="mt-2 w-2 h-2 rounded-full bg-primary flex-shrink-0" />
+                            <div className="mt-2 w-2 h-2 rounded-full bg-primary dark:bg-amber-400 flex-shrink-0" />
                             <span className="text-foreground leading-relaxed text-base lg:text-lg">{fact}</span>
                           </motion.li>
                         ))}
@@ -435,10 +379,6 @@ export default function Home() {
                         <a href="mailto:jshyam2005@gmail.com" className="flex items-center gap-3 text-foreground hover:text-primary transition-colors group">
                           <span className="text-xl">✉️</span>
                           <span className="font-medium group-hover:underline break-all">jshyam2005@gmail.com</span>
-                        </a>
-                        <a href="tel:+917395980045" className="flex items-center gap-3 text-foreground hover:text-primary transition-colors group">
-                          <span className="text-xl">📱</span>
-                          <span className="font-medium group-hover:underline">+91 7395980045</span>
                         </a>
                       </div>
                     </div>
@@ -472,7 +412,7 @@ export default function Home() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+      <section id="skills" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#fb923c05_1px,transparent_1px),linear-gradient(to_bottom,#fb923c05_1px,transparent_1px)] bg-[size:32px_32px]" />
         <div className="absolute top-1/4 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
@@ -484,33 +424,7 @@ export default function Home() {
             subtitle="Technologies and tools I work with"
             className="mb-8 sm:mb-10"
           />
-          <div className="space-y-8">
-            {Object.entries(groupedSkills).map(([category, categorySkills], catIndex) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: catIndex * 0.1, duration: 0.4 }}
-                className="space-y-3"
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="h-0.5 w-8 bg-gradient-to-r from-amber-500/60 to-orange-500/60 rounded-full" />
-                  <h3 className="text-lg sm:text-xl font-semibold gradient-text">{category}</h3>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {categorySkills.map((skill, index) => (
-                    <SkillCard
-                      key={skill.name}
-                      skill={skill.name}
-                      category={skill.category}
-                      delay={catIndex * 0.05 + index * 0.02}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <CompactSkills groupedSkills={groupedSkills} />
         </div>
       </section>
 
@@ -540,6 +454,26 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Terminal Bot Section */}
+      <section id="terminal" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c05_1px,transparent_1px),linear-gradient(to_bottom,#fb923c05_1px,transparent_1px)] bg-[size:32px_32px]" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-orange-500/1 rounded-full blur-3xl animate-pulse-slow" />
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <SectionTitle
+            title="Ask Me Anything"
+            subtitle="Interactive terminal - Try asking about AI, ML, Digital Twins, or anything!"
+            className="mb-8 sm:mb-10"
+          />
+          <TerminalBot />
+        </div>
+      </section>
+
+      {/* Achievements Section (Certifications, Hackathons, Leadership) */}
+      <AchievementsSection />
 
       {/* Experience Section */}
       <section id="experience" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
@@ -593,7 +527,10 @@ export default function Home() {
             subtitle="Let&apos;s connect and build something amazing together"
             className="mb-8 sm:mb-10 text-center"
           />
-          <ContactForm />
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <ContactCard />
+            <ContactForm />
+          </div>
         </div>
       </section>
     </div>

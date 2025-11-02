@@ -592,3 +592,115 @@ html {
   pointer-events: none;
 }
 
+/* Hero Name with Individual Letter Hover Effects and 3D Tilt */
+.hero-name {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero-name-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.05em;
+  transform-style: preserve-3d;
+}
+
+.hero-letter {
+  position: relative;
+  display: inline-block;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  
+  /* Idle state - white/light grey */
+  color: #ffffff;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.1),
+    0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+/* Light theme idle state */
+:root:not(.dark) .hero-letter {
+  color: #2a2a2a;
+  text-shadow: 
+    0 0 10px rgba(42, 42, 42, 0.1),
+    0 0 20px rgba(42, 42, 42, 0.05);
+}
+
+/* Dark theme idle state */
+.dark .hero-letter {
+  color: #e5e5e5;
+  text-shadow: 
+    0 0 10px rgba(229, 229, 229, 0.1),
+    0 0 20px rgba(229, 229, 229, 0.05);
+}
+
+/* Individual letter hover effect */
+.hero-letter:hover {
+  /* Use CSS variable for color */
+  color: var(--letter-color) !important;
+  background-image: none;
+  background-color: transparent;
+  
+  /* Remove default text-shadow on hover to show color clearly */
+  text-shadow: none;
+  
+  /* 3D tilt effect on hover */
+  transform: perspective(1000px) rotateX(-10deg) rotateY(10deg) translateZ(20px) scale(1.1);
+  
+  /* Glow effect with the letter's color - subtle */
+  filter: drop-shadow(0 0 8px var(--letter-color))
+          drop-shadow(0 0 16px var(--letter-color));
+  
+  /* Smooth transition */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.06em;
+}
+
+/* Light theme hover glow - subtle */
+:root:not(.dark) .hero-letter:hover {
+  color: var(--letter-color) !important;
+  text-shadow: none;
+  filter: drop-shadow(0 0 10px var(--letter-color))
+          drop-shadow(0 0 20px var(--letter-color));
+}
+
+/* Dark theme hover - ensure color is visible */
+.dark .hero-letter:hover {
+  color: var(--letter-color) !important;
+  text-shadow: none;
+  filter: drop-shadow(0 0 12px var(--letter-color))
+          drop-shadow(0 0 24px var(--letter-color))
+          brightness(1.1);
+}
+
+/* Space between letters */
+.hero-letter-space {
+  display: inline-block;
+  width: 0.2em;
+}
+
+/* Subtle animation on letters when container is hovered */
+.hero-name:hover .hero-letter:not(:hover) {
+  opacity: 0.7;
+  transform: scale(0.95);
+  transition: all 0.3s ease;
+}
+
+/* Fallback for browsers without CSS variables */
+@supports not (--css: variables) {
+  .hero-letter:hover {
+    color: #3b82f6 !important;
+  }
+}
+

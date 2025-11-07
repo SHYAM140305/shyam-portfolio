@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo, useCallback, useLayoutEffect, ChangeEvent } from "react";
 import { Terminal } from "lucide-react";
 
 const greetings = [
@@ -83,14 +83,16 @@ const responses: Record<string, string[]> = {
   ],
 };
 
-export function TerminalBot() {
+export const TerminalBot = memo(function TerminalBot() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [cursorVisible, setCursorVisible] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [caretOffset, setCaretOffset] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     // Initial greeting - delay to prevent scroll on page load
@@ -113,62 +115,121 @@ export function TerminalBot() {
     return () => clearInterval(cursorInterval);
   }, []);
 
+  const updateCaretPosition = useCallback(() => {
+    const inputEl = inputRef.current;
+    const measureEl = measureRef.current;
+    if (!inputEl || !measureEl) return;
+
+    const selectionStart = inputEl.selectionStart ?? input.length;
+    const textForMeasure = input
+      .slice(0, selectionStart)
+      .replace(/ /g, "\u00A0");
+
+    measureEl.textContent = textForMeasure;
+    setCaretOffset(selectionStart === 0 ? 0 : measureEl.offsetWidth);
+  }, [input]);
+
+  const scheduleCaretUpdate = useCallback(() => {
+    requestAnimationFrame(() => {
+      updateCaretPosition();
+    });
+  }, [updateCaretPosition]);
+
+  useLayoutEffect(() => {
+    updateCaretPosition();
+  }, [input, updateCaretPosition]);
+
+  useEffect(() => {
+    scheduleCaretUpdate();
+  }, [scheduleCaretUpdate]);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+    scheduleCaretUpdate();
+  };
+
   // Removed auto-scroll on message updates
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isTyping) return;
 
     const userMessage = input.trim();
     setInput("");
+    scheduleCaretUpdate();
     setMessages((prev) => [...prev, `$ ${userMessage}`]);
     setIsTyping(true);
 
-    // Find matching response
+    // Determine response source (local help vs Groq API)
     const lowerInput = userMessage.toLowerCase().trim();
-    let response: string | string[] = "That's interesting! Tell me more about what you'd like to know.";
+    let response: string | string[] = "";
 
-    // Check for help command first
     if (lowerInput === "help" || lowerInput === "?" || lowerInput === "commands") {
       response = responses.help;
     } else {
-      // Check other keywords
-      for (const [key, values] of Object.entries(responses)) {
-        if (key !== "help" && lowerInput.includes(key)) {
-          response = values[Math.floor(Math.random() * values.length)];
-          break;
+      // Try Groq API; fallback to keyword responses if it fails
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+        
+        const res = await fetch("/api/terminal", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: userMessage }),
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!res.ok) {
+          if (res.status === 429) {
+            response = "Rate limit exceeded. Please wait a moment and try again.";
+          } else {
+            throw new Error("Bad response");
+          }
+        } else {
+          const data = await res.json();
+          response = String(data.text || "").trim() || "(No response)";
         }
+      } catch (err) {
+        // Fallback to local canned responses
+        let fallback: string | string[] = "That's interesting! Tell me more about what you'd like to know.";
+        for (const [key, values] of Object.entries(responses)) {
+          if (key !== "help" && lowerInput.includes(key)) {
+            fallback = values[Math.floor(Math.random() * values.length)];
+            break;
+          }
+        }
+        response = fallback;
       }
     }
 
     // Type out response
     setTimeout(() => {
-      // Handle help command which returns an array
       const responseText = Array.isArray(response) ? response.join("\n") : response;
-      
-      setMessages((prev) => [...prev, ""]); // Add empty message for typing
+      setMessages((prev) => [...prev, ""]);
       let currentText = "";
       let charIndex = 0;
       const totalChars = responseText.length;
-      const typingSpeed = Array.isArray(response) ? 20 : 50; // Faster for help command
+      const typingSpeed = Array.isArray(response) ? 15 : 30;
 
-      const typeInterval = setInterval(() => {
+      const typeChar = () => {
         if (charIndex < totalChars) {
           currentText = responseText.slice(0, charIndex + 1);
           charIndex++;
-          
           setMessages((prev) => {
             const newMessages = [...prev];
             newMessages[newMessages.length - 1] = currentText;
             return newMessages;
           });
+          setTimeout(typeChar, typingSpeed);
         } else {
-          clearInterval(typeInterval);
           setIsTyping(false);
         }
-      }, typingSpeed);
+      };
+      typeChar();
     }, 500);
-  };
+  }, [isTyping, input, scheduleCaretUpdate]);
 
   return (
     <motion.div
@@ -212,18 +273,32 @@ export function TerminalBot() {
             {!isTyping && (
               <form onSubmit={handleSubmit} className="flex items-center gap-2 mt-4">
                 <span className="text-amber-500">$</span>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="flex-1 bg-transparent text-green-400 outline-none placeholder:text-zinc-600"
-                  placeholder="Type your question..."
-                  // Removed auto-scroll on focus
-                />
-                <span className={`text-green-400 ${cursorVisible ? "opacity-100" : "opacity-0"}`}>
-                  █
-                </span>
+                <div className="relative flex-1">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyUp={() => scheduleCaretUpdate()}
+                    onKeyDown={() => scheduleCaretUpdate()}
+                    onClick={() => scheduleCaretUpdate()}
+                    onFocus={() => scheduleCaretUpdate()}
+                    onSelect={() => scheduleCaretUpdate()}
+                    onMouseUp={() => scheduleCaretUpdate()}
+                    className="w-full bg-transparent text-green-400 outline-none placeholder:text-zinc-600 caret-transparent"
+                    placeholder="Type your question..."
+                  />
+                  <span
+                    ref={measureRef}
+                    className="pointer-events-none invisible absolute top-0 left-0 whitespace-pre"
+                  />
+                  <span
+                    className={`pointer-events-none absolute inset-y-0 flex items-center text-green-400 transition-opacity duration-100 ${cursorVisible ? "opacity-100" : "opacity-0"}`}
+                    style={{ left: caretOffset }}
+                  >
+                    █
+                  </span>
+                </div>
               </form>
             )}
             <div ref={messagesEndRef} />
@@ -235,5 +310,5 @@ export function TerminalBot() {
       <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 rounded-xl blur-xl -z-10" />
     </motion.div>
   );
-}
+});
 

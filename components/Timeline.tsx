@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { memo } from "react";
 import { Calendar, MapPin, Briefcase } from "lucide-react";
 import { Experience } from "@/data/experience";
 import { Education } from "@/data/education";
@@ -19,7 +20,7 @@ interface TimelineItemProps {
   hideDates?: boolean;
 }
 
-function TimelineItem({
+const TimelineItem = memo(function TimelineItem({
   title,
   organization,
   location,
@@ -45,13 +46,9 @@ function TimelineItem({
         whileHover={{ scale: 1.3 }}
       />
       
-      {/* Pulsing effect for current items */}
+      {/* Subtle indicator for current items - No infinite animation */}
       {current && (
-        <motion.div
-          className="absolute left-0 top-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary/30 -translate-x-[10px] sm:-translate-x-[13px]"
-          animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
+        <div className="absolute left-0 top-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary/40 -translate-x-[10px] sm:-translate-x-[13px] ring-2 ring-primary/20" />
       )}
       
       <motion.div
@@ -130,7 +127,7 @@ function TimelineItem({
       </motion.div>
     </motion.div>
   );
-}
+});
 
 type TimelineItemType = Experience | Education | Leadership;
 
@@ -150,7 +147,7 @@ function isLeadership(item: TimelineItemType): item is Leadership {
   return "role" in item && "organization" in item && !("company" in item);
 }
 
-export function Timeline({ items }: TimelineProps) {
+export const Timeline = memo(function Timeline({ items }: TimelineProps) {
   return (
     <div className="space-y-0">
       {items.map((item) => {
@@ -203,5 +200,5 @@ export function Timeline({ items }: TimelineProps) {
       })}
     </div>
   );
-}
+});
 

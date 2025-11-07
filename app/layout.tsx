@@ -5,7 +5,13 @@ import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ 
+  subsets: ["latin"], 
+  variable: "--font-inter",
+  display: "swap",
+  preload: true,
+  adjustFontFallback: true,
+});
 
 export const metadata: Metadata = {
   title: "Shyam J | AI/ML Engineer & Full Stack Developer",
@@ -58,6 +64,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  other: {
+    "dns-prefetch": "https://opengraph.githubassets.com https://github.com https://images.weserv.nl https://cdn.simpleicons.org https://logo.clearbit.com",
   },
 };
 

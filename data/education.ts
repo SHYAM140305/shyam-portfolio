@@ -11,6 +11,16 @@ export interface Education {
   highlights?: string[];
 }
 
+const AWS_LOGO_LIGHT_URL = "/aws-logo-light.svg";
+const AWS_LOGO_DARK_URL = "/aws-logo-dark.svg";
+const NPTEL_LOGO_URL = "https://logo.clearbit.com/nptel.ac.in";
+const HACKERRANK_LOGO_URL = "https://logo.clearbit.com/hackerrank.com";
+const ORACLE_LOGO_URL = "https://logo.clearbit.com/oracle.com";
+const GOOGLE_LOGO_URL = "https://logo.clearbit.com/google.com";
+const INTEL_LOGO_URL = "https://logo.clearbit.com/intel.com";
+const TOYOTA_LOGO_URL = "https://logo.clearbit.com/toyota.com";
+const SRM_LOGO_URL = "/srm-logo.png";
+
 export const education: Education[] = [
   {
     id: "btech",
@@ -51,50 +61,142 @@ export interface Certification {
   issuer: string;
   year: string;
   category: "Professional" | "Online";
+  logo?: string;
+  logoLight?: string;
+  logoDark?: string;
+  certificateUrl?: string;
 }
 
 export const certifications: Certification[] = [
   {
-    id: "genai-pro",
-    name: "Generative AI Professional",
-    issuer: "2024",
+    id: "appathon-winner",
+    name: "Appathon Winner",
+    issuer: "SRM",
     year: "2024",
     category: "Professional",
+    logoLight: "/Nextgenai-light.png",
+    logoDark: "/Nextgenai-dark.png",
+    certificateUrl: "/certifications/Appathon winning certificate.pdf",
   },
   {
-    id: "genai-oci",
-    name: "Oracle Cloud Infrastructure GenAI",
+    id: "aws-cloud-foundations",
+    name: "AWS Cloud Foundations",
+    issuer: "AWS",
+    year: "2024",
+    category: "Online",
+    logo: AWS_LOGO_LIGHT_URL,
+    logoLight: AWS_LOGO_LIGHT_URL,
+    logoDark: AWS_LOGO_DARK_URL,
+    certificateUrl: "/certifications/AWS Cloud Foundations Certificate.pdf",
+  },
+  {
+    id: "aws-ml-foundations",
+    name: "AWS Machine Learning Foundations",
+    issuer: "AWS",
+    year: "2024",
+    category: "Online",
+    logo: AWS_LOGO_LIGHT_URL,
+    logoLight: AWS_LOGO_LIGHT_URL,
+    logoDark: AWS_LOGO_DARK_URL,
+    certificateUrl: "/certifications/AWS ML CERTIFICATION.pdf",
+  },
+  {
+    id: "oci-genai",
+    name: "Oracle Generative AI Professional",
     issuer: "Oracle",
     year: "2024",
     category: "Professional",
+    logo: ORACLE_LOGO_URL,
+    logoLight: ORACLE_LOGO_URL,
+    logoDark: ORACLE_LOGO_URL,
+    certificateUrl: "/certifications/Gen AI oracle.pdf",
   },
   {
-    id: "ml-stanford",
-    name: "Machine Learning",
-    issuer: "Stanford",
+    id: "google-aiml-internship",
+    name: "Google AI/ML Virtual Internship",
+    issuer: "Google",
     year: "2024",
-    category: "Online",
+    category: "Professional",
+    logo: GOOGLE_LOGO_URL,
+    logoLight: GOOGLE_LOGO_URL,
+    logoDark: GOOGLE_LOGO_URL,
+    certificateUrl: "/certifications/GOOGLE AI ML Virtual internship.pdf",
   },
   {
-    id: "dl-ng",
-    name: "Deep Learning",
-    issuer: "Andrew Ng",
+    id: "hackerrank-sql-advanced",
+    name: "SQL Advanced Skill Certification",
+    issuer: "HackerRank",
     year: "2024",
     category: "Online",
+    logo: HACKERRANK_LOGO_URL,
+    logoLight: HACKERRANK_LOGO_URL,
+    logoDark: HACKERRANK_LOGO_URL,
+    certificateUrl: "/certifications/Hackerrank sql_advanced certificate.pdf",
   },
   {
-    id: "python-ibm",
-    name: "Python for Data Science",
-    issuer: "IBM",
+    id: "hackstreet-winner",
+    name: "Hackstreet Winner",
+    issuer: "SRM",
     year: "2024",
-    category: "Online",
+    category: "Professional",
+    logoLight: "/Nextgenai-light.png",
+    logoDark: "/Nextgenai-dark.png",
+    certificateUrl: "/certifications/Hackstreet winning certificate.pdf",
   },
   {
-    id: "react-meta",
-    name: "React.js Fundamentals",
-    issuer: "Meta",
+    id: "intel-unnati-ai-iot",
+    name: "Intel Unnati AI & IoT Scholar",
+    issuer: "INTEL",
     year: "2024",
+    category: "Professional",
+    logo: INTEL_LOGO_URL,
+    logoLight: INTEL_LOGO_URL,
+    logoDark: INTEL_LOGO_URL,
+    certificateUrl: "/certifications/Intel Unnati AI-IOT certificate.pdf",
+  },
+  {
+    id: "nptel-java",
+    name: "Programming in Java",
+    issuer: "NPTEL",
+    year: "2023",
     category: "Online",
+    logo: NPTEL_LOGO_URL,
+    logoLight: NPTEL_LOGO_URL,
+    logoDark: NPTEL_LOGO_URL,
+    certificateUrl: "/certifications/NPTEL Programming In Java.pdf",
+  },
+  {
+    id: "oci-foundations",
+    name: "Oracle Cloud Infrastructure Foundations",
+    issuer: "Oracle",
+    year: "2024",
+    category: "Professional",
+    logo: ORACLE_LOGO_URL,
+    logoLight: ORACLE_LOGO_URL,
+    logoDark: ORACLE_LOGO_URL,
+    certificateUrl: "/certifications/Oracle Cloud Infrastructure.pdf",
+  },
+  {
+    id: "hackcelerate-2025",
+    name: "Hackcelrate 2025 Finalist",
+    issuer: "Toyota",
+    year: "2025",
+    category: "Professional",
+    logo: TOYOTA_LOGO_URL,
+    logoLight: TOYOTA_LOGO_URL,
+    logoDark: TOYOTA_LOGO_URL,
+    certificateUrl: "/certifications/Shyam j_Hackcelrate2025_Certificate.pdf",
+  },
+  {
+    id: "tamizh-a-thon",
+    name: "Tamizh-A-THON 1.0 Winner",
+    issuer: "TCC",
+    year: "2024",
+    category: "Professional",
+    logo: SRM_LOGO_URL,
+    logoLight: SRM_LOGO_URL,
+    logoDark: SRM_LOGO_URL,
+    certificateUrl: "/certifications/Tamizh-A-THON'1.0 winning certificate.pdf",
   },
 ];
 

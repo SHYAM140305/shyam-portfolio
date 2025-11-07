@@ -117,6 +117,28 @@ This portfolio website represents a **modern, high-performance** showcase of ski
 
 ---
 
+## 🤖 AI Terminal (Groq)
+
+The interactive terminal on the home page is backed by Groq for natural language answers.
+
+### Setup
+1. Install dependencies (already included):
+   ```bash
+   npm install
+   ```
+2. Create a `.env.local` file in the project root and add:
+   ```bash
+   GROQ_API_KEY=your_groq_api_key_here
+   ```
+3. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+The API route lives at `app/api/terminal/route.ts` and the UI is `components/TerminalBot.tsx`.
+
+---
+
 ## 🏗️ Project Structure
 
 ```

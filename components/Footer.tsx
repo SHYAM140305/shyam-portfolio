@@ -29,9 +29,9 @@ export function Footer() {
 
   return (
     <footer className="relative border-t border-border/50 bg-gradient-to-b from-muted/50 to-background overflow-hidden backdrop-blur-sm">
-      {/* Background decoration */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl animate-pulse-slow" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/1 rounded-full blur-3xl animate-pulse-slow" />
+      {/* Background decoration - Reduced animations */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/1 rounded-full blur-3xl" />
       
       {/* Gradient line at top */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/15 to-transparent" />
@@ -78,8 +78,9 @@ export function Footer() {
                   </div>
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-foreground/20 to-transparent opacity-0 group-hover:opacity-100"
-                    animate={{ x: ["-100%", "100%"] }}
-                    transition={{ duration: 0.6 }}
+                    initial={{ x: "-100%" }}
+                    whileHover={{ x: "100%" }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
                   />
                 </motion.a>
               );
@@ -100,8 +101,9 @@ export function Footer() {
             <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity" />
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-foreground/20 to-transparent opacity-0 group-hover:opacity-100"
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{ duration: 0.6 }}
+              initial={{ x: "-100%" }}
+              whileHover={{ x: "100%" }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
             />
           </motion.button>
         </div>

@@ -24,7 +24,7 @@ export function SectionTitle({ title, subtitle, className }: SectionTitleProps) 
           whileInView={{ width: "4rem" }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="h-0.5 sm:h-1 bg-gradient-to-r from-amber-500/60 via-orange-500/60 to-amber-600/60 rounded-full hidden sm:block"
+          className="h-0.5 sm:h-1 bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 rounded-full hidden sm:block dark:from-amber-500/60 dark:via-orange-500/60 dark:to-amber-600/60"
         />
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold gradient-text pb-1 tracking-tight" style={{ lineHeight: '1.2' }}>
           {title}
@@ -34,7 +34,7 @@ export function SectionTitle({ title, subtitle, className }: SectionTitleProps) 
           whileInView={{ width: "100%" }}
           viewport={{ once: true }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="flex-1 h-0.5 sm:h-1 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-transparent rounded-full hidden sm:block"
+          className="flex-1 h-0.5 sm:h-1 bg-gradient-to-r from-orange-500/40 via-orange-400/30 to-transparent rounded-full hidden sm:block dark:from-amber-500/20 dark:via-orange-500/20"
         />
       </div>
       {subtitle && (

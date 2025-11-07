@@ -4,15 +4,50 @@ import { motion } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import { Project } from "@/data/projects";
+import { memo } from "react";
 
 interface ProjectCardProps {
   project: Project;
   index: number;
 }
 
-export function ProjectCard({ project, index }: ProjectCardProps) {
+const DEFAULT_IMAGE = "https://github.com/SHYAM140305.png";
+
+function buildGitHubOgImageUrl(owner: string, repo: string) {
+  return `https://opengraph.githubassets.com/1/${owner}/${repo}`;
+}
+
+function getRemoteProjectImage(project: Project) {
+  const { image, githubUrl } = project;
+
+  if (image) {
+    if (image.includes("opengraph.githubassets.com")) {
+      return image;
+    }
+    return image;
+  }
+
+  if (githubUrl) {
+    try {
+      const { pathname } = new URL(githubUrl);
+      const parts = pathname.split("/").filter(Boolean);
+      if (parts.length >= 2) {
+        const owner = parts[0];
+        const repo = parts[1].replace(/\.git$/i, "");
+        return buildGitHubOgImageUrl(owner, repo);
+      }
+    } catch (_error) {
+      // ignored
+    }
+  }
+
+  return DEFAULT_IMAGE;
+}
+
+export const ProjectCard = memo(function ProjectCard({ project, index }: ProjectCardProps) {
   // Determine the main link URL (prioritize GitHub, then live URL)
   const mainUrl = project.githubUrl || project.liveUrl;
+  const imageSrc = getRemoteProjectImage(project);
 
   return (
     <motion.a
@@ -38,11 +73,15 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       
       <div className="relative h-52 sm:h-64 overflow-hidden rounded-t-2xl md:rounded-t-3xl border-b-2 border-amber-500/15 dark:border-amber-500/5">
         <Image
-          src={project.image || "https://github.com/SHYAM140305.png"}
+          src={imageSrc}
           alt={project.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          loading={index < 3 ? "eager" : "lazy"}
+          fetchPriority={index < 3 ? "high" : "low"}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
         />
       </div>
 
@@ -111,5 +150,5 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       </div>
     </motion.a>
   );
-}
+});
 

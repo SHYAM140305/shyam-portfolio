@@ -5,12 +5,14 @@
 \usepackage{fontawesome5}
 \usepackage{multicol}
 \usepackage{enumitem}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-
-% Optionally suppress showhyphens warning (usually harmless)
+% Suppress benign kernel warning about \showhyphens change (modern LaTeX update)
 \usepackage{silence}
 \WarningFilter{latex}{Command \showhyphens has changed}
+% Map Unicode Rupee sign to ASCII fallback for pdfLaTeX
+\DeclareUnicodeCharacter{20B9}{Rs.}
 
 % Suppress academicons warning
 \makeatletter
@@ -21,9 +23,11 @@
 
 % Personal data
 \name{Shyam}{J}
-\title{AI Engineer | Digital Twin | Innovator}
+\title{AI/ML Engineer \& Full Stack Developer}
 \address{Chennai, Tamil Nadu, India}
+\phone{+91 7395980045}
 \email{jshyam2005@gmail.com}
+\homepage{shyamj.vercel.app}
 \social[github]{SHYAM140305}
 \social[linkedin]{shyam-jayakanthan-050a85284}
 
@@ -160,7 +164,7 @@ Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning,
 
 \cventry{2024 -- 2025}{Vice President}{NEXT GEN AI, SRMIST KTR}{}{}{
 \begin{itemize}
-    \item Led 350+ members, organized 5 events, and managed Rs.~1,00,000 budget.
+    \item Led 350+ members, organized 5 events, and managed ₹1,00,000 budget.
 \end{itemize}
 }
 

@@ -8,6 +8,8 @@ export interface Leadership {
   current: boolean;
   description: string;
   highlights: string[];
+  logoLight?: string;
+  logoDark?: string;
 }
 
 export const leadership: Leadership[] = [
@@ -22,6 +24,8 @@ export const leadership: Leadership[] = [
     highlights: [
       "Directed organizational strategy for 400+ members and industry partnerships",
     ],
+    logoLight: "/Nextgenai-light.png",
+    logoDark: "/Nextgenai-dark.png",
   },
   {
     id: "vp-nextgen",
@@ -34,6 +38,8 @@ export const leadership: Leadership[] = [
     highlights: [
       "Led 350+ members, organized 5 events, and managed ₹1,00,000 budget",
     ],
+    logoLight: "/Nextgenai-light.png",
+    logoDark: "/Nextgenai-dark.png",
   },
   {
     id: "tech-lead",
@@ -46,6 +52,8 @@ export const leadership: Leadership[] = [
     highlights: [
       "Supervised team of 8 researchers and coordinated industry hackathons",
     ],
+    logoLight: "/srm-logo.png",
+    logoDark: "/srm-logo.png",
   },
   {
     id: "research-member",
@@ -58,6 +66,8 @@ export const leadership: Leadership[] = [
     highlights: [
       "Conducted AI research and mentored students on emerging technologies",
     ],
+    logoLight: "/srm-logo.png",
+    logoDark: "/srm-logo.png",
   },
 ];
 

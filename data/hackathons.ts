@@ -4,7 +4,10 @@ export interface Hackathon {
   year: string;
   achievement: string;
   description: string;
+  logo?: string;
 }
+
+const SRM_LOGO = "/srm-logo.png";
 
 export const hackathons: Hackathon[] = [
   {
@@ -13,6 +16,7 @@ export const hackathons: Hackathon[] = [
     year: "2025",
     achievement: "1st Place",
     description: "Real-time AI automation solution with vision analytics",
+    logo: SRM_LOGO,
   },
   {
     id: "appathon-2",
@@ -20,6 +24,7 @@ export const hackathons: Hackathon[] = [
     year: "2025",
     achievement: "Winner",
     description: "AI-driven productivity app (150+ teams)",
+    logo: SRM_LOGO,
   },
   {
     id: "tamizh-athon",
@@ -27,6 +32,7 @@ export const hackathons: Hackathon[] = [
     year: "2025",
     achievement: "Winner",
     description: "Tamil OCR and NLP innovation under SRM TCC",
+    logo: SRM_LOGO,
   },
 ];
 

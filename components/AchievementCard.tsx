@@ -1,12 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Award, Trophy, Star, GraduationCap, Users, FileCheck } from "lucide-react";
+import { useEffect, useState, useMemo, type KeyboardEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { Award, Trophy, Star, GraduationCap, Users, FileCheck, X, ExternalLink } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
-import { certifications } from "@/data/education";
+import { certifications, type Certification } from "@/data/education";
 import { hackathons } from "@/data/hackathons";
 import { leadership } from "@/data/leadership";
 import { staggerContainer, fadeInUp } from "@/lib/utils";
+import { useTheme } from "next-themes";
 
 const iconMap: Record<string, typeof Award> = {
   certification: FileCheck,
@@ -24,6 +27,10 @@ interface AchievementCardProps {
   description?: string;
   achievement?: string;
   index: number;
+  logoSrc?: string;
+  logoSrcLight?: string;
+  logoSrcDark?: string;
+  onClick?: () => void;
 }
 
 export function AchievementCard({
@@ -34,6 +41,10 @@ export function AchievementCard({
   description,
   achievement,
   index,
+  logoSrc,
+  logoSrcLight,
+  logoSrcDark,
+  onClick,
 }: AchievementCardProps) {
   const Icon = iconMap[type] || Award;
   const colors = {
@@ -41,11 +52,45 @@ export function AchievementCard({
     hackathon: "from-amber-500 to-orange-500",
     leadership: "from-purple-500 to-pink-500",
   };
+  const { resolvedTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+  const isInteractive = typeof onClick === "function";
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Memoize logo selection to avoid recalculation
+  const displayLogo = useMemo(() => {
+    if (!isMounted) return logoSrcLight ?? logoSrc ?? logoSrcDark;
+    return resolvedTheme === "dark"
+      ? logoSrcDark ?? logoSrc ?? logoSrcLight
+      : logoSrcLight ?? logoSrc ?? logoSrcDark;
+  }, [isMounted, resolvedTheme, logoSrc, logoSrcLight, logoSrcDark]);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!isInteractive) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClick?.();
+    }
+  };
+
 
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -2 }}
-      className="group relative rounded-xl modern-glass border border-border/40 hover:border-primary/50 p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300"
+      className={`group relative rounded-xl modern-glass border border-border/40 hover:border-primary/50 p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 ${
+        isInteractive
+          ? "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          : ""
+      }`}
+      role={isInteractive ? "button" : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      aria-haspopup={isInteractive ? "dialog" : undefined}
+      aria-label={isInteractive ? `Open certificate ${title}` : undefined}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
     >
       {/* Gradient overlay on hover */}
       <div
@@ -55,20 +100,38 @@ export function AchievementCard({
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-4">
           <div
-            className={`w-12 h-12 rounded-lg bg-gradient-to-br ${colors[type]} flex items-center justify-center shadow-lg`}
+            className={`w-12 h-12 rounded-lg p-[2px] bg-gradient-to-br ${colors[type]} shadow-lg overflow-hidden`}
           >
-            <Icon className="h-6 w-6 text-white" />
+            {displayLogo ? (
+              <div className="w-full h-full rounded-md bg-white flex items-center justify-center ring-1 ring-black/5 dark:ring-white/10">
+                <Image
+                  src={displayLogo}
+                  alt={`${title} logo`}
+                  width={40}
+                  height={40}
+                  className="object-contain max-w-[36px] max-h-[36px]"
+                  unoptimized
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            ) : (
+              <Icon className="h-6 w-6 text-white" />
+            )}
           </div>
-          {year && (
+          {type === "certification" && issuer ? (
+            <span className="text-xs font-semibold text-primary px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 line-clamp-1 max-w-[200px]">
+              {issuer}
+            </span>
+          ) : year ? (
             <span className="text-xs font-semibold text-primary px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30">
               {year}
             </span>
-          )}
+          ) : null}
         </div>
 
         <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2">{title}</h3>
         
-        {issuer && (
+        {type !== "certification" && issuer && (
           <p className="text-sm text-muted-foreground mb-2 font-medium line-clamp-1">{issuer}</p>
         )}
         
@@ -85,12 +148,31 @@ export function AchievementCard({
 }
 
 export function AchievementsSection() {
+  const [selectedCertificate, setSelectedCertificate] = useState<Certification | null>(null);
+  const [isViewerLoading, setIsViewerLoading] = useState(true);
+
+  useEffect(() => {
+    if (!selectedCertificate) {
+      setIsViewerLoading(true);
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selectedCertificate]);
+
+  const closeViewer = () => setSelectedCertificate(null);
+
   return (
     <section id="achievements" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
-      {/* Background decoration */}
+      {/* Background decoration - Reduced animations */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c05_1px,transparent_1px),linear-gradient(to_bottom,#fb923c05_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl animate-pulse-slow" />
-      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-orange-500/1 rounded-full blur-3xl animate-pulse-slow" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-orange-500/1 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Certifications */}
@@ -114,7 +196,11 @@ export function AchievementsSection() {
                   title={cert.name}
                   issuer={cert.issuer}
                   year={cert.year}
+                  logoSrc={cert.logo}
+                  logoSrcLight={cert.logoLight}
+                  logoSrcDark={cert.logoDark}
                   index={index}
+                  onClick={() => setSelectedCertificate(cert)}
                 />
               </motion.div>
             ))}
@@ -143,6 +229,7 @@ export function AchievementsSection() {
                   year={hackathon.year}
                   achievement={hackathon.achievement}
                   description={hackathon.description}
+                  logoSrc={hackathon.logo}
                   index={index}
                 />
               </motion.div>
@@ -154,7 +241,6 @@ export function AchievementsSection() {
         <div>
           <SectionTitle
             title="Leadership Experience"
-            subtitle="Leading teams and initiatives"
             className="mb-8 sm:mb-10"
           />
           <motion.div
@@ -172,6 +258,8 @@ export function AchievementsSection() {
                   issuer={role.organization}
                   description={role.description}
                   year={`${role.startDate} - ${role.endDate}`}
+                  logoSrcLight={role.logoLight}
+                  logoSrcDark={role.logoDark}
                   index={index}
                 />
               </motion.div>
@@ -179,6 +267,89 @@ export function AchievementsSection() {
           </motion.div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedCertificate && (
+          <motion.div
+            key="certificate-backdrop"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeViewer}
+          >
+            <motion.div
+              key="certificate-content"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-5xl rounded-2xl bg-background border border-border/60 shadow-2xl"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex flex-col gap-4 p-6 sm:p-8">
+                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">{selectedCertificate.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedCertificate.issuer}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={closeViewer}
+                    className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    aria-label="Close certificate viewer"
+                  >
+                    <X className="h-4 w-4" />
+                    Close
+                  </button>
+                </div>
+
+                <div className="relative h-[70vh] w-full overflow-hidden rounded-xl border border-border/40 bg-white">
+                  {isViewerLoading && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/80">
+                      <span className="h-10 w-10 animate-spin rounded-full border-2 border-primary/60 border-t-transparent" />
+                      <p className="text-sm font-medium text-muted-foreground">Loading certificate…</p>
+                    </div>
+                  )}
+                  <iframe
+                    key={selectedCertificate.id}
+                    src={`${selectedCertificate.certificateUrl}#toolbar=0&navpanes=0`}
+                    title={`${selectedCertificate.name} certificate`}
+                    className="h-full w-full"
+                    onLoad={() => setIsViewerLoading(false)}
+                  />
+                </div>
+
+                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs text-muted-foreground">
+                    Having trouble viewing? Open the certificate in a new tab below.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={closeViewer}
+                      className="inline-flex items-center justify-center rounded-full border border-border/60 px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
+                      Done
+                    </button>
+                    <a
+                      href={selectedCertificate.certificateUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Open in new tab
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

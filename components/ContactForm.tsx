@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,7 +16,7 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-export function ContactForm() {
+export const ContactForm = memo(function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const {
     register,
@@ -27,12 +27,15 @@ export function ContactForm() {
     resolver: zodResolver(contactSchema),
   });
 
-  const onSubmit = async (data: ContactFormData, e?: React.BaseSyntheticEvent) => {
+  const onSubmit = useCallback(async (data: ContactFormData, e?: React.BaseSyntheticEvent) => {
     if (e) {
       e.preventDefault();
     }
     
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+      
       const response = await fetch("https://formsubmit.co/ajax/jshyam2005@gmail.com", {
         method: "POST",
         headers: {
@@ -46,7 +49,10 @@ export function ContactForm() {
           _subject: "New Contact Form Submission - Portfolio",
           _captcha: "false",
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         setIsSubmitted(true);
@@ -56,10 +62,14 @@ export function ContactForm() {
         throw new Error("Form submission failed");
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Failed to send message. Please try again or contact me directly at jshyam2005@gmail.com");
+      if (error instanceof Error && error.name === 'AbortError') {
+        alert("Request timed out. Please check your connection and try again.");
+      } else {
+        console.error("Error submitting form:", error);
+        alert("Failed to send message. Please try again or contact me directly at jshyam2005@gmail.com");
+      }
     }
-  };
+  }, [reset]);
 
   return (
     <motion.div
@@ -67,12 +77,12 @@ export function ContactForm() {
       whileInView="animate"
       viewport={{ once: true, margin: "-100px" }}
       variants={fadeInUp}
-      className="max-w-2xl mx-auto"
+      className="max-w-3xl mx-auto w-full"
     >
-      <div className="relative rounded-2xl sm:rounded-3xl modern-glass-strong border border-border/40 hover:border-primary/40 p-6 sm:p-8 md:p-10 shadow-2xl overflow-hidden card-shadow card-shadow-hover transition-all duration-300">
-        {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/1 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/1 rounded-full blur-3xl animate-pulse-slow" />
+      <div className="relative rounded-2xl sm:rounded-3xl modern-glass-strong border border-border/40 hover:border-primary/40 p-8 sm:p-10 md:p-12 lg:p-14 shadow-2xl overflow-hidden card-shadow card-shadow-hover transition-all duration-300">
+        {/* Background decoration - Reduced animations */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/1 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/1 rounded-full blur-3xl" />
         
         {/* Corner accents */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-500/2 to-transparent rounded-bl-full" />
@@ -81,9 +91,9 @@ export function ContactForm() {
         {/* Shine effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-transparent opacity-0 hover:opacity-1 transition-opacity duration-500" />
         
-        <form onSubmit={handleSubmit(onSubmit)} className="relative z-10 space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-semibold text-foreground flex items-center gap-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="relative z-10 space-y-7 sm:space-y-8">
+          <div className="space-y-3">
+            <label htmlFor="name" className="text-base sm:text-lg font-semibold text-foreground flex items-center gap-2">
               Name
             </label>
             <motion.input
@@ -91,7 +101,7 @@ export function ContactForm() {
               {...register("name")}
               type="text"
               whileFocus={{ scale: 1.01 }}
-              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-base rounded-xl modern-glass border-2 border-border/40 focus:border-amber-500 focus:outline-none transition-all duration-300 placeholder:text-muted-foreground shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-amber-500/5 touch-manipulation"
+              className="w-full px-5 sm:px-6 py-4 sm:py-5 text-base sm:text-lg rounded-xl modern-glass border-2 border-border/40 focus:border-amber-500 focus:outline-none transition-all duration-300 placeholder:text-muted-foreground shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-amber-500/5 touch-manipulation"
               placeholder="Your name"
             />
             {errors.name && (
@@ -105,8 +115,8 @@ export function ContactForm() {
             )}
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-semibold text-foreground flex items-center gap-2">
+          <div className="space-y-3">
+            <label htmlFor="email" className="text-base sm:text-lg font-semibold text-foreground flex items-center gap-2">
               Email
             </label>
             <motion.input
@@ -114,7 +124,7 @@ export function ContactForm() {
               {...register("email")}
               type="email"
               whileFocus={{ scale: 1.01 }}
-              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-base rounded-xl modern-glass border-2 border-border/40 focus:border-amber-500 focus:outline-none transition-all duration-300 placeholder:text-muted-foreground shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-amber-500/5 touch-manipulation"
+              className="w-full px-5 sm:px-6 py-4 sm:py-5 text-base sm:text-lg rounded-xl modern-glass border-2 border-border/40 focus:border-amber-500 focus:outline-none transition-all duration-300 placeholder:text-muted-foreground shadow-sm hover:shadow-md focus:shadow-lg focus:shadow-amber-500/5 touch-manipulation"
               placeholder="your.email@example.com"
             />
             {errors.email && (
@@ -128,16 +138,16 @@ export function ContactForm() {
             )}
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="message" className="text-sm font-semibold text-foreground flex items-center gap-2">
+          <div className="space-y-3">
+            <label htmlFor="message" className="text-base sm:text-lg font-semibold text-foreground flex items-center gap-2">
               Message
             </label>
             <motion.textarea
               id="message"
               {...register("message")}
-              rows={5}
+              rows={8}
               whileFocus={{ scale: 1.01 }}
-              className="w-full px-4 sm:px-5 py-3 sm:py-4 text-base rounded-xl bg-background/90 border-2 border-border/50 focus:border-primary focus:outline-none transition-all duration-300 placeholder:text-muted-foreground resize-none shadow-md hover:shadow-lg focus:shadow-xl focus:shadow-orange-500/20 hover:bg-background/95 touch-manipulation"
+              className="w-full px-5 sm:px-6 py-4 sm:py-5 text-base sm:text-lg rounded-xl bg-background/90 border-2 border-border/50 focus:border-primary focus:outline-none transition-all duration-300 placeholder:text-muted-foreground resize-none shadow-md hover:shadow-lg focus:shadow-xl focus:shadow-orange-500/20 hover:bg-background/95 touch-manipulation"
               placeholder="Your message..."
             />
             {errors.message && (
@@ -156,7 +166,7 @@ export function ContactForm() {
             disabled={isSubmitting}
             whileHover={{ scale: 1.02, y: -3 }}
             whileTap={{ scale: 0.98 }}
-            className="modern-button group relative w-full px-6 py-4 sm:py-5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-primary-foreground font-semibold text-base sm:text-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl hover:shadow-amber-500/12 overflow-hidden border border-amber-400/15 touch-manipulation min-h-[48px]"
+            className="modern-button group relative w-full px-8 py-5 sm:py-6 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-primary-foreground font-semibold text-lg sm:text-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl hover:shadow-amber-500/12 overflow-hidden border border-amber-400/15 touch-manipulation min-h-[56px]"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-80 transition-opacity duration-300" />
             <span className="relative z-10 flex items-center gap-2">
@@ -177,5 +187,5 @@ export function ContactForm() {
       </div>
     </motion.div>
   );
-}
+});
 

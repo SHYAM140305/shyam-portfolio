@@ -33,59 +33,137 @@ const responses: Record<string, string[]> = {
   ],
   ai: [
     "I work extensively with AI/ML, focusing on NLP, Computer Vision, and Generative AI.",
-    "I've built RAG systems, chatbots, and computer vision applications.",
-    "I'm particularly interested in Digital Twin technology and industrial AI.",
+    "I've built RAG systems, chatbots, computer vision applications, and AI-driven troubleshooting systems.",
+    "I'm particularly interested in Digital Twin technology, industrial AI, and building production-ready AI systems.",
   ],
   ml: [
-    "I specialize in PyTorch, TensorFlow, and deep learning architectures.",
-    "My projects include image captioning, self-driving car simulation, and more.",
-    "I'm experienced in both supervised and reinforcement learning.",
+    "I specialize in PyTorch, TensorFlow, Keras, and deep learning architectures.",
+    "My projects include image captioning (BLEU-4: 0.32), self-driving car simulation with Deep Q-Learning, and more.",
+    "I'm experienced in supervised learning, reinforcement learning, and generative models.",
   ],
   digital: [
     "Digital Twin is one of my core areas of expertise!",
     "I work on creating digital representations of physical systems using AI.",
+    "My work at CMRL involved AI-driven troubleshooting systems similar to digital twins.",
     "This involves sensor data, real-time analytics, and predictive modeling.",
   ],
   twin: [
     "Digital Twin combines IoT, AI, and data analytics for industrial automation.",
-    "I've worked on AI-driven troubleshooting systems similar to digital twins.",
+    "I've worked on AI-driven troubleshooting systems at CMRL that extract fault codes using NLP (95% accuracy).",
     "It's fascinating how we can predict and optimize physical systems virtually.",
   ],
   project: [
-    "Check out my projects section! I've built Edu Smart Bot, RAG systems, and more.",
-    "My favorite projects include AI-powered educational assistants and computer vision apps.",
-    "I'm always working on something new - currently focused on Digital Twin applications.",
+    "I've built several projects including:",
+    "• Edu Smart Bot - AI-powered educational assistant with OCR, summarization, and Q&A",
+    "• Self-Driving Car AI - Reinforcement learning simulation with Deep Q-Learning",
+    "• Image Captioning System - CNN-RNN architecture with attention (BLEU-4: 0.32)",
+    "• GenAI Chatbot - Custom LLM with fine-tuning capabilities",
+    "• High Efficiency RAG System - Dual-phase path optimization for retrieval",
+    "• Smart Parking System - YOLO-based real-time parking space detection",
+    "Check out my projects section for more details!",
   ],
   projects: [
-    "Check out my projects section! I've built Edu Smart Bot, RAG systems, and more.",
-    "My favorite projects include AI-powered educational assistants and computer vision apps.",
-    "I'm always working on something new - currently focused on Digital Twin applications.",
+    "I've built several projects including:",
+    "• Edu Smart Bot - AI-powered educational assistant with OCR, summarization, and Q&A",
+    "• Self-Driving Car AI - Reinforcement learning simulation with Deep Q-Learning",
+    "• Image Captioning System - CNN-RNN architecture with attention (BLEU-4: 0.32)",
+    "• GenAI Chatbot - Custom LLM with fine-tuning capabilities",
+    "• High Efficiency RAG System - Dual-phase path optimization for retrieval",
+    "• Smart Parking System - YOLO-based real-time parking space detection",
+    "Check out my projects section for more details!",
   ],
   experience: [
-    "I've interned at CMRL, Sentient Scripts, and Renault Nissan.",
-    "Currently interning at CMRL working on AI-driven troubleshooting systems.",
-    "I've led teams as President of NEXT GEN AI (400+ members).",
+    "I've worked at several companies:",
+    "• CMRL (Sep 2024 - Apr 2025) - Student Intern: AI-driven troubleshooting system with NLP (95% accuracy), FAISS semantic search with Gemma 2B LLM",
+    "• Sentient Scripts (Jun 2024 - Jun 2025) - Student Coordinator: Primary POC between Sentient Scripts and SRM University",
+    "• Sentient Scripts (Sep 2024 - Oct 2024) - AI/ML Engineer Intern: Weather Chatbot with RAG (89% user satisfaction)",
+    "• Renault Nissan (Jul 2024 - Nov 2024) - AI/ML Engineer Intern: Heavy Repair Management System, improved efficiency by 28%",
+    "I've also led teams as President of NEXT GEN AI (400+ members) since 2025.",
   ],
   skill: [
-    "My tech stack includes Python, PyTorch, React, Next.js, and more.",
-    "I'm proficient in AI/ML frameworks, full-stack development, and cloud technologies.",
+    "My tech stack includes:",
+    "Languages: Python, C, Java, TypeScript, JavaScript, SQL, Dart",
+    "Frontend: React.js, Next.js 14, Tailwind CSS, HTML5, CSS3",
+    "Backend: Node.js, Flask, Express.js, RESTful APIs",
+    "AI/ML: PyTorch, TensorFlow, Keras, Hugging Face, FAISS, OpenCV, NLTK, Scikit-learn",
+    "Cloud & DevOps: AWS, Oracle Cloud, Docker, Git, CI/CD, Vercel, Streamlit",
+    "Databases: MongoDB, SQLite, Redis",
+    "Data: Pandas, NumPy, Matplotlib, Seaborn, Power BI",
     "Digital Twin expertise is one of my specializations!",
   ],
   skills: [
-    "My tech stack includes Python, PyTorch, React, Next.js, and more.",
-    "I'm proficient in AI/ML frameworks, full-stack development, and cloud technologies.",
+    "My tech stack includes:",
+    "Languages: Python, C, Java, TypeScript, JavaScript, SQL, Dart",
+    "Frontend: React.js, Next.js 14, Tailwind CSS, HTML5, CSS3",
+    "Backend: Node.js, Flask, Express.js, RESTful APIs",
+    "AI/ML: PyTorch, TensorFlow, Keras, Hugging Face, FAISS, OpenCV, NLTK, Scikit-learn",
+    "Cloud & DevOps: AWS, Oracle Cloud, Docker, Git, CI/CD, Vercel, Streamlit",
+    "Databases: MongoDB, SQLite, Redis",
+    "Data: Pandas, NumPy, Matplotlib, Seaborn, Power BI",
     "Digital Twin expertise is one of my specializations!",
   ],
   education: [
-    "I'm pursuing BTech in Artificial Intelligence at SRM Institute of Science and Technology.",
-    "My coursework includes Machine Learning, Deep Learning, Computer Vision, NLP, and more.",
+    "I'm pursuing BTech in Artificial Intelligence at SRM Institute of Science and Technology (Jun 2022 - May 2026).",
+    "Current CGPA: 7.5/10.0",
+    "My coursework includes: Machine Learning, Deep Learning, Computer Vision, NLP, Data Structures & Algorithms, Database Systems, Software Engineering, Reinforcement Learning, and Cloud Computing.",
     "I'm constantly learning and exploring new technologies in the AI field.",
   ],
+  leadership: [
+    "I'm currently the President of NEXT GEN AI, SRMIST KTR (2025 - Present).",
+    "I lead 400+ members and direct organizational strategy and industry partnerships.",
+    "Previously, I was Vice President (2024-2025) where I led 350+ members, organized 5 events, and managed ₹1,00,000 budget.",
+    "I've also served as Technical Lead at AI Research Group (2023-2024) and Research Member at Cintel Students Association (2023-2024).",
+  ],
+  hackathon: [
+    "I've won several hackathons:",
+    "• Hackstreet 3.0 (2025) - 1st Place: Real-time AI automation solution with vision analytics",
+    "• Appathon 2.0 (2025) - Winner: AI-driven productivity app (150+ teams)",
+    "• Tamizh-A-THON 1.0 (2025) - Winner: Tamil OCR and NLP innovation under SRM TCC",
+  ],
+  hackathons: [
+    "I've won several hackathons:",
+    "• Hackstreet 3.0 (2025) - 1st Place: Real-time AI automation solution with vision analytics",
+    "• Appathon 2.0 (2025) - Winner: AI-driven productivity app (150+ teams)",
+    "• Tamizh-A-THON 1.0 (2025) - Winner: Tamil OCR and NLP innovation under SRM TCC",
+  ],
+  certification: [
+    "I have several certifications:",
+    "• AWS Cloud Foundations (2024)",
+    "• AWS Machine Learning Foundations (2024)",
+    "• Oracle Generative AI Professional (2024)",
+    "• Oracle Cloud Infrastructure Foundations (2024)",
+    "• Google AI/ML Virtual Internship (2024)",
+    "• Intel Unnati AI & IoT Scholar (2024)",
+    "• HackerRank SQL Advanced Skill Certification (2024)",
+    "• NPTEL Programming in Java (2023)",
+    "• Hackcelrate 2025 Finalist (Toyota)",
+    "• Appathon Winner (SRM, 2024)",
+    "• Hackstreet Winner (SRM, 2024)",
+    "• Tamizh-A-THON 1.0 Winner (TCC, 2024)",
+  ],
+  certifications: [
+    "I have several certifications:",
+    "• AWS Cloud Foundations (2024)",
+    "• AWS Machine Learning Foundations (2024)",
+    "• Oracle Generative AI Professional (2024)",
+    "• Oracle Cloud Infrastructure Foundations (2024)",
+    "• Google AI/ML Virtual Internship (2024)",
+    "• Intel Unnati AI & IoT Scholar (2024)",
+    "• HackerRank SQL Advanced Skill Certification (2024)",
+    "• NPTEL Programming in Java (2023)",
+    "• Hackcelrate 2025 Finalist (Toyota)",
+    "• Appathon Winner (SRM, 2024)",
+    "• Hackstreet Winner (SRM, 2024)",
+    "• Tamizh-A-THON 1.0 Winner (TCC, 2024)",
+  ],
   contact: [
-    "You can reach me at: jshyam2005@gmail.com",
+    "You can reach me at:",
+    "Email: jshyam2005@gmail.com",
+    "Phone: +91 7395980045",
     "GitHub: github.com/SHYAM140305",
     "LinkedIn: linkedin.com/in/shyam-jayakanthan-050a85284",
-    "Location: Chennai, India",
+    "Website: shyamj.vercel.app",
+    "Location: Chennai, Tamil Nadu, India",
     "Feel free to reach out for collaborations or opportunities!",
   ],
 };
@@ -100,7 +178,6 @@ export const TerminalBot = memo(function TerminalBot() {
   const [messages, setMessages] = useState<string[]>([]);
   const [conversationHistory, setConversationHistory] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [cursorVisible, setCursorVisible] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [caretOffset, setCaretOffset] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -120,24 +197,24 @@ export const TerminalBot = memo(function TerminalBot() {
     return () => clearTimeout(initTimer);
   }, []);
 
-  useEffect(() => {
-    // Blink cursor
-    const cursorInterval = setInterval(() => {
-      setCursorVisible((prev) => !prev);
-    }, 530);
-    return () => clearInterval(cursorInterval);
-  }, []);
 
   // Memoize computed styles to avoid recalculating on every update
   const inputStylesRef = useRef<CSSStyleDeclaration | null>(null);
+  const isUpdatingCaretRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
   
   const updateCaretPosition = useCallback(() => {
+    // Prevent duplicate updates
+    if (isUpdatingCaretRef.current) return;
+    
     const inputEl = inputRef.current;
     const measureEl = measureRef.current;
     if (!inputEl || !measureEl) return;
 
-    const selectionStart = inputEl.selectionStart ?? input.length;
-    const textForMeasure = input.slice(0, selectionStart);
+    isUpdatingCaretRef.current = true;
+
+    const selectionStart = inputEl.selectionStart ?? inputEl.value.length;
+    const textForMeasure = inputEl.value.slice(0, selectionStart);
 
     // Cache computed styles - only recalculate if input element changed
     if (!inputStylesRef.current) {
@@ -174,53 +251,40 @@ export const TerminalBot = memo(function TerminalBot() {
     
     // Set the offset
     setCaretOffset(width);
-  }, [input]);
+    
+    // Reset flag after state update
+    requestAnimationFrame(() => {
+      isUpdatingCaretRef.current = false;
+    });
+  }, []);
 
-  // Debounce caret updates to reduce re-renders
-  const caretUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Schedule caret updates for non-input events (clicks, focus, etc.)
   const scheduleCaretUpdate = useCallback(() => {
-    if (caretUpdateTimeoutRef.current) {
-      clearTimeout(caretUpdateTimeoutRef.current);
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
     }
-    caretUpdateTimeoutRef.current = setTimeout(() => {
-      requestAnimationFrame(() => {
-        updateCaretPosition();
-      });
-    }, 0);
+    rafIdRef.current = requestAnimationFrame(() => {
+      updateCaretPosition();
+      rafIdRef.current = null;
+    });
   }, [updateCaretPosition]);
 
+  // Update cursor position when input changes
   useLayoutEffect(() => {
-    updateCaretPosition();
-    return () => {
-      if (caretUpdateTimeoutRef.current) {
-        clearTimeout(caretUpdateTimeoutRef.current);
-      }
-    };
-  }, [input, updateCaretPosition]);
-
-  // Ensure cursor position updates when input is cleared
-  useEffect(() => {
     if (input === "") {
       setCaretOffset(0);
+      isUpdatingCaretRef.current = false;
+    } else {
+      updateCaretPosition();
     }
-  }, [input]);
+  }, [input, updateCaretPosition]);
 
-  // Debounce input changes to reduce state updates
-  const inputDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  // Handle input changes - cursor position is updated by useLayoutEffect
   const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInput(newValue);
-    
-    // Clear existing timeout
-    if (inputDebounceRef.current) {
-      clearTimeout(inputDebounceRef.current);
-    }
-    
-    // Schedule caret update with minimal delay
-    inputDebounceRef.current = setTimeout(() => {
-      scheduleCaretUpdate();
-    }, 0);
-  }, [scheduleCaretUpdate]);
+    // Cursor position will be updated automatically by useLayoutEffect when input changes
+  }, []);
 
   // Removed auto-scroll on message updates
 
@@ -392,7 +456,7 @@ export const TerminalBot = memo(function TerminalBot() {
             })}
             {isTyping && (
               <div className="text-green-400 flex items-center gap-1">
-                <span className={cursorVisible ? "opacity-100" : "opacity-0"}>█</span>
+                <span>█</span>
               </div>
             )}
             {!isTyping && (
@@ -404,8 +468,12 @@ export const TerminalBot = memo(function TerminalBot() {
                     type="text"
                     value={input}
                     onChange={handleInputChange}
-                    onKeyUp={() => scheduleCaretUpdate()}
-                    onKeyDown={() => scheduleCaretUpdate()}
+                    onKeyDown={(e) => {
+                      // Only update cursor for arrow keys, not regular typing
+                      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End') {
+                        scheduleCaretUpdate();
+                      }
+                    }}
                     onClick={() => scheduleCaretUpdate()}
                     onFocus={() => scheduleCaretUpdate()}
                     onSelect={() => scheduleCaretUpdate()}
@@ -417,7 +485,9 @@ export const TerminalBot = memo(function TerminalBot() {
                       padding: '0',
                       margin: '0',
                       border: 'none',
-                      lineHeight: 'inherit'
+                      lineHeight: 'inherit',
+                      caretColor: 'transparent',
+                      color: 'inherit'
                     }}
                   />
                   <span
@@ -441,13 +511,17 @@ export const TerminalBot = memo(function TerminalBot() {
                     }}
                   />
                   <span
-                    className={`pointer-events-none absolute top-0 bottom-0 flex items-center text-green-400 transition-opacity duration-100 font-mono ${cursorVisible ? "opacity-100" : "opacity-0"}`}
+                    className="pointer-events-none absolute top-0 bottom-0 flex items-center text-green-400 font-mono opacity-100"
                     aria-hidden="true"
                     style={{ 
                       left: `${caretOffset}px`,
                       fontFamily: 'monospace',
                       lineHeight: 'inherit',
-                      height: '100%'
+                      height: '100%',
+                      transition: 'none',
+                      transitionProperty: 'none',
+                      animation: 'none',
+                      willChange: 'auto'
                     }}
                   >
                     █

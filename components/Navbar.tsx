@@ -502,22 +502,39 @@ export function Navbar() {
                   const filtered = filteredResults;
                   if (filtered[searchHighlight]) {
                     const result = filtered[searchHighlight];
-                    if (result.href) {
-                      handleNavClick(result.href);
-                      // If it's a project, scroll to projects and highlight it
+                  if (result.href) {
+                    handleNavClick(result.href);
+                    // Highlight the specific item based on type
+                    setTimeout(() => {
+                      let element: Element | null = null;
+                      
                       if (result.type === 'project' && result.metadata?.project) {
-                        setTimeout(() => {
-                          const projectElement = document.querySelector(`[data-project-id="${result.metadata!.project.id}"]`);
-                          if (projectElement) {
-                            projectElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            projectElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
-                            setTimeout(() => {
-                              projectElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
-                            }, 2000);
-                          }
-                        }, 500);
+                        element = document.querySelector(`[data-project-id="${result.metadata.project.id}"]`);
+                      } else if (result.type === 'experience' && result.metadata?.experience) {
+                        element = document.querySelector(`[data-experience-id="${result.metadata.experience.id}"]`);
+                      } else if (result.type === 'education' && result.id) {
+                        element = document.querySelector(`[data-education-id="${result.id}"]`);
+                      } else if (result.type === 'skill' && result.id) {
+                        element = document.querySelector(`[data-skill-name="${result.id}"]`);
+                      } else if (result.type === 'certification' && result.id) {
+                        element = document.querySelector(`[data-certification-id="${result.id}"]`);
                       }
-                    }
+                      
+                      if (element) {
+                        // Clear any existing highlights first
+                        document.querySelectorAll('.search-highlight').forEach(el => {
+                          el.classList.remove('search-highlight');
+                        });
+                        
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Add highlight with custom CSS class
+                        element.classList.add('search-highlight');
+                        setTimeout(() => {
+                          element?.classList.remove('search-highlight');
+                        }, 2000);
+                      }
+                    }, 500);
+                  }
                     setIsSearchOpen(false);
                   } else if (filtered[0]) {
                     const result = filtered[0];
@@ -643,18 +660,36 @@ export function Navbar() {
                                       onClick={() => {
                                         if (result.href) {
                                           handleNavClick(result.href);
-                                          if (result.type === 'project' && result.metadata?.project) {
-                                            setTimeout(() => {
-                                              const projectElement = document.querySelector(`[data-project-id="${result.metadata!.project.id}"]`);
-                                              if (projectElement) {
-                                                projectElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                                projectElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'transition-all');
-                                                setTimeout(() => {
-                                                  projectElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
-                                                }, 2000);
-                                              }
-                                            }, 500);
-                                          }
+                                          // Highlight the specific item based on type
+                                          setTimeout(() => {
+                                            let element: Element | null = null;
+                                            
+                                            if (result.type === 'project' && result.metadata?.project) {
+                                              element = document.querySelector(`[data-project-id="${result.metadata.project.id}"]`);
+                                            } else if (result.type === 'experience' && result.metadata?.experience) {
+                                              element = document.querySelector(`[data-experience-id="${result.metadata.experience.id}"]`);
+                                            } else if (result.type === 'education' && result.id) {
+                                              element = document.querySelector(`[data-education-id="${result.id}"]`);
+                                            } else if (result.type === 'skill' && result.id) {
+                                              element = document.querySelector(`[data-skill-name="${result.id}"]`);
+                                            } else if (result.type === 'certification' && result.id) {
+                                              element = document.querySelector(`[data-certification-id="${result.id}"]`);
+                                            }
+                                            
+                      if (element) {
+                        // Clear any existing highlights first
+                        document.querySelectorAll('.search-highlight').forEach(el => {
+                          el.classList.remove('search-highlight');
+                        });
+                        
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Add highlight with custom CSS class
+                        element.classList.add('search-highlight');
+                        setTimeout(() => {
+                          element?.classList.remove('search-highlight');
+                        }, 2000);
+                      }
+                                          }, 500);
                                         }
                                         setIsSearchOpen(false);
                                       }}
@@ -833,24 +868,72 @@ export function Navbar() {
                           const result = filtered[searchHighlight];
                           if (result.href) {
                             handleNavClick(result.href);
-                            if (result.type === 'project' && result.metadata?.project) {
-                              setTimeout(() => {
-                                const projectElement = document.querySelector(`[data-project-id="${result.metadata!.project.id}"]`);
-                                if (projectElement) {
-                                  projectElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                  projectElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
-                                  setTimeout(() => {
-                                    projectElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
-                                  }, 2000);
-                                }
-                              }, 500);
-                            }
+                            // Highlight the specific item based on type
+                            setTimeout(() => {
+                              let element: Element | null = null;
+                              
+                              if (result.type === 'project' && result.metadata?.project) {
+                                element = document.querySelector(`[data-project-id="${result.metadata.project.id}"]`);
+                              } else if (result.type === 'experience' && result.metadata?.experience) {
+                                element = document.querySelector(`[data-experience-id="${result.metadata.experience.id}"]`);
+                              } else if (result.type === 'education' && result.id) {
+                                element = document.querySelector(`[data-education-id="${result.id}"]`);
+                              } else if (result.type === 'skill' && result.id) {
+                                element = document.querySelector(`[data-skill-name="${result.id}"]`);
+                              } else if (result.type === 'certification' && result.id) {
+                                element = document.querySelector(`[data-certification-id="${result.id}"]`);
+                              }
+                              
+                              if (element) {
+                                // Clear any existing highlights first
+                                document.querySelectorAll('.search-highlight').forEach(el => {
+                                  el.classList.remove('search-highlight');
+                                });
+                                
+                                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                // Add highlight with custom CSS class
+                                element.classList.add('search-highlight');
+                                setTimeout(() => {
+                                  element?.classList.remove('search-highlight');
+                                }, 2000);
+                              }
+                            }, 500);
                           }
                           setIsSearchOpen(false);
                         } else if (filtered[0]) {
                           const result = filtered[0];
                           if (result.href) {
                             handleNavClick(result.href);
+                            // Highlight the specific item based on type
+                            setTimeout(() => {
+                              let element: Element | null = null;
+                              
+                              if (result.type === 'project' && result.metadata?.project) {
+                                element = document.querySelector(`[data-project-id="${result.metadata.project.id}"]`);
+                              } else if (result.type === 'experience' && result.metadata?.experience) {
+                                element = document.querySelector(`[data-experience-id="${result.metadata.experience.id}"]`);
+                              } else if (result.type === 'education' && result.id) {
+                                element = document.querySelector(`[data-education-id="${result.id}"]`);
+                              } else if (result.type === 'skill' && result.id) {
+                                element = document.querySelector(`[data-skill-name="${result.id}"]`);
+                              } else if (result.type === 'certification' && result.id) {
+                                element = document.querySelector(`[data-certification-id="${result.id}"]`);
+                              }
+                              
+                              if (element) {
+                                // Clear any existing highlights first
+                                document.querySelectorAll('.search-highlight').forEach(el => {
+                                  el.classList.remove('search-highlight');
+                                });
+                                
+                                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                // Add highlight with custom CSS class
+                                element.classList.add('search-highlight');
+                                setTimeout(() => {
+                                  element?.classList.remove('search-highlight');
+                                }, 2000);
+                              }
+                            }, 500);
                           }
                           setIsSearchOpen(false);
                         }
@@ -958,18 +1041,36 @@ export function Navbar() {
                                       onClick={() => {
                                         if (result.href) {
                                           handleNavClick(result.href);
-                                          if (result.type === 'project' && result.metadata?.project) {
-                                            setTimeout(() => {
-                                              const projectElement = document.querySelector(`[data-project-id="${result.metadata!.project.id}"]`);
-                                              if (projectElement) {
-                                                projectElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                                projectElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
-                                                setTimeout(() => {
-                                                  projectElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
-                                                }, 2000);
-                                              }
-                                            }, 500);
-                                          }
+                                          // Highlight the specific item based on type
+                                          setTimeout(() => {
+                                            let element: Element | null = null;
+                                            
+                                            if (result.type === 'project' && result.metadata?.project) {
+                                              element = document.querySelector(`[data-project-id="${result.metadata.project.id}"]`);
+                                            } else if (result.type === 'experience' && result.metadata?.experience) {
+                                              element = document.querySelector(`[data-experience-id="${result.metadata.experience.id}"]`);
+                                            } else if (result.type === 'education' && result.id) {
+                                              element = document.querySelector(`[data-education-id="${result.id}"]`);
+                                            } else if (result.type === 'skill' && result.id) {
+                                              element = document.querySelector(`[data-skill-name="${result.id}"]`);
+                                            } else if (result.type === 'certification' && result.id) {
+                                              element = document.querySelector(`[data-certification-id="${result.id}"]`);
+                                            }
+                                            
+                                            if (element) {
+                                              // Clear any existing highlights first
+                                              document.querySelectorAll('.search-highlight').forEach(el => {
+                                                el.classList.remove('search-highlight');
+                                              });
+                                              
+                                              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                              // Add highlight with custom CSS class
+                                              element.classList.add('search-highlight');
+                                              setTimeout(() => {
+                                                element?.classList.remove('search-highlight');
+                                              }, 2000);
+                                            }
+                                          }, 500);
                                         }
                                         setIsSearchOpen(false);
                                       }}

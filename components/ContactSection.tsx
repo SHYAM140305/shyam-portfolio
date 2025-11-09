@@ -6,22 +6,24 @@ import { ContactForm } from "@/components/ContactForm";
 
 export function ContactSection() {
   return (
-    <section id="contact" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+    <section id="contact" className="py-12 sm:py-16 md:py-16 lg:py-20 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
       {/* Background decoration - Reduced animations */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c05_1px,transparent_1px),linear-gradient(to_bottom,#fb923c05_1px,transparent_1px)] bg-[size:32px_32px]" />
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/1 rounded-full blur-3xl" />
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <SectionTitle
           title="Get In Touch"
           subtitle="Let&apos;s connect and build something amazing together"
-          className="mb-8 sm:mb-10 text-center"
+          className="mb-5 sm:mb-6 md:mb-7 text-center"
         />
-        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 max-w-6xl mx-auto">
-          <ContactCard />
-          <div className="md:col-span-1">
+        <div className="grid md:grid-cols-[1fr_1.2fr] gap-5 sm:gap-5 md:gap-6 lg:gap-7 max-w-6xl mx-auto items-start">
+          <div className="w-full">
             <ContactForm />
+          </div>
+          <div className="flex items-start justify-start w-full">
+            <ContactCard />
           </div>
         </div>
       </div>

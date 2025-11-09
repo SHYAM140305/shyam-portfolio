@@ -941,6 +941,23 @@ html {
   }
 }
 
+/* Search highlight style - Prevents collisions */
+.search-highlight {
+  position: relative !important;
+  z-index: 50 !important;
+  transition: all 0.3s ease-in-out !important;
+  box-shadow: 0 0 0 4px hsl(var(--primary) / 0.3), 
+              0 0 0 8px hsl(var(--primary) / 0.15),
+              0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 0.75rem !important;
+}
+
+/* Ensure highlighted elements don't collide with siblings */
+.search-highlight + * {
+  position: relative;
+  z-index: 1;
+}
+
 /* Modern badge style - Softer colors */
 .modern-badge {
   position: relative;

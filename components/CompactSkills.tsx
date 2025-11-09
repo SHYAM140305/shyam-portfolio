@@ -169,6 +169,7 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
                 {categorySkills.map((skill, index) => (
                   <motion.span
                     key={`${category}-${skill.name}`}
+                    data-skill-name={skill.name}
                     variants={skillBadgeVariants}
                     style={{ willChange: "opacity, transform" }}
                     whileHover={shouldReduceMotion ? undefined : { 

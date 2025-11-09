@@ -2,104 +2,83 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-
-type BrandKey = "email" | "github" | "linkedin" | "location";
-
-const brandIcons: Record<BrandKey, JSX.Element> = {
-  email: (
-    <svg viewBox="0 0 40 40" className="h-8 w-8" role="img" aria-hidden="true">
-      <rect width="40" height="40" rx="12" fill="url(#gmail-bg)" />
-      <path
-        d="M10 14.5a2.5 2.5 0 0 1 2.5-2.5h15a2.5 2.5 0 0 1 2.5 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 10 25.5v-11Z"
-        fill="#fff"
-      />
-      <path d="M12 13.5 20 20l8-6.5" stroke="#EA4335" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-      <defs>
-        <linearGradient id="gmail-bg" x1="0" x2="40" y1="0" y2="40" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#EA4335" />
-          <stop offset="1" stopColor="#FBBC05" />
-        </linearGradient>
-      </defs>
-    </svg>
-  ),
-  github: (
-    <svg viewBox="0 0 40 40" className="h-8 w-8" role="img" aria-hidden="true">
-      <rect width="40" height="40" rx="12" fill="url(#github-bg)" />
-      <path
-        d="M20 10c-5.52 0-10 4.58-10 10.23 0 4.52 2.86 8.36 6.83 9.72.5.1.68-.22.68-.49 0-.24-.01-.89-.01-1.73-2.78.62-3.37-1.38-3.37-1.38-.45-1.18-1.1-1.5-1.1-1.5-.9-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.55 2.34 1.1 2.9.84.09-.67.35-1.1.63-1.36-2.22-.26-4.55-1.14-4.55-5.09 0-1.12.39-2.04 1.03-2.75-.1-.26-.45-1.32.1-2.75 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.43.2 2.49.1 2.75.64.71 1.03 1.63 1.03 2.75 0 3.97-2.34 4.83-4.57 5.08.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49 3.97-1.36 6.83-5.2 6.83-9.72C30 14.58 25.52 10 20 10Z"
-        fill="#fff"
-      />
-      <defs>
-        <linearGradient id="github-bg" x1="0" x2="36" y1="6" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#2D2D2D" />
-          <stop offset="1" stopColor="#111" />
-        </linearGradient>
-      </defs>
-    </svg>
-  ),
-  linkedin: (
-    <svg viewBox="0 0 40 40" className="h-8 w-8" role="img" aria-hidden="true">
-      <rect width="40" height="40" rx="12" fill="url(#linkedin-bg)" />
-      <rect x="11" y="16" width="4" height="13" rx="1" fill="#fff" />
-      <rect x="11" y="11" width="4" height="4" rx="2" fill="#fff" />
-      <path
-        d="M19 16h3.6v1.8c.52-1.03 1.88-2.1 3.88-2.1 3.32 0 4.52 2.03 4.52 5.27V29h-4v-6.43c0-1.43-.02-3.27-2-3.27-2 0-2.31 1.56-2.31 3.17V29H19V16Z"
-        fill="#fff"
-      />
-      <defs>
-        <linearGradient id="linkedin-bg" x1="0" x2="36" y1="6" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#0A66C2" />
-          <stop offset="1" stopColor="#2A80E0" />
-        </linearGradient>
-      </defs>
-    </svg>
-  ),
-  location: (
-    <svg viewBox="0 0 40 40" className="h-8 w-8" role="img" aria-hidden="true">
-      <rect width="40" height="40" rx="12" fill="url(#location-bg)" />
-      <path
-        d="M20 12a6 6 0 0 0-6 6c0 4.2 5.25 9.84 5.5 10.1a.7.7 0 0 0 1 0C20.75 27.84 26 22.2 26 18a6 6 0 0 0-6-6Zm0 8.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"
-        fill="#fff"
-      />
-      <defs>
-        <linearGradient id="location-bg" x1="8" x2="32" y1="8" y2="34" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#34D399" />
-          <stop offset="1" stopColor="#10B981" />
-        </linearGradient>
-      </defs>
-    </svg>
-  ),
-};
+import { Github, Linkedin, Mail, Copy, Check, Download } from "lucide-react";
+import { useState } from "react";
 
 export function ContactCard() {
-  const contactItems = [
+  const [emailCopied, setEmailCopied] = useState(false);
+  const email = "jshyam2005@gmail.com";
+
+  // vCard download link
+  const vcardData = [
+    "BEGIN:VCARD",
+    "VERSION=3.0",
+    "N:Jayakanthan;Shyam;;;",
+    "FN:Shyam Jayakanthan",
+    "ORG:SRMIST",
+    "TITLE:AI/ML Engineer;Full Stack Developer",
+    "EMAIL;TYPE=INTERNET;TYPE=WORK:jshyam2005@gmail.com",
+    "TEL;TYPE=CELL:+91 7395980045",
+    "URL:https://shyamj.vercel.app",
+    "ADR;TYPE=WORK:;;Chennai;Tamil Nadu;;India",
+    "PHOTO;VALUE=URI:https://github.com/SHYAM140305.png",
+    "END:VCARD",
+  ].join("\r\n");
+  const vcardHref = `data:text/vcard;charset=utf-8,${encodeURIComponent(vcardData)}`;
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy email:", err);
+    }
+  };
+
+  const buttons = [
     {
-      icon: "email" as const,
-      label: "Email",
-      value: "jshyam2005@gmail.com",
-      href: "mailto:jshyam2005@gmail.com",
-      glow: "from-rose-400/50 via-amber-400/50 to-rose-400/50",
-    },
-    {
-      icon: "github" as const,
       label: "GitHub",
-      value: "SHYAM140305",
+      icon: Github,
       href: "https://github.com/SHYAM140305",
-      glow: "from-zinc-200/40 via-zinc-500/40 to-zinc-200/40",
+      color: "from-zinc-600 to-zinc-800",
+      hoverColor: "hover:from-zinc-700 hover:to-zinc-900",
+      glow: "from-zinc-400/50 via-zinc-500/50 to-zinc-400/50",
     },
     {
-      icon: "linkedin" as const,
       label: "LinkedIn",
-      value: "shyam-jayakanthan",
+      icon: Linkedin,
       href: "https://linkedin.com/in/shyam-jayakanthan-050a85284",
-      glow: "from-blue-200/50 via-sky-300/50 to-blue-200/50",
+      color: "from-blue-600 to-blue-700",
+      hoverColor: "hover:from-blue-700 hover:to-blue-800",
+      glow: "from-blue-400/50 via-blue-500/50 to-blue-400/50",
     },
     {
-      icon: "location" as const,
-      label: "Location",
-      value: "Chennai, India",
+      label: "Email",
+      icon: Mail,
+      href: `mailto:${email}`,
+      color: "from-rose-500 to-rose-600",
+      hoverColor: "hover:from-rose-600 hover:to-rose-700",
+      glow: "from-rose-400/50 via-rose-500/50 to-rose-400/50",
+    },
+    {
+      label: emailCopied ? "Copied!" : "Copy Email",
+      icon: emailCopied ? Check : Copy,
       href: null,
-      glow: "from-emerald-200/40 via-teal-200/40 to-emerald-200/40",
+      onClick: handleCopyEmail,
+      color: "from-amber-500 to-orange-600",
+      hoverColor: "hover:from-amber-600 hover:to-orange-700",
+      glow: "from-amber-400/50 via-orange-500/50 to-amber-400/50",
+      getLabelMobile: () => emailCopied ? "Copied!" : "Copy",
+    },
+    {
+      label: "vCard",
+      icon: Download,
+      href: vcardHref,
+      download: "Shyam_Jayakanthan.vcf",
+      color: "from-zinc-800 to-zinc-900",
+      hoverColor: "hover:from-zinc-900 hover:to-black",
+      glow: "from-zinc-400/50 via-zinc-500/50 to-zinc-400/50",
     },
   ];
 
@@ -109,74 +88,90 @@ export function ContactCard() {
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="relative w-full max-w-md mx-auto"
+      className="relative w-full"
     >
-      <div className="relative rounded-2xl modern-glass-strong border border-border/40 p-8 shadow-xl backdrop-blur-xl">
+      <div className="relative rounded-2xl modern-glass-strong border border-border/40 p-4 sm:p-5 md:p-6 lg:p-7 shadow-xl backdrop-blur-xl w-full">
         {/* Gradient border effect */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-amber-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl" />
         
-        <div className="relative z-10">
+        <div className="relative z-10 flex flex-col justify-center min-h-[140px] sm:min-h-[160px] md:min-h-[170px]">
           <motion.h3
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-2xl font-bold gradient-text mb-6 text-center"
+            className="text-xl sm:text-2xl font-bold gradient-text mb-1.5 text-center"
           >
-            Get In Touch
+            Let&apos;s Collaborate
           </motion.h3>
-
-          <div className="space-y-4">
-            {contactItems.map((item, index) => {
-              const iconGraphic = brandIcons[item.icon];
-              const content = (
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, x: 4 }}
-                  className={`flex items-center gap-4 p-4 rounded-xl modern-glass border border-border/30 hover:border-primary/40 transition-all duration-300 ${
-                    item.href ? "cursor-pointer group" : ""
-                  }`}
-                >
-                  <div className="relative">
-                    <div
-                      className={`absolute inset-0 blur-xl rounded-full opacity-0 group-hover:opacity-80 transition-opacity duration-300 bg-gradient-to-br ${item.glow}`}
-                    />
-                    <div className="relative w-12 h-12 rounded-xl bg-white/95 dark:bg-zinc-900/70 border border-border/30 flex items-center justify-center shadow-lg backdrop-blur-sm">
-                      {iconGraphic}
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-                      {item.label}
-                    </p>
-                    <p className="text-base font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                      {item.value}
-                    </p>
-                  </div>
-                </motion.div>
-              );
-
-              return item.href ? (
-                <Link key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
-                  {content}
-                </Link>
-              ) : (
-                <div key={item.label}>{content}</div>
-              );
-            })}
-          </div>
 
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="text-center text-sm text-muted-foreground mt-6"
+            transition={{ delay: 0.1 }}
+            className="text-center text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-5"
           >
-            Always open to collaboration and new opportunities
+            Connect with me on these platforms
           </motion.p>
+
+          <div className="flex flex-wrap sm:flex-nowrap items-stretch gap-2 sm:gap-2.5 md:gap-3 w-full">
+            {buttons.map((button, index) => {
+              const Icon = button.icon;
+              const buttonContent = (
+                <>
+                  {/* Glow effect */}
+                  <div
+                    className={`absolute inset-0 blur-xl rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-300 bg-gradient-to-br ${button.glow}`}
+                  />
+                  
+                  <div className="relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 w-full">
+                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="text-xs whitespace-nowrap">
+                      <span className="sm:hidden">{((button as any).getLabelMobile ? (button as any).getLabelMobile() : button.label)}</span>
+                      <span className="hidden sm:inline">{button.label}</span>
+                    </span>
+                  </div>
+                  
+                  {/* Shine effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                </>
+              );
+
+              const motionProps = {
+                initial: { opacity: 0, x: -20 },
+                whileInView: { opacity: 1, x: 0 },
+                viewport: { once: true },
+                transition: { delay: index * 0.1 },
+                whileHover: { scale: 1.02 },
+                whileTap: { scale: 0.98 },
+                className: `group relative flex items-center justify-center gap-1.5 sm:gap-2 flex-1 min-w-[calc(50%-0.25rem)] sm:min-w-0 py-2.5 sm:py-3 rounded-lg bg-gradient-to-br ${button.color} ${button.hoverColor} text-white font-semibold text-xs shadow-lg transition-all duration-300 overflow-hidden border border-white/10`,
+              };
+
+              return button.href ? (
+                <Link
+                  key={button.label}
+                  href={button.href}
+                  target={button.href.startsWith('data:') ? undefined : "_blank"}
+                  rel={button.href.startsWith('data:') ? undefined : "noopener noreferrer"}
+                  download={(button as any).download}
+                  className="flex-1"
+                >
+                  <motion.div {...motionProps}>
+                    {buttonContent}
+                  </motion.div>
+                </Link>
+              ) : (
+                <motion.button
+                  key={button.label}
+                  {...motionProps}
+                  onClick={button.onClick}
+                  type="button"
+                >
+                  {buttonContent}
+                </motion.button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </motion.div>

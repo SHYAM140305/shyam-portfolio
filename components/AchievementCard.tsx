@@ -190,7 +190,7 @@ export function AchievementsSection() {
             className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6"
           >
             {certifications.map((cert, index) => (
-              <motion.div key={cert.id} variants={fadeInUp}>
+              <motion.div key={cert.id} variants={fadeInUp} data-certification-id={cert.id}>
                 <AchievementCard
                   type="certification"
                   title={cert.name}

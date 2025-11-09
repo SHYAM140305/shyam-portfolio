@@ -18,6 +18,8 @@ interface TimelineItemProps {
   highlights?: string[];
   type?: string;
   hideDates?: boolean;
+  itemId?: string;
+  itemType?: 'experience' | 'education' | 'leadership';
 }
 
 const TimelineItem = memo(function TimelineItem({
@@ -31,6 +33,8 @@ const TimelineItem = memo(function TimelineItem({
   highlights,
   type,
   hideDates = false,
+  itemId,
+  itemType,
 }: TimelineItemProps) {
   return (
     <motion.div
@@ -39,6 +43,8 @@ const TimelineItem = memo(function TimelineItem({
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative pl-6 sm:pl-10 pb-8 sm:pb-12 border-l-2 border-border/50 last:border-l-0 last:pb-0 group"
+      data-experience-id={itemType === 'experience' && itemId ? itemId : undefined}
+      data-education-id={itemType === 'education' && itemId ? itemId : undefined}
     >
       {/* Animated timeline dot */}
       <motion.div
@@ -164,6 +170,8 @@ export const Timeline = memo(function Timeline({ items }: TimelineProps) {
               description={item.description}
               highlights={item.highlights}
               type={item.type}
+              itemId={item.id}
+              itemType="experience"
             />
           );
         } else if (isEducation(item)) {
@@ -179,6 +187,8 @@ export const Timeline = memo(function Timeline({ items }: TimelineProps) {
               highlights={item.highlights}
               type="Education"
               hideDates={true}
+              itemId={item.id}
+              itemType="education"
             />
           );
         } else if (isLeadership(item)) {
@@ -193,6 +203,8 @@ export const Timeline = memo(function Timeline({ items }: TimelineProps) {
               current={item.current}
               description={item.description}
               highlights={item.highlights}
+              itemId={item.id}
+              itemType="leadership"
             />
           );
         }

@@ -354,116 +354,113 @@ export default function Home() {
             className="grid lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8"
           >
             {/* Profile Card */}
-            <motion.aside variants={fadeInUp} className="lg:col-span-4">
-              <div className="about-sidebar-shell">
-                <div className="about-sidebar-card">
-                  <div className="about-avatar-row">
-                    <div className="about-avatar">
-                      <Image
-                        src="https://github.com/SHYAM140305.png"
-                        alt="Shyam J - GitHub avatar"
-                        width={72}
-                        height={72}
-                        className="w-full h-full object-cover"
-                        priority
-                        loading="eager"
-                        fetchPriority="high"
-                        unoptimized
-                      />
+            <motion.aside variants={fadeInUp} className="lg:col-span-5">
+              <div className="w-full">
+                <div className="relative rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-transparent p-[1px] shadow-lg">
+                  <div className="about-card">
+                    <div className="about-avatar-row">
+                      <div className="about-avatar">
+                        <Image
+                          src="https://github.com/SHYAM140305.png"
+                          alt="Shyam J - GitHub avatar"
+                          width={72}
+                          height={72}
+                          className="w-full h-full object-cover"
+                          priority
+                          loading="eager"
+                          fetchPriority="high"
+                          unoptimized
+                        />
+                      </div>
+                      <div>
+                        <h3 className="about-name">Shyam J</h3>
+                        <p className="about-role">AI/ML Engineer · Full Stack</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="about-name">Shyam J</h3>
-                      <p className="about-role">AI/ML Engineer · Full Stack</p>
-                      <div className="about-meta-chip">President, NEXT GEN AI @ SRMIST</div>
+
+                    <div className="about-social-row">
+                      <a href="https://github.com/SHYAM140305" target="_blank" rel="noreferrer" className="about-social-button">
+                        <span className="about-social-icon">
+                          <Github className="w-4 h-4" />
+                        </span>
+                        <span className="about-social-text">GitHub</span>
+                      </a>
+                      <a href="https://www.linkedin.com/in/shyam-jayakanthan-050a85284" target="_blank" rel="noreferrer" className="about-social-button">
+                        <span className="about-social-icon">
+                          <Linkedin className="w-4 h-4" />
+                        </span>
+                        <span className="about-social-text">LinkedIn</span>
+                      </a>
+                      <a href="mailto:jshyam2005@gmail.com" className="about-social-button">
+                        <span className="about-social-icon">
+                          <Mail className="w-4 h-4" />
+                        </span>
+                        <span className="about-social-text">Email</span>
+                      </a>
+                      <a href={vcardHref} download="Shyam_Jayakanthan.vcf" className="about-social-button">
+                        <span className="about-social-icon">
+                          <Download className="w-4 h-4" />
+                        </span>
+                        <span className="about-social-text">vCard</span>
+                      </a>
                     </div>
-                  </div>
 
-                  <p className="about-description">
-                    Passionate about building intelligent systems with NLP, RAG, and computer vision to translate cutting-edge research into production-ready experiences.
-                  </p>
-
-                  <div className="about-social-row">
-                    <a href="https://github.com/SHYAM140305" target="_blank" rel="noreferrer" className="about-social-button">
-                      <span className="about-social-icon">
-                        <Github className="w-4 h-4" />
-                      </span>
-                      <span className="about-social-text">GitHub</span>
-                    </a>
-                    <a href="https://www.linkedin.com/in/shyam-jayakanthan-050a85284" target="_blank" rel="noreferrer" className="about-social-button">
-                      <span className="about-social-icon">
-                        <Linkedin className="w-4 h-4" />
-                      </span>
-                      <span className="about-social-text">LinkedIn</span>
-                    </a>
-                    <a href="mailto:jshyam2005@gmail.com" className="about-social-button">
-                      <span className="about-social-icon">
-                        <Mail className="w-4 h-4" />
-                      </span>
-                      <span className="about-social-text">Email</span>
-                    </a>
-                    <a href={vcardHref} download="Shyam_Jayakanthan.vcf" className="about-social-button">
-                      <span className="about-social-icon">
-                        <Download className="w-4 h-4" />
-                      </span>
-                      <span className="about-social-text">vCard</span>
-                    </a>
-                  </div>
-
-                  <div className="about-stats-grid">
-                    {[
-                      {
-                        label: "Projects",
-                        value: "10+",
-                        icon: (
-                          <span className="about-stat-icon-badge">
-                            <Code className="w-4 h-4 select-none" aria-hidden="true" />
-                            <span className="sr-only">Projects</span>
-                          </span>
-                        ),
-                      },
-                      {
-                        label: "Experience",
-                        value: "3+",
-                        icon: (
-                          <span className="about-stat-icon-badge">
-                            <Briefcase className="w-4 h-4 select-none" aria-hidden="true" />
-                            <span className="sr-only">Experience</span>
-                          </span>
-                        ),
-                      },
-                      {
-                        label: "Internships",
-                        value: "6",
-                        icon: (
-                          <span className="about-stat-icon-badge">
-                            <Brain className="w-4 h-4 select-none" aria-hidden="true" />
-                            <span className="sr-only">Internships</span>
-                          </span>
-                        ),
-                      },
-                    ].map((s, i) => (
-                      <motion.div
-                        key={s.label}
-                        initial={{ opacity: 0, y: 8 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.05, duration: 0.3, ease: "easeOut" }}
-                        className="about-stat-card"
-                      >
-                        <div className="about-stat-icon">{s.icon}</div>
-                        <div>
-                          <div className="about-stat-value">{s.value}</div>
-                          <div className="about-stat-label">{s.label}</div>
-                        </div>
-                      </motion.div>
-                    ))}
+                    <div className="about-stats-grid">
+                      {[
+                        {
+                          label: "Projects",
+                          value: "10+",
+                          icon: (
+                            <span className="about-stat-icon-badge">
+                              <Code className="w-4 h-4 select-none" aria-hidden="true" />
+                              <span className="sr-only">Projects</span>
+                            </span>
+                          ),
+                        },
+                        {
+                          label: "Experience",
+                          value: "3+",
+                          icon: (
+                            <span className="about-stat-icon-badge">
+                              <Briefcase className="w-4 h-4 select-none" aria-hidden="true" />
+                              <span className="sr-only">Experience</span>
+                            </span>
+                          ),
+                        },
+                        {
+                          label: "Internships",
+                          value: "6",
+                          icon: (
+                            <span className="about-stat-icon-badge">
+                              <Brain className="w-4 h-4 select-none" aria-hidden="true" />
+                              <span className="sr-only">Internships</span>
+                            </span>
+                          ),
+                        },
+                      ].map((s, i) => (
+                        <motion.div
+                          key={s.label}
+                          initial={{ opacity: 0, y: 8 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.05, duration: 0.3, ease: "easeOut" }}
+                          className="about-stat-card"
+                        >
+                          <div className="about-stat-icon">{s.icon}</div>
+                          <div>
+                            <div className="about-stat-value">{s.value}</div>
+                            <div className="about-stat-label">{s.label}</div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             </motion.aside>
 
             {/* Content */}
-            <motion.div variants={fadeInUp} className="lg:col-span-8 space-y-6">
+            <motion.div variants={fadeInUp} className="lg:col-span-7 space-y-6">
               <div className="max-w-none">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
                   Passionate <span className="font-bold gradient-text">AI/ML Engineer</span> & <span className="font-bold gradient-text">Full Stack Developer</span> focused on building real-world AI products. I work across the stack—from data pipelines and model serving to delightful web experiences.
@@ -519,45 +516,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div className="relative rounded-2xl bg-gradient-to-br from-orange-500/20 via-amber-500/10 to-transparent p-[1px] shadow-lg">
-                  <div className="about-card">
-                    <div className="about-card-header">
-                      <div className="about-card-heading">
-                        <div className="about-card-icon">📬</div>
-                        <div>
-                          <h3 className="about-card-title">Contact</h3>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      {[
-                        { icon: "📍", label: "Location", value: "Chennai, India" },
-                        { icon: "🎓", label: "Program", value: "B.Tech Artificial Intelligence" },
-                      ].map((item) => (
-                        <div key={item.label} className="about-row">
-                          <span className="about-row-icon">{item.icon}</span>
-                          <div>
-                            <p className="about-row-label">{item.label}</p>
-                            <p className="about-row-value">{item.value}</p>
-                          </div>
-                        </div>
-                      ))}
-                      <a
-                        href="mailto:jshyam2005@gmail.com"
-                        className="about-row about-row-link group"
-                      >
-                        <span className="about-row-icon">✉️</span>
-                        <div>
-                          <p className="about-row-label group-hover:text-primary">Email</p>
-                          <p className="about-row-value group-hover:text-primary">jshyam2005@gmail.com</p>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
+              <div className="w-full">
                 <div className="relative rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-transparent p-[1px] shadow-lg">
                   <div className="about-card">
                     <div className="about-card-header">
@@ -565,7 +524,7 @@ export default function Home() {
                         <div className="about-card-icon">🚀</div>
                         <div>
                           <h3 className="about-card-title">Research Interests</h3>
-                          <p className="about-card-subtitle">Themes I’m exploring right now.</p>
+                          <p className="about-card-subtitle">Themes I'm exploring right now.</p>
                         </div>
                       </div>
                     </div>

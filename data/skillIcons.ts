@@ -1,0 +1,137 @@
+import {
+  Code2,
+  Code,
+  FileCode,
+  Database,
+  Server,
+  Layers,
+  Box,
+  Palette,
+  Terminal,
+  FlaskConical,
+  Brain,
+  Sparkles,
+  Zap,
+  BarChart3,
+  TrendingUp,
+  Cloud,
+  CloudLightning,
+  Dock,
+  GitBranch,
+  Github,
+  GitCommit,
+  Rocket,
+  Globe,
+  FileJson,
+  Cpu,
+  CircuitBoard,
+  Eye,
+  BookOpen,
+  Beaker,
+  TestTube,
+  ChartBar,
+  BarChart,
+  LineChart,
+  PieChart,
+  Activity,
+  GitMerge,
+  Workflow,
+  Boxes,
+  Package,
+  Wrench,
+  Settings,
+  CodeXml,
+  FileText,
+  Image as ImageIcon,
+  PenTool,
+  MousePointer,
+  FileImage,
+  Gamepad2,
+  Play,
+  File,
+  Folder,
+  Search,
+  Filter,
+  Network,
+} from "lucide-react";
+import { LucideIcon } from "lucide-react";
+
+// Icon mapping for all skills
+export const skillIconMap: Record<string, LucideIcon> = {
+  // Languages
+  Python: Code2,
+  C: Code,
+  Java: Code,
+  TypeScript: FileCode,
+  JavaScript: Code2,
+  SQL: Database,
+  Dart: Code,
+
+  // Frontend
+  HTML5: CodeXml,
+  CSS3: Palette,
+  "React.js": Layers,
+  "Next.js 14": Box,
+  "Tailwind CSS": Palette,
+  Bootstrap: Layers,
+
+  // Backend
+  "Node.js": Server,
+  Flask: FlaskConical,
+  "Express.js": Server,
+  "RESTful APIs": Network,
+
+  // ML/AI
+  "Digital Twin": Sparkles,
+  PyTorch: Brain,
+  TensorFlow: Brain,
+  Keras: Brain,
+  "RAPIDS (cuDF/cuML)": Zap,
+  "Scikit-learn": Brain,
+  "Hugging Face": Brain,
+  FAISS: Database,
+  OpenCV: Eye,
+  NLTK: BookOpen,
+
+  // Data Processing
+  Pandas: BarChart3,
+  NumPy: Cpu,
+  Matplotlib: LineChart,
+  Seaborn: BarChart,
+  SPSS: BarChart3,
+  "Statistical Analysis": TrendingUp,
+  "Hypothesis Testing": TestTube,
+  "RAPIDS cuML": Zap,
+  "Power BI": PieChart,
+
+  // Cloud & DevOps
+  AWS: Cloud,
+  "Oracle Cloud": CloudLightning,
+  Docker: Dock,
+  Git: GitBranch,
+  GitHub: Github,
+  "CI/CD": GitMerge,
+  Serverless: Rocket,
+  Streamlit: Globe,
+  Vercel: Rocket,
+
+  // Databases
+  MongoDB: Database,
+  SQLite: FileJson,
+  Redis: Database,
+
+  // Tools
+  Jupyter: FileCode,
+  "VS Code": Code,
+  Postman: Network,
+  AutoCAD: Wrench,
+  Canva: PenTool,
+  Figma: MousePointer,
+  "Beautiful Soup": Search,
+  PyTesseract: ImageIcon,
+  Pygame: Gamepad2,
+};
+
+// Fallback icon for skills without specific icons
+export const DefaultSkillIcon = Code2;
+

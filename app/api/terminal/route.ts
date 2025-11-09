@@ -3,14 +3,30 @@ import Groq from "groq-sdk";
 import { skills } from "@/data/skills";
 import { projects } from "@/data/projects";
 import { experiences } from "@/data/experience";
-import { education } from "@/data/education";
+import { education, certifications } from "@/data/education";
+import { leadership } from "@/data/leadership";
+import { hackathons } from "@/data/hackathons";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 // Simple in-memory rate limiting (for production, use Redis or similar)
+// Optimized: Clean up old entries periodically to prevent memory leaks
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT = 10; // requests per window
 const RATE_WINDOW = 60000; // 1 minute
+const CLEANUP_INTERVAL = 300000; // 5 minutes
+
+// Cleanup old rate limit entries periodically
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [ip, record] of rateLimitMap.entries()) {
+      if (now > record.resetTime) {
+        rateLimitMap.delete(ip);
+      }
+    }
+  }, CLEANUP_INTERVAL);
+}
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -40,30 +56,181 @@ function getPortfolioContext(): string {
     return cachedContext;
   }
 
+  // Skills organized by category with proficiency levels from resume
   const skillsByCategory = skills.reduce<Record<string, string[]>>((acc, s) => {
     acc[s.category] = acc[s.category] || [];
     acc[s.category].push(s.name);
     return acc;
   }, {});
 
+  // Add proficiency levels based on resume
+  const proficiencyMap: Record<string, string> = {
+    "Python": "Advanced",
+    "C": "Intermediate",
+    "Java": "Basics",
+    "TypeScript": "Intermediate",
+    "JavaScript": "Intermediate",
+    "SQL": "Intermediate",
+    "Dart": "Basics",
+  };
+
   const skillsSection = Object.entries(skillsByCategory)
-    .map(([cat, items]) => `- ${cat}: ${items.join(", ")}`)
+    .map(([cat, items]) => {
+      const itemsWithProficiency = items.map(item => {
+        const proficiency = proficiencyMap[item];
+        return proficiency ? `${item} (${proficiency})` : item;
+      });
+      return `- ${cat}: ${itemsWithProficiency.join(", ")}`;
+    })
     .join("\n");
 
+  // Domains/Areas of Expertise
+  const domainsSection = `Domains & Expertise:
+Machine Learning, Deep Learning, Generative AI, Computer Vision, NLP, Reinforcement Learning, Digital Twin, Statistical Modeling, Full Stack Development, Cloud Computing, AI-Powered Automation`;
+
+  // Projects with full details
   const projectsSection = projects
-    .map(p => `- ${p.title}: ${p.description}. Tech: ${p.technologies.join(", ")}${p.highlights?.length ? "; Highlights: " + p.highlights.join("; ") : ""}`)
-    .join("\n");
+    .map((p, index) => {
+      const projectNum = index + 1;
+      const featured = p.featured ? " (Featured)" : "";
+      return `Project ${projectNum}${featured}: ${p.title}
+  Description: ${p.longDescription || p.description}
+  Short Description: ${p.description}
+  Technologies: ${p.technologies.join(", ")}
+  ${p.highlights?.length ? `Highlights:\n    ${p.highlights.map(h => `- ${h}`).join("\n    ")}` : ""}
+  ${p.githubUrl ? `GitHub: ${p.githubUrl}` : ""}
+  ${p.liveUrl ? `Live Demo: ${p.liveUrl}` : ""}`;
+    })
+    .join("\n\n");
 
+  // Experience with achievements - detailed format
   const experienceSection = experiences
-    .map(e => `- ${e.role} @ ${e.company} (${e.location}; ${e.startDate}–${e.endDate}): ${e.description}${e.highlights?.length ? "; Highlights: " + e.highlights.join("; ") : ""}`)
-    .join("\n");
+    .map((e, index) => {
+      const expNum = index + 1;
+      return `Experience ${expNum}: ${e.role}
+  Company: ${e.company}
+  Location: ${e.location}
+  Type: ${e.type}
+  Duration: ${e.startDate} to ${e.endDate}${e.current ? " (Current)" : ""}
+  Description: ${e.description}
+  ${e.highlights?.length ? `Highlights:\n    ${e.highlights.map(h => `- ${h}`).join("\n    ")}` : ""}
+  ${e.achievements?.length ? `Achievements:\n    ${e.achievements.map(a => `- ${a}`).join("\n    ")}` : ""}`;
+    })
+    .join("\n\n");
 
+  // Education with coursework - detailed format
   const educationSection = education
-    .map(ed => `- ${ed.degree} @ ${ed.institution} (${ed.location}; ${ed.startDate}–${ed.endDate})${ed.grade ? "; " + ed.grade : ""}${ed.coursework?.length ? "; Coursework: " + ed.coursework.join(", ") : ""}`)
-    .join("\n");
+    .map((ed, index) => {
+      const eduNum = index + 1;
+      return `Education ${eduNum}: ${ed.degree}
+  Institution: ${ed.institution}
+  Location: ${ed.location}
+  Duration: ${ed.startDate} to ${ed.endDate}${ed.current ? " (Current)" : ""}
+  ${ed.grade ? `Grade: ${ed.grade}\n` : ""}${ed.coursework?.length ? `Coursework: ${ed.coursework.join(", ")}\n` : ""}${ed.highlights?.length ? `Highlights: ${ed.highlights.join("; ")}` : ""}`;
+    })
+    .join("\n\n");
 
-  cachedContext = `PORTFOLIO CONTEXT (author: Shyam J)
-Skills:\n${skillsSection}\n\nProjects:\n${projectsSection}\n\nExperience:\n${experienceSection}\n\nEducation:\n${educationSection}`;
+  // Leadership roles - detailed format
+  const leadershipSection = leadership
+    .map((l, index) => {
+      const leadNum = index + 1;
+      return `Leadership Role ${leadNum}: ${l.role}
+  Organization: ${l.organization}
+  ${l.location ? `Location: ${l.location}\n` : ""}Duration: ${l.startDate} to ${l.endDate}${l.current ? " (Current)" : ""}
+  Description: ${l.description}
+  ${l.highlights?.length ? `Highlights:\n    ${l.highlights.map(h => `- ${h}`).join("\n    ")}` : ""}`;
+    })
+    .join("\n\n");
+
+  // Hackathon achievements - detailed format
+  const hackathonsSection = hackathons
+    .map((h, index) => {
+      const hackNum = index + 1;
+      return `Hackathon ${hackNum}: ${h.name}
+  Year: ${h.year}
+  Achievement: ${h.achievement}
+  Description: ${h.description}`;
+    })
+    .join("\n\n");
+
+  // Certifications - detailed format
+  const certificationsSection = certifications
+    .map((c, index) => {
+      const certNum = index + 1;
+      return `Certification ${certNum}: ${c.name}
+  Issuer: ${c.issuer}
+  Year: ${c.year}
+  Category: ${c.category}`;
+    })
+    .join("\n\n");
+
+  // Professional Summary
+  const professionalSummary = `Professional Summary:
+Results-driven AI/ML Engineer with expertise in developing end-to-end machine learning systems, generative AI applications, and full-stack solutions. Proven track record in implementing NLP-based troubleshooting systems, RAG-powered chatbots, and computer vision applications.`;
+
+  // Detailed Research Interests
+  const researchInterests = `Research Interests:
+Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning, Efficient and Accelerated Machine Learning, Generative Models, Applied Statistics, Natural Language Processing, Digital Twin Systems, Computer Vision for Industry 4.0, Cloud-Based AI Deployment, and AI-Powered Automation.`;
+
+  // About Section Details
+  const aboutSection = `About Me:
+- Professional Description: Passionate AI/ML Engineer & Full Stack Developer focused on building real-world AI products. I work across the stack—from data pipelines and model serving to delightful web experiences.
+- Tagline: Building intelligent systems that solve real-world problems
+- Key Highlights:
+  * Leading 400+ members as President of NEXT GEN AI
+  * AI research and open-source contributor
+  * Mentoring students in AI literacy programs
+  * Research on AI-driven fault analysis
+- Stats: 10+ Projects, 3+ Years Experience, 6 Internships
+- Personal Description: Passionate about building intelligent systems with NLP, RAG, and computer vision to translate cutting-edge research into production-ready experiences.`;
+
+  // Personal information with all contact details
+  const personalInfo = `Personal Information:
+- Name: Shyam J (Shyam Jayakanthan)
+- Location: Chennai, Tamil Nadu, India
+- Email: jshyam2005@gmail.com
+- Phone: +91 7395980045
+- Website: shyamj.vercel.app
+- GitHub: github.com/SHYAM140305
+- LinkedIn: linkedin.com/in/shyam-jayakanthan-050a85284
+- Current Role: AI/ML Engineer, Full Stack Developer
+- Current Position: President, NEXT GEN AI @ SRMIST (400+ members)
+- Education: BTech in Artificial Intelligence @ SRM Institute of Science and Technology (2022-2026, Current)
+- CGPA: 7.5/10.0
+- Research Interests (Portfolio): Agentic AI, Digital Twin, AI Research, Full Stack, NLP, Open Source, Data Analysis, ML Systems`;
+
+  cachedContext = `PORTFOLIO CONTEXT - Shyam J's Complete Portfolio
+
+${personalInfo}
+
+${professionalSummary}
+
+${aboutSection}
+
+${researchInterests}
+
+SKILLS (by category):
+${skillsSection}
+
+${domainsSection}
+
+PROJECTS:
+${projectsSection}
+
+WORK EXPERIENCE:
+${experienceSection}
+
+EDUCATION:
+${educationSection}
+
+LEADERSHIP ROLES:
+${leadershipSection}
+
+HACKATHON ACHIEVEMENTS:
+${hackathonsSection}
+
+CERTIFICATIONS:
+${certificationsSection}`;
   contextCacheTime = now;
   
   return cachedContext;
@@ -99,25 +266,48 @@ export async function POST(req: NextRequest) {
     // Get cached portfolio context
     const portfolioContext = getPortfolioContext();
 
-    const systemPrompt = [
-      "You are an AI terminal on Shyam J’s portfolio site.",
-      "Answer ONLY using the information in the provided PORTFOLIO CONTEXT.",
-      "If the answer is not present in the context, reply briefly: 'I don't have that info in my portfolio yet.'",
-      "Keep responses concise, friendly, and factual. Prefer bullet points when listing.",
-      "When asked about projects, experience, or skills, cite exact names from context.",
-    ].join(" \n");
+    const systemPrompt = `You are an intelligent AI assistant on Shyam J's portfolio website. Your role is to help visitors learn about Shyam's background, projects, skills, experience, achievements, and more.
 
-    const chatMessages = (messages && Array.isArray(messages) ? messages : [
-      { role: "system", content: systemPrompt },
-      { role: "system", content: portfolioContext },
-      { role: "user", content: String(prompt ?? "") },
-    ]) as { role: "system" | "user" | "assistant"; content: string }[];
+IMPORTANT GUIDELINES:
+1. Answer questions using ONLY the information provided in the PORTFOLIO CONTEXT below.
+2. Be conversational, friendly, and helpful - like a knowledgeable friend discussing Shyam's work.
+3. If information is not in the context, politely say: "I don't have that specific information in my portfolio yet, but I can tell you about [related topic]."
+4. When listing items (projects, skills, etc.), use bullet points for clarity.
+5. Always cite specific names, companies, technologies, and achievements from the context.
+6. For questions about specific projects, provide details about technologies used, highlights, and GitHub links if available.
+7. For experience questions, mention the company, role, duration, and key achievements.
+8. For skill questions, organize by category when relevant.
+9. For hackathon/certification questions, mention the year, achievement level, and description.
+10. Keep responses concise but informative - aim for 2-5 sentences for simple questions, more for detailed queries.
+11. If asked about "what can you tell me" or "what do you know", provide a comprehensive overview across all sections.
+12. Use natural language - avoid robotic responses.`;
+
+    // Build conversation history with context
+    const chatMessages: { role: "system" | "user" | "assistant"; content: string }[] = [];
+    
+    // Add system prompts
+    chatMessages.push({ role: "system", content: systemPrompt });
+    chatMessages.push({ role: "system", content: `PORTFOLIO CONTEXT:\n\n${portfolioContext}` });
+    
+    // Add conversation history if provided (for context-aware responses)
+    if (messages && Array.isArray(messages) && messages.length > 0) {
+      // Filter to only include user and assistant messages (skip system messages)
+      const conversationHistory = messages.filter(
+        (msg: any) => msg.role === "user" || msg.role === "assistant"
+      );
+      // Keep last 6 messages for context (3 exchanges)
+      const recentHistory = conversationHistory.slice(-6);
+      chatMessages.push(...recentHistory);
+    }
+    
+    // Add current user prompt
+    chatMessages.push({ role: "user", content: String(prompt ?? "") });
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: chatMessages,
-      temperature: 0.2,
-      max_tokens: 512,
+      temperature: 0.3, // Slightly higher for more natural responses
+      max_tokens: 1200, // Increased for comprehensive detailed answers
     });
 
     const text = completion.choices?.[0]?.message?.content ?? "";
@@ -128,7 +318,8 @@ export async function POST(req: NextRequest) {
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "Cache-Control": "private, no-cache, no-store, must-revalidate",
+          "X-Content-Type-Options": "nosniff",
         },
       }
     );

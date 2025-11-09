@@ -136,18 +136,18 @@ html {
   scroll-padding-top: 100px;
 }
 
-/* Modern glassmorphism with better backdrop */
+/* Modern glassmorphism with optimized backdrop - reduced blur for performance */
 .modern-glass {
-  background: hsl(var(--card) / 0.6);
-  backdrop-filter: blur(24px) saturate(100%);
-  -webkit-backdrop-filter: blur(24px) saturate(100%);
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(12px) saturate(100%);
+  -webkit-backdrop-filter: blur(12px) saturate(100%);
   border: 1px solid rgba(251, 146, 60, 0.02);
 }
 
 .modern-glass-strong {
-  background: hsl(var(--card) / 0.8);
-  backdrop-filter: blur(32px) saturate(100%);
-  -webkit-backdrop-filter: blur(32px) saturate(100%);
+  background: hsl(var(--card) / 0.85);
+  backdrop-filter: blur(16px) saturate(100%);
+  -webkit-backdrop-filter: blur(16px) saturate(100%);
   border: 1px solid rgba(251, 146, 60, 0.04);
 }
 
@@ -746,12 +746,25 @@ html {
   @apply outline-2 outline-offset-2 outline-amber-500/20;
 }
 
-/* Smooth transitions - Modern easing */
+/* Smooth transitions - Modern easing - Optimized for performance */
 /* Exclude color and background-color from global transition for instant theme switching */
 * {
   transition-property: border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+  transition-duration: 150ms; /* Reduced from 200ms for snappier feel */
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+  
+  .bg-gradient-orb-1,
+  .bg-gradient-orb-2 {
+    animation: none !important;
+  }
 }
 
 /* Modern button hover effects */
@@ -977,6 +990,72 @@ html {
 }
 
 /* Subtle shine effect */
+@keyframes shimmer {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+@keyframes badge-shimmer {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+/* Optimized background orb animations - CSS-based for better performance */
+.bg-gradient-orb-1 {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.2), rgba(251, 146, 60, 0.1), transparent 70%);
+  animation: float-orb-1 20s ease-in-out infinite;
+}
+
+.bg-gradient-orb-2 {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.2), rgba(251, 146, 60, 0.1), transparent 70%);
+  animation: float-orb-2 25s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.bg-gradient-orb-3 {
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.15), rgba(251, 191, 36, 0.08), transparent 70%);
+}
+
+@keyframes float-orb-1 {
+  0%, 100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  50% {
+    transform: translate(8%, 5%) scale(1.15);
+  }
+}
+
+@keyframes float-orb-2 {
+  0%, 100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  50% {
+    transform: translate(-8%, -5%) scale(0.95);
+  }
+}
+
+/* Arrow bounce animation for buttons */
+@keyframes arrow-bounce {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-arrow-bounce {
+  animation: arrow-bounce 1.5s ease-in-out infinite;
+}
+
 @keyframes shine {
   0% {
     transform: translateX(-100%);

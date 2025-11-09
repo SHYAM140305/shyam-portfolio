@@ -1,14 +1,11 @@
-import { LucideIcon } from "lucide-react";
-
 export interface Skill {
   name: string;
   category: string;
-  icon?: string;
 }
 
 export const skills: Skill[] = [
   // Languages
-  { name: "Python", category: "Languages", icon: "🐍" },
+  { name: "Python", category: "Languages" },
   { name: "C", category: "Languages" },
   { name: "Java", category: "Languages" },
   { name: "TypeScript", category: "Languages" },
@@ -31,7 +28,7 @@ export const skills: Skill[] = [
   { name: "RESTful APIs", category: "Backend" },
 
   // ML/AI
-  { name: "Digital Twin", category: "ML/AI", icon: "🔮" },
+  { name: "Digital Twin", category: "ML/AI" },
   { name: "PyTorch", category: "ML/AI" },
   { name: "TensorFlow", category: "ML/AI" },
   { name: "Keras", category: "ML/AI" },

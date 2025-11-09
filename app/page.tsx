@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Download, Code, Brain, Sparkles, Briefcase, Github, Linkedin, Mail, X } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SkillCard } from "@/components/SkillCard";
-import { CompactSkills } from "@/components/CompactSkills";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Timeline } from "@/components/Timeline";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
@@ -18,6 +17,7 @@ import { fadeInUp, staggerContainer } from "@/lib/utils";
 import dynamic from "next/dynamic";
 
 import { useMemo, useState, useCallback } from "react";
+import { useReducedMotion } from "framer-motion";
 
 // Force recompilation
 
@@ -44,6 +44,12 @@ const AchievementsSection = dynamic(() => import("@/components/AchievementCard")
   ssr: false
 });
 
+// Lazy load CompactSkills to improve scroll performance
+const CompactSkillsLazy = dynamic(() => import("@/components/CompactSkills").then(mod => ({ default: mod.CompactSkills })), {
+  loading: () => <div className="min-h-[400px] flex items-center justify-center"><p className="text-muted-foreground">Loading skills...</p></div>,
+  ssr: true
+});
+
 // Lazy load sections below the fold for better initial load performance
 const ProjectsSection = dynamic(() => import("@/components/ProjectsSection").then(mod => ({ default: mod.ProjectsSection })), {
   loading: () => <div className="min-h-[200px]" />,
@@ -67,6 +73,8 @@ const ContactSection = dynamic(() => import("@/components/ContactSection").then(
 
 export default function Home() {
   const [showResume, setShowResume] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+  
   // Memoize expensive computations - Optimized with single pass
   const groupedSkills = useMemo(() => {
     // Single pass: group skills by category
@@ -148,19 +156,14 @@ export default function Home() {
             className="text-center max-w-5xl mx-auto"
           >
             {/* Professional Name */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className="mb-6 sm:mb-8"
-            >
+            <div className="mb-6 sm:mb-8">
               <AnimatedName name="Shyam J" />
-            </motion.div>
+            </div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
               className="mb-4 sm:mb-6"
             >
               <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-foreground mb-3 sm:mb-4 leading-relaxed px-4 pb-1" style={{ lineHeight: '1.4' }}>
@@ -177,39 +180,27 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
               className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 text-sm sm:text-base md:text-lg px-4"
             >
-              <motion.div 
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full modern-glass border border-border/40 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-300"
-              >
+              <div className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full modern-glass border border-border/40 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95">
                 <Code className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
                 <span className="text-muted-foreground font-medium whitespace-nowrap">Building intelligent systems</span>
-              </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full modern-glass border border-border/40 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-300"
-              >
+              </div>
+              <div className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full modern-glass border border-border/40 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95">
                 <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
                 <span className="text-muted-foreground font-medium whitespace-nowrap">Exploring AI frontiers</span>
-              </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.03, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full modern-glass border border-border/40 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-300"
-              >
+              </div>
+              <div className="flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full modern-glass border border-border/40 hover:border-primary/40 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95">
                 <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
                 <span className="text-muted-foreground font-medium whitespace-nowrap">Innovating solutions</span>
-              </motion.div>
+              </div>
             </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
               className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-4"
             >
               Results-driven <span className="font-semibold text-foreground">AI/ML Engineer</span> with expertise in developing
@@ -220,58 +211,31 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 px-4 w-full sm:w-auto"
             >
-              <motion.button
+              <button
                 onClick={() => scrollToSection("projects")}
-                whileHover={{ scale: 1.03, y: -4 }}
-                whileTap={{ scale: 0.97 }}
-                className="modern-button group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-primary-foreground font-bold text-base sm:text-lg shadow-2xl shadow-amber-500/10 hover:shadow-amber-500/15 transition-all duration-300 overflow-hidden border border-amber-400/15 hover:border-amber-400/25"
+                className="modern-button group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-primary-foreground font-bold text-base sm:text-lg shadow-2xl shadow-amber-500/10 hover:shadow-amber-500/15 transition-all duration-200 overflow-hidden border border-amber-400/15 hover:border-amber-400/25 hover:scale-105 active:scale-95"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   View Projects
-                  <motion.span
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    →
-                  </motion.span>
+                  <span className="inline-block animate-arrow-bounce">→</span>
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {/* Ripple effect */}
-                <motion.div
-                  className="absolute inset-0 rounded-xl sm:rounded-2xl bg-primary-foreground/10"
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileHover={{ scale: 1.5, opacity: [0, 0.3, 0] }}
-                  transition={{ duration: 0.6 }}
-                />
-              </motion.button>
-              <motion.button
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              </button>
+              <button
                 onClick={() => setShowResume(true)}
-                whileHover={{ scale: 1.03, y: -4 }}
-                whileTap={{ scale: 0.97 }}
-                className="modern-button group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-primary-foreground font-bold text-base sm:text-lg shadow-2xl shadow-amber-500/10 hover:shadow-amber-500/15 transition-all duration-300 overflow-hidden border border-amber-400/15 hover:border-amber-400/25"
+                className="modern-button group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-primary-foreground font-bold text-base sm:text-lg shadow-2xl shadow-amber-500/10 hover:shadow-amber-500/15 transition-all duration-200 overflow-hidden border border-amber-400/15 hover:border-amber-400/25 hover:scale-105 active:scale-95"
                 type="button"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   <Download className="h-4 w-4 sm:h-5 sm:w-5" />
                   <span>Resume</span>
-                  <motion.span
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    →
-                  </motion.span>
+                  <span className="inline-block animate-arrow-bounce">→</span>
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <motion.div
-                  className="absolute inset-0 rounded-xl sm:rounded-2xl bg-primary-foreground/10"
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileHover={{ scale: 1.5, opacity: [0, 0.3, 0] }}
-                  transition={{ duration: 0.6 }}
-                />
-              </motion.button>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+              </button>
             </motion.div>
 
           </motion.div>
@@ -371,21 +335,21 @@ export default function Home() {
         id="about"
         className="py-10 sm:py-16 md:py-20 bg-background bg-gradient-to-br from-white/95 via-orange-50/60 to-white/95 dark:from-background dark:via-neutral-950/80 dark:to-orange-950/10 relative overflow-hidden"
       >
-        {/* Background decoration - Reduced animations */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute -top-[12%] -right-[8%] w-80 h-80 rounded-full bg-orange-200/40 blur-3xl dark:bg-orange-500/10" />
-          <div className="absolute -bottom-[16%] -left-[10%] w-[22rem] h-[22rem] rounded-full bg-amber-200/45 blur-3xl dark:bg-amber-500/10" />
+        {/* Background decoration - Optimized: lighter blur for better performance */}
+        <div className="absolute inset-0 pointer-events-none" style={{ willChange: "transform", transform: "translateZ(0)" }}>
+          <div className="absolute -top-[12%] -right-[8%] w-80 h-80 rounded-full bg-orange-200/40 blur-2xl dark:bg-orange-500/10" style={{ willChange: "transform" }} />
+          <div className="absolute -bottom-[16%] -left-[10%] w-[22rem] h-[22rem] rounded-full bg-amber-200/45 blur-2xl dark:bg-amber-500/10" style={{ willChange: "transform" }} />
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c14_1px,transparent_1px),linear-gradient(to_bottom,#fb923c14_1px,transparent_1px)] bg-[size:32px_32px] opacity-50 dark:opacity-100" />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
           <SectionTitle title="About Me" subtitle="Building intelligent systems that solve real-world problems" className="mb-6 sm:mb-8" />
           
-          {/* Modern two-column layout */}
+          {/* Modern two-column layout - Optimized: trigger later to reduce scroll lag */}
           <motion.div
             initial="initial"
             whileInView="animate"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "100px" }}
             variants={staggerContainer}
             className="grid lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8"
           >
@@ -404,6 +368,7 @@ export default function Home() {
                         priority
                         loading="eager"
                         fetchPriority="high"
+                        unoptimized
                       />
                     </div>
                     <div>
@@ -482,7 +447,7 @@ export default function Home() {
                         initial={{ opacity: 0, y: 8 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: i * 0.05 }}
+                        transition={{ delay: i * 0.05, duration: 0.3, ease: "easeOut" }}
                         className="about-stat-card"
                       >
                         <div className="about-stat-icon">{s.icon}</div>
@@ -517,26 +482,40 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <ul className="about-highlight-list">
+                  <motion.ul 
+                    className="about-highlight-list"
+                    initial="initial"
+                    whileInView="animate"
+                    viewport={{ once: true, margin: "50px" }}
+                    variants={{
+                      initial: {},
+                      animate: {
+                        transition: {
+                          staggerChildren: 0.05,
+                        },
+                      },
+                    }}
+                  >
                     {[
                       "Leading 400+ members as President of NEXT GEN AI",
                       "AI research and open-source contributor",
                       "Mentoring students in AI literacy programs",
                       "Research on AI-driven fault analysis",
-                    ].map((fact, index) => (
+                    ].map((fact) => (
                       <motion.li
                         key={fact}
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: index * 0.05 }}
+                        variants={{
+                          initial: { opacity: 0, y: 10 },
+                          animate: { opacity: 1, y: 0 },
+                        }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
                         className="about-highlight-item group"
                       >
                         <div className="about-highlight-dot" />
                         <span className="about-highlight-text">{fact}</span>
                       </motion.li>
                     ))}
-                  </ul>
+                  </motion.ul>
                 </div>
               </div>
 
@@ -591,21 +570,34 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2.5">
-                      {["Agentic AI", "Digital Twin", "AI Research", "Full Stack", "NLP", "Open Source", "Data Analysis", "ML Systems"].map((interest, index) => (
+                    <motion.div 
+                      className="flex flex-wrap gap-2.5"
+                      initial="initial"
+                      whileInView="animate"
+                      viewport={{ once: true, margin: "50px" }}
+                      variants={{
+                        initial: {},
+                        animate: {
+                          transition: {
+                            staggerChildren: 0.03,
+                          },
+                        },
+                      }}
+                    >
+                      {["Agentic AI", "Digital Twin", "AI Research", "Full Stack", "NLP", "Open Source", "Data Analysis", "ML Systems"].map((interest) => (
                         <motion.span
                           key={interest}
-                          initial={{ opacity: 0, y: 6 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: index * 0.04 }}
-                          whileHover={{ y: -2 }}
+                          variants={{
+                            initial: { opacity: 0, y: 6 },
+                            animate: { opacity: 1, y: 0 },
+                          }}
+                          transition={{ duration: 0.25, ease: "easeOut" }}
                           className="interest-chip"
                         >
                           {interest}
                         </motion.span>
                       ))}
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </div>
@@ -616,52 +608,25 @@ export default function Home() {
 
       {/* Skills Section */}
       <section id="skills" className="py-16 sm:py-20 md:py-24 lg:py-28 bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
-        {/* Enhanced background decoration */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c08_1px,transparent_1px),linear-gradient(to_bottom,#fb923c08_1px,transparent_1px)] bg-[size:40px_40px] opacity-60" />
+        {/* Enhanced background decoration - Optimized: GPU acceleration */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c08_1px,transparent_1px),linear-gradient(to_bottom,#fb923c08_1px,transparent_1px)] bg-[size:40px_40px] opacity-60" style={{ willChange: "transform", transform: "translateZ(0)" }} />
         
-        {/* Animated gradient orbs - Optimized with will-change */}
-        <motion.div
-          className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-gradient-to-br from-amber-500/8 via-orange-500/5 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 left-0 w-[450px] h-[450px] bg-gradient-to-br from-orange-500/8 via-amber-500/5 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1.1, 1, 1.1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
+        {/* Static gradient orbs - Optimized: lighter blur for better performance */}
+        <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-gradient-to-br from-amber-500/8 via-orange-500/5 to-transparent rounded-full blur-2xl" style={{ willChange: "transform", transform: "translateZ(0)" }} />
+        <div className="absolute bottom-1/4 left-0 w-[450px] h-[450px] bg-gradient-to-br from-orange-500/8 via-amber-500/5 to-transparent rounded-full blur-2xl" style={{ willChange: "transform", transform: "translateZ(0)" }} />
         
         {/* Additional depth layer */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,146,60,0.03)_0%,transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,146,60,0.03)_0%,transparent_70%)]" style={{ willChange: "transform", transform: "translateZ(0)" }} />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <SectionTitle
               title="Technical Skills"
               subtitle="Technologies and tools I work with"
               className="mb-10 sm:mb-12 lg:mb-16"
             />
-          </motion.div>
-          <CompactSkills groupedSkills={groupedSkills} />
+          </div>
+          <CompactSkillsLazy groupedSkills={groupedSkills} />
         </div>
       </section>
 

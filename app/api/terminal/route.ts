@@ -56,6 +56,48 @@ function getPortfolioContext(): string {
     return cachedContext;
   }
 
+  // Build canonical facts to avoid conflicting data across sections
+  // 1) Canonicalize hackathon dates and create a fast lookup by normalized name
+  const normalizeName = (str: string) =>
+    str.toLowerCase().replace(/\s+/g, " ").trim();
+
+  const hackathonNameToYear = new Map<string, string>();
+  for (const h of hackathons) {
+    hackathonNameToYear.set(normalizeName(h.name), h.year);
+  }
+
+  // 2) Filter certifications that may duplicate hackathon achievements but with conflicting years
+  // We only include certifications that are not hackathon-duplicates or match the canonical year
+  const filteredCertifications = certifications.filter((c) => {
+    const normalizedCertName = normalizeName(c.name);
+    // Heuristics: treat these as hackathon-related certs
+    const isHackathonLike =
+      /appathon|hackstreet|tamizh-a-thon|tamizh[\s-]*a[\s-]*thon/i.test(c.name);
+
+    if (!isHackathonLike) return true;
+
+    // Try to map to a known hackathon entry by fuzzy containment
+    // If any hackathon name is contained in the certification name, use its year
+    let canonicalYear: string | null = null;
+    for (const [hackName, year] of hackathonNameToYear.entries()) {
+      if (
+        normalizedCertName.includes(hackName) ||
+        hackName.includes(normalizedCertName)
+      ) {
+        canonicalYear = year;
+        break;
+      }
+    }
+
+    // If we found a canonical year, only include if years match; otherwise drop to avoid confusion
+    if (canonicalYear) {
+      return c.year === canonicalYear;
+    }
+
+    // If we couldn't confidently map, keep it (non-destructive)
+    return true;
+  });
+
   // Skills organized by category with proficiency levels from resume
   const skillsByCategory = skills.reduce<Record<string, string[]>>((acc, s) => {
     acc[s.category] = acc[s.category] || [];
@@ -154,7 +196,7 @@ Machine Learning, Deep Learning, Generative AI, Computer Vision, NLP, Reinforcem
     .join("\n\n");
 
   // Certifications - detailed format
-  const certificationsSection = certifications
+  const certificationsSection = filteredCertifications
     .map((c, index) => {
       const certNum = index + 1;
       return `Certification ${certNum}: ${c.name}
@@ -163,6 +205,13 @@ Machine Learning, Deep Learning, Generative AI, Computer Vision, NLP, Reinforcem
   Category: ${c.category}`;
     })
     .join("\n\n");
+
+  // Canonical facts for Groq to rely on first (compact, unambiguous)
+  const canonicalFacts = `CANONICAL FACTS:
+- Hackstreet 3.0 — 2025
+- Appathon 2.0 — 2025
+- Tamizh-A-THON 1.0 — 2025
+(When in doubt, prefer these facts for event years.)`;
 
   // Professional Summary
   const professionalSummary = `Professional Summary:
@@ -181,7 +230,7 @@ Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning,
   * AI research and open-source contributor
   * Mentoring students in AI literacy programs
   * Research on AI-driven fault analysis
-- Stats: 10+ Projects, 3+ Years Experience, 6 Internships
+- Stats: 6 Projects, 2+ Years Experience, 3 Internships
 - Personal Description: Passionate about building intelligent systems with NLP, RAG, and computer vision to translate cutting-edge research into production-ready experiences.`;
 
   // Personal information with all contact details
@@ -202,6 +251,8 @@ Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning,
   cachedContext = `PORTFOLIO CONTEXT - Shyam J's Complete Portfolio
 
 ${personalInfo}
+
+${canonicalFacts}
 
 ${professionalSummary}
 
@@ -280,7 +331,13 @@ IMPORTANT GUIDELINES:
 9. For hackathon/certification questions, mention the year, achievement level, and description.
 10. Keep responses concise but informative - aim for 2-5 sentences for simple questions, more for detailed queries.
 11. If asked about "what can you tell me" or "what do you know", provide a comprehensive overview across all sections.
-12. Use natural language - avoid robotic responses.`;
+12. Use natural language - avoid robotic responses.
+13. If there is any conflict between dates found in different sections (e.g., hackathons vs certifications) for the same event, ALWAYS prefer the Hackathon Achievements section as the source of truth for event dates.
+14. Authoritative dates for events (override any conflicts elsewhere):
+   - Appathon 2.0 — 2025
+   - Hackstreet 3.0 — 2025
+   - Tamizh-A-THON 1.0 — 2025
+15. Never guess or infer dates from context fragments; if a date is not present or not in the CANONICAL FACTS, say you don't have that specific information.`;
 
     // Build conversation history with context
     const chatMessages: { role: "system" | "user" | "assistant"; content: string }[] = [];

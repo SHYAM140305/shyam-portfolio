@@ -69,7 +69,7 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
 
   return (
     <motion.div
-      initial="initial"
+      initial={false}
       whileInView="animate"
       viewport={{ once: true, margin: "150px" }} // Trigger much later to reduce scroll lag
       variants={staggerContainer}

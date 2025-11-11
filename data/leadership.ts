@@ -18,8 +18,8 @@ export const leadership: Leadership[] = [
     role: "President",
     organization: "NEXT GEN AI, SRMIST KTR",
     startDate: "2025",
-    endDate: "Present",
-    current: true,
+    endDate: "2026",
+    current: false,
     description: "Directing organization strategy and fostering industry partnerships",
     highlights: [
       "Directed organizational strategy for 400+ members and industry partnerships",

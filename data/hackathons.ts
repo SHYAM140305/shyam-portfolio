@@ -8,6 +8,7 @@ export interface Hackathon {
 }
 
 const SRM_LOGO = "/srm-logo.png";
+const TOYOTA_LOGO = "https://logo.clearbit.com/toyota.com";
 
 export const hackathons: Hackathon[] = [
   {
@@ -33,6 +34,14 @@ export const hackathons: Hackathon[] = [
     achievement: "Winner",
     description: "Tamil OCR and NLP innovation under SRM TCC",
     logo: SRM_LOGO,
+  },
+  {
+    id: "hackcelrate-2025",
+    name: "Hackcelrate 2025",
+    year: "2025",
+    achievement: "Finalist",
+    description: "Toyota Hackcelrate 2025 Finalist",
+    logo: TOYOTA_LOGO,
   },
 ];
 

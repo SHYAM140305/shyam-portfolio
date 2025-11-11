@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Award, Trophy, Star, GraduationCap, Users, FileCheck, X, ExternalLink } from "lucide-react";
+import { Award, Trophy, Star, GraduationCap, Users, FileCheck, X, ExternalLink, ChevronLeft, ChevronRight, Maximize2, Share2 } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
 import { certifications, type Certification } from "@/data/education";
 import { hackathons } from "@/data/hackathons";
@@ -150,6 +150,7 @@ export function AchievementCard({
 export function AchievementsSection() {
   const [selectedCertificate, setSelectedCertificate] = useState<Certification | null>(null);
   const [isViewerLoading, setIsViewerLoading] = useState(true);
+  const [isFullscreenError, setIsFullscreenError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!selectedCertificate) {
@@ -166,9 +167,73 @@ export function AchievementsSection() {
   }, [selectedCertificate]);
 
   const closeViewer = () => setSelectedCertificate(null);
+  const currentIndex = selectedCertificate ? certifications.findIndex(c => c.id === selectedCertificate.id) : -1;
+  const goNext = () => {
+    if (currentIndex === -1) return;
+    const nextIndex = (currentIndex + 1) % certifications.length;
+    setIsViewerLoading(true);
+    setSelectedCertificate(certifications[nextIndex]);
+  };
+  const goPrev = () => {
+    if (currentIndex === -1) return;
+    const prevIndex = (currentIndex - 1 + certifications.length) % certifications.length;
+    setIsViewerLoading(true);
+    setSelectedCertificate(certifications[prevIndex]);
+  };
+
+  const handleKeyNav = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!selectedCertificate) return;
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goNext();
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goPrev();
+    } else if (event.key.toLowerCase() === "f") {
+      event.preventDefault();
+      requestFullscreen();
+    }
+  };
+
+  const requestFullscreen = async () => {
+    try {
+      const container = document.getElementById("certificate-viewer-container");
+      if (container && container.requestFullscreen) {
+        await container.requestFullscreen();
+      } else {
+        setIsFullscreenError("Fullscreen not supported in this browser.");
+        setTimeout(() => setIsFullscreenError(null), 2000);
+      }
+    } catch (err) {
+      setIsFullscreenError("Failed to enter fullscreen.");
+      setTimeout(() => setIsFullscreenError(null), 2000);
+    }
+  };
+
+  const shareCertificate = async () => {
+    if (!selectedCertificate) return;
+    const url = typeof window !== "undefined"
+      ? new URL(selectedCertificate.certificateUrl!, window.location.origin).toString()
+      : selectedCertificate.certificateUrl!;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${selectedCertificate.name} – ${selectedCertificate.issuer}`,
+          text: "Certification",
+          url,
+        });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        setIsFullscreenError("Link copied");
+        setTimeout(() => setIsFullscreenError(null), 1500);
+      }
+    } catch {
+      // ignore cancel
+    }
+  };
 
   return (
-    <section id="achievements" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+    <section id="achievements" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden" onKeyDown={handleKeyNav}>
       {/* Background decoration - Reduced animations */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c05_1px,transparent_1px),linear-gradient(to_bottom,#fb923c05_1px,transparent_1px)] bg-[size:32px_32px]" />
       <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
@@ -270,7 +335,7 @@ export function AchievementsSection() {
 
       <AnimatePresence>
         {selectedCertificate && (
-          <motion.div
+            <motion.div
             key="certificate-backdrop"
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
             initial={{ opacity: 0 }}
@@ -295,18 +360,56 @@ export function AchievementsSection() {
                       {selectedCertificate.issuer}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={closeViewer}
-                    className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    aria-label="Close certificate viewer"
-                  >
-                    <X className="h-4 w-4" />
-                    Close
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={goPrev}
+                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label="Previous certificate"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Prev
+                    </button>
+                    <button
+                      type="button"
+                      onClick={goNext}
+                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label="Next certificate"
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={requestFullscreen}
+                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label="Fullscreen"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                      Fullscreen
+                    </button>
+                    <button
+                      type="button"
+                      onClick={shareCertificate}
+                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label="Share certificate"
+                    >
+                      <Share2 className="h-4 w-4" />
+                      Share
+                    </button>
+                    <button
+                      type="button"
+                      onClick={closeViewer}
+                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label="Close certificate viewer"
+                    >
+                      <X className="h-4 w-4" />
+                      Close
+                    </button>
+                  </div>
                 </div>
 
-                <div className="relative h-[70vh] w-full overflow-hidden rounded-xl border border-border/40 bg-white">
+                <div id="certificate-viewer-container" className="relative h-[70vh] w-full overflow-hidden rounded-xl border border-border/40 bg-white">
                   {isViewerLoading && (
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/80">
                       <span className="h-10 w-10 animate-spin rounded-full border-2 border-primary/60 border-t-transparent" />
@@ -320,6 +423,11 @@ export function AchievementsSection() {
                     className="h-full w-full"
                     onLoad={() => setIsViewerLoading(false)}
                   />
+                  {isFullscreenError && (
+                    <div className="absolute bottom-3 right-3 rounded-md bg-black/70 text-white text-xs px-2 py-1">
+                      {isFullscreenError}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">

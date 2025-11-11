@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Download, Code, Brain, Sparkles, Briefcase, Github, Linkedin, Mail, X } from "lucide-react";
+import { Download, Code, Brain, Sparkles, Briefcase, Github, Linkedin, Mail, X, Maximize2, Share2 } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SkillCard } from "@/components/SkillCard";
 import { ProjectCard } from "@/components/ProjectCard";
@@ -47,7 +47,7 @@ const AchievementsSection = dynamic(() => import("@/components/AchievementCard")
 // Lazy load CompactSkills to improve scroll performance
 const CompactSkillsLazy = dynamic(() => import("@/components/CompactSkills").then(mod => ({ default: mod.CompactSkills })), {
   loading: () => <div className="min-h-[400px] flex items-center justify-center"><p className="text-muted-foreground">Loading skills...</p></div>,
-  ssr: true
+  ssr: false
 });
 
 // Lazy load sections below the fold for better initial load performance
@@ -73,6 +73,7 @@ const ContactSection = dynamic(() => import("@/components/ContactSection").then(
 
 export default function Home() {
   const [showResume, setShowResume] = useState(false);
+  const [resumeToast, setResumeToast] = useState<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
   
   // Memoize expensive computations - Optimized with single pass
@@ -127,6 +128,41 @@ export default function Home() {
     "END:VCARD",
   ].join("\r\n");
   const vcardHref = `data:text/vcard;charset=utf-8,${encodeURIComponent(vcardData)}`;
+
+  const resumeUrl = "/resume.pdf";
+  const resumeRequestFullscreen = async () => {
+    try {
+      const container = document.getElementById("resume-viewer-container");
+      if (container && container.requestFullscreen) {
+        await container.requestFullscreen();
+      } else {
+        setResumeToast("Fullscreen not supported");
+        setTimeout(() => setResumeToast(null), 1500);
+      }
+    } catch {
+      setResumeToast("Failed to enter fullscreen");
+      setTimeout(() => setResumeToast(null), 1500);
+    }
+  };
+
+  const shareResume = async () => {
+    const absoluteUrl = typeof window !== "undefined" ? new URL(resumeUrl, window.location.origin).toString() : resumeUrl;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Resume – Shyam Jayakanthan",
+          text: "My latest resume",
+          url: absoluteUrl,
+        });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(absoluteUrl);
+        setResumeToast("Link copied");
+        setTimeout(() => setResumeToast(null), 1500);
+      }
+    } catch {
+      // user cancelled
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -259,7 +295,7 @@ export default function Home() {
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-[70]"
             >
-              <div className="absolute inset-4 sm:inset-10 lg:inset-16 pointer-events-none">
+              <div className="absolute inset-2 sm:inset-6 lg:inset-10 pointer-events-none">
                 <div className="h-full w-full pointer-events-auto">
                   <div className="resume-viewer-shell h-full">
                     <div className="resume-viewer-card h-full">
@@ -274,6 +310,26 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
+                        <motion.button
+                          type="button"
+                          onClick={resumeRequestFullscreen}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="resume-viewer-close"
+                          aria-label="Fullscreen resume"
+                        >
+                          <Maximize2 className="h-5 w-5" />
+                        </motion.button>
+                        <motion.button
+                          type="button"
+                          onClick={shareResume}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="resume-viewer-close"
+                          aria-label="Share resume"
+                        >
+                          <Share2 className="h-5 w-5" />
+                        </motion.button>
                         <motion.a
                           href="/resume.pdf"
                           download
@@ -298,9 +354,9 @@ export default function Home() {
                         </motion.button>
                       </div>
                     </div>
-                      <div className="resume-viewer-content">
+                      <div id="resume-viewer-container" className="resume-viewer-content">
                         <object
-                          data="/resume.pdf#toolbar=0&navpanes=0&view=FitH"
+                          data="/resume.pdf#toolbar=0&navpanes=0&zoom=80"
                           type="application/pdf"
                           className="resume-viewer-iframe"
                           aria-label="Embedded resume viewer"
@@ -320,6 +376,11 @@ export default function Home() {
                             </a>
                           </div>
                         </object>
+                        {resumeToast && (
+                          <div className="absolute bottom-3 right-3 rounded-md bg-black/70 text-white text-xs px-2 py-1">
+                            {resumeToast}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

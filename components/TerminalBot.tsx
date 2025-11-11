@@ -137,9 +137,9 @@ const responses: Record<string, string[]> = {
     "• HackerRank SQL Advanced Skill Certification (2024)",
     "• NPTEL Programming in Java (2023)",
     "• Hackcelrate 2025 Finalist (Toyota)",
-    "• Appathon Winner (SRM, 2024)",
-    "• Hackstreet Winner (SRM, 2024)",
-    "• Tamizh-A-THON 1.0 Winner (TCC, 2024)",
+    "• Appathon Winner (SRM, 2025)",
+    "• Hackstreet Winner (SRM, 2025)",
+    "• Tamizh-A-THON 1.0 Winner (TCC, 2025)",
   ],
   certifications: [
     "I have several certifications:",
@@ -152,9 +152,9 @@ const responses: Record<string, string[]> = {
     "• HackerRank SQL Advanced Skill Certification (2024)",
     "• NPTEL Programming in Java (2023)",
     "• Hackcelrate 2025 Finalist (Toyota)",
-    "• Appathon Winner (SRM, 2024)",
-    "• Hackstreet Winner (SRM, 2024)",
-    "• Tamizh-A-THON 1.0 Winner (TCC, 2024)",
+    "• Appathon Winner (SRM, 2025)",
+    "• Hackstreet Winner (SRM, 2025)",
+    "• Tamizh-A-THON 1.0 Winner (TCC, 2025)",
   ],
   contact: [
     "You can reach me at:",
@@ -342,7 +342,17 @@ export const TerminalBot = memo(function TerminalBot() {
         
         if (!res.ok) {
           if (res.status === 429) {
-            response = "Rate limit exceeded. Please wait a moment and try again.";
+            // Prefer server-provided message if present
+            try {
+              const data = await res.json().catch(() => ({} as any));
+              if (data?.rateLimited) {
+                response = "Rate limit exceeded. Please wait about a minute and try again.";
+              } else {
+                response = String(data?.error || "Rate limit exceeded. Please wait a moment and try again.");
+              }
+            } catch {
+              response = "Rate limit exceeded. Please wait a moment and try again.";
+            }
           } else {
             throw new Error("Bad response");
           }
@@ -352,7 +362,9 @@ export const TerminalBot = memo(function TerminalBot() {
         }
       } catch (err) {
         // Fallback to local canned responses
-        let fallback: string | string[] = "That's interesting! Tell me more about what you'd like to know.";
+        let fallback: string | string[] = "AI service is unavailable right now. Showing local info from my portfolio.";
+        // Helpful debug signal to know we hit fallback
+        try { console.info("[TerminalBot] Using local fallback due to API error:", err); } catch {}
         for (const [key, values] of Object.entries(responses)) {
           if (key !== "help" && lowerInput.includes(key)) {
             fallback = Array.isArray(values) ? values.join("\n") : values;

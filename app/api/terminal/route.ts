@@ -293,8 +293,8 @@ export async function POST(req: NextRequest) {
     const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
-        { error: "Rate limit exceeded. Please try again later." },
-        { status: 429, headers: { "Retry-After": "60" } }
+        { error: "Rate limit exceeded. Please try again later.", rateLimited: true },
+        { status: 429, headers: { "Retry-After": "60", "X-RateLimit-Reason": "local-window" } }
       );
     }
 
@@ -360,12 +360,39 @@ IMPORTANT GUIDELINES:
     // Add current user prompt
     chatMessages.push({ role: "user", content: String(prompt ?? "") });
 
-    const completion = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: chatMessages,
-      temperature: 0.3, // Slightly higher for more natural responses
-      max_tokens: 1200, // Increased for comprehensive detailed answers
-    });
+    let completion;
+    try {
+      completion = await groq.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+        messages: chatMessages,
+        temperature: 0.3, // Slightly higher for more natural responses
+        max_tokens: 1200, // Increased for comprehensive detailed answers
+      });
+    } catch (apiErr: any) {
+      // Normalize Groq rate limit to 429 for the client
+      const message = String(apiErr?.message || "");
+      const status = Number(apiErr?.status || apiErr?.statusCode || 0);
+      const code = String(apiErr?.code || "").toLowerCase();
+
+      const isRateLimited =
+        status === 429 ||
+        code.includes("rate") ||
+        message.toLowerCase().includes("rate limit") ||
+        message.toLowerCase().includes("quota");
+
+      if (isRateLimited) {
+        return NextResponse.json(
+          { error: "Service temporarily unavailable due to rate limit. Please try again shortly.", rateLimited: true },
+          { status: 429, headers: { "Retry-After": "60", "X-RateLimit-Reason": "groq" } }
+        );
+      }
+
+      // Propagate as 502 Bad Gateway for upstream failures
+      return NextResponse.json(
+        { error: "Upstream AI service failed. Please try again." },
+        { status: 502 }
+      );
+    }
 
     const text = completion.choices?.[0]?.message?.content ?? "";
 

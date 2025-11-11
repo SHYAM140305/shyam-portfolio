@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Download, Code, Brain, Sparkles, Briefcase, Github, Linkedin, Mail, X, Maximize2, Share2 } from "lucide-react";
+import { Download, Code, Brain, Sparkles, Briefcase, Github, Linkedin, Mail, X, Maximize2, Share2, ExternalLink } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SkillCard } from "@/components/SkillCard";
 import { ProjectCard } from "@/components/ProjectCard";
@@ -330,6 +330,18 @@ export default function Home() {
                         >
                           <Share2 className="h-5 w-5" />
                         </motion.button>
+                        <motion.a
+                          href="/resume.pdf"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="resume-viewer-download"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Open resume in new tab"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          <span>Open in new tab</span>
+                        </motion.a>
                         <motion.a
                           href="/resume.pdf"
                           download

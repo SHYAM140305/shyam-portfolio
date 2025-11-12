@@ -90,7 +90,7 @@ export function ContactCard() {
       transition={{ duration: 0.5 }}
       className="relative w-full"
     >
-      <div className="relative rounded-2xl modern-glass-strong border border-border/40 p-4 sm:p-5 md:p-6 lg:p-7 shadow-xl backdrop-blur-xl w-full">
+      <div className="relative rounded-2xl modern-glass-strong border border-border/40 p-4 sm:p-5 md:p-6 shadow-xl backdrop-blur-xl w-full">
         {/* Gradient border effect */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-amber-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl" />
         

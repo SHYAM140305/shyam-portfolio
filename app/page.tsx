@@ -184,7 +184,7 @@ export default function Home() {
         {/* Client-only to prevent hydration mismatch */}
         <AnimatedBackground />
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -202,7 +202,7 @@ export default function Home() {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="mb-4 sm:mb-6"
             >
-              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-foreground mb-3 sm:mb-4 leading-relaxed px-4 pb-1" style={{ lineHeight: '1.4' }}>
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold text-foreground mb-3 sm:mb-4 leading-relaxed px-2 sm:px-4 pb-1" style={{ lineHeight: '1.4' }}>
                 AI Engineer
               </p>
               <motion.div
@@ -237,7 +237,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed px-4"
+              className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed px-2 sm:px-4"
             >
               Results-driven <span className="font-semibold text-foreground">AI/ML Engineer</span> with expertise in developing
               end-to-end machine learning systems, generative AI applications,
@@ -286,116 +286,104 @@ export default function Home() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowResume(false)}
-              className="fixed inset-0 z-[60] bg-background/90 backdrop-blur-md"
+              className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md"
             />
             <motion.div
-              initial={{ scale: 0.97, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.97, opacity: 0 }}
+              exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[70]"
+              className="fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute inset-2 sm:inset-6 lg:inset-10 pointer-events-none">
-                <div className="h-full w-full pointer-events-auto">
-                  <div className="resume-viewer-shell h-full">
-                    <div className="resume-viewer-card h-full">
-                    <div className="resume-viewer-header">
-                      <div className="flex items-center gap-3">
-                        <div className="resume-viewer-icon">
-                          <Briefcase className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h2 className="resume-viewer-title">Resume</h2>
-                          <p className="resume-viewer-subtitle">Shyam Jayakanthan</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <motion.button
-                          type="button"
-                          onClick={resumeRequestFullscreen}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="resume-viewer-close"
-                          aria-label="Fullscreen resume"
-                        >
-                          <Maximize2 className="h-5 w-5" />
-                        </motion.button>
-                        <motion.button
-                          type="button"
-                          onClick={shareResume}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="resume-viewer-close"
-                          aria-label="Share resume"
-                        >
-                          <Share2 className="h-5 w-5" />
-                        </motion.button>
-                        <motion.a
-                          href="/resume.pdf"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="resume-viewer-download"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Open resume in new tab"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                          <span>Open in new tab</span>
-                        </motion.a>
-                        <motion.a
-                          href="/resume.pdf"
-                          download
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="resume-viewer-download"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Download className="h-4 w-4" />
-                          <span>Download</span>
-                        </motion.a>
-                        <motion.button
-                          type="button"
-                          onClick={() => setShowResume(false)}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="resume-viewer-close"
-                          aria-label="Close resume viewer"
-                        >
-                          <X className="h-5 w-5" />
-                        </motion.button>
-                      </div>
+              <div className="relative w-full h-full max-w-6xl max-h-[95vh] flex flex-col bg-background rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-5 md:p-6 border-b border-border/30 bg-gradient-to-r from-card/80 to-card/60 backdrop-blur-sm flex-shrink-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="flex-shrink-0 grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-xl bg-gradient-to-br from-amber-500/30 via-orange-500/15 to-transparent text-primary shadow-inner border border-amber-500/20">
+                      <Briefcase className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
-                      <div id="resume-viewer-container" className="resume-viewer-content">
-                        <object
-                          data="/resume.pdf#toolbar=0&navpanes=0&zoom=80"
-                          type="application/pdf"
-                          className="resume-viewer-iframe"
-                          aria-label="Embedded resume viewer"
-                        >
-                          <div className="flex h-full w-full flex-col items-center justify-center gap-3 p-6 text-center">
-                            <p className="text-sm text-muted-foreground">
-                              Unable to display the PDF inline. Please download the resume instead.
-                            </p>
-                            <a
-                              href="/resume.pdf"
-                              className="resume-viewer-download"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <Download className="h-4 w-4" />
-                              <span>Download Resume</span>
-                            </a>
-                          </div>
-                        </object>
-                        {resumeToast && (
-                          <div className="absolute bottom-3 right-3 rounded-md bg-black/70 text-white text-xs px-2 py-1">
-                            {resumeToast}
-                          </div>
-                        )}
-                      </div>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-amber-600 dark:text-amber-300 leading-tight truncate">Resume</h2>
+                      <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Shyam Jayakanthan</p>
                     </div>
                   </div>
+                  <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
+                    <motion.button
+                      type="button"
+                      onClick={resumeRequestFullscreen}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-border/40 bg-muted/50 text-foreground hover:text-primary hover:border-primary/40 transition-all shadow-sm touch-manipulation"
+                      aria-label="Fullscreen resume"
+                    >
+                      <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      onClick={shareResume}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-border/40 bg-muted/50 text-foreground hover:text-primary hover:border-primary/40 transition-all shadow-sm touch-manipulation"
+                      aria-label="Share resume"
+                    >
+                      <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </motion.button>
+                    <motion.a
+                      href="/resume.pdf"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-amber-500/30 bg-gradient-to-r from-amber-500/15 to-orange-500/10 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-amber-700 dark:text-amber-200 transition-all hover:border-amber-500/50 hover:from-amber-500/25 hover:to-orange-500/15 shadow-sm touch-manipulation"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Open resume in new tab"
+                    >
+                      <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">Open</span>
+                    </motion.a>
+                    <motion.a
+                      href="/resume.pdf"
+                      download
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-amber-500/30 bg-gradient-to-r from-amber-500/15 to-orange-500/10 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-amber-700 dark:text-amber-200 transition-all hover:border-amber-500/50 hover:from-amber-500/25 hover:to-orange-500/15 shadow-sm touch-manipulation"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Download className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">Download</span>
+                    </motion.a>
+                    <motion.button
+                      type="button"
+                      onClick={() => setShowResume(false)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-border/40 bg-muted/50 text-foreground hover:text-primary hover:border-primary/40 transition-all shadow-sm touch-manipulation"
+                      aria-label="Close resume viewer"
+                    >
+                      <X className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </motion.button>
+                  </div>
+                </div>
+                
+                {/* PDF Viewer */}
+                <div id="resume-viewer-container" className="relative flex-1 min-h-0 bg-muted/20 overflow-hidden">
+                  <iframe
+                    src="/resume.pdf#toolbar=0&navpanes=0&zoom=page-fit"
+                    className="w-full h-full border-0"
+                    title="Resume PDF Viewer"
+                    aria-label="Embedded resume viewer"
+                  />
+                  {resumeToast && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute bottom-4 right-4 rounded-lg bg-black/80 backdrop-blur-sm text-white text-xs sm:text-sm px-3 py-2 shadow-lg z-10"
+                    >
+                      {resumeToast}
+                    </motion.div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -415,7 +403,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c14_1px,transparent_1px),linear-gradient(to_bottom,#fb923c14_1px,transparent_1px)] bg-[size:32px_32px] opacity-50 dark:opacity-100" />
         </div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <SectionTitle title="About Me" subtitle="Building intelligent systems that solve real-world problems" className="mb-6 sm:mb-8" />
           
           {/* Modern two-column layout - Optimized: trigger later to reduce scroll lag */}
@@ -424,10 +412,10 @@ export default function Home() {
             whileInView="animate"
             viewport={{ once: true, margin: "100px" }}
             variants={staggerContainer}
-            className="grid lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8"
+            className="grid md:grid-cols-2 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8"
           >
             {/* Profile Card */}
-            <motion.aside variants={fadeInUp} className="lg:col-span-5">
+            <motion.aside variants={fadeInUp} className="md:col-span-1 lg:col-span-5">
               <div className="w-full">
                 <div className="relative rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-transparent p-[1px] shadow-lg">
                   <div className="about-card">
@@ -533,7 +521,7 @@ export default function Home() {
             </motion.aside>
 
             {/* Content */}
-            <motion.div variants={fadeInUp} className="lg:col-span-7 space-y-6">
+            <motion.div variants={fadeInUp} className="md:col-span-1 lg:col-span-7 space-y-4 sm:space-y-6">
               <div className="max-w-none">
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
                   Passionate <span className="font-bold gradient-text">AI/ML Engineer</span> & <span className="font-bold gradient-text">Full Stack Developer</span> focused on building real-world AI products. I work across the stack—from data pipelines and model serving to delightful web experiences.
@@ -672,7 +660,7 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-orange-500/1 rounded-full blur-3xl" />
         
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <SectionTitle
             title="Ask Me Anything"
             subtitle="Interactive terminal - Try asking about AI, ML, Digital Twins, or anything!"

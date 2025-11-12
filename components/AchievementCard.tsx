@@ -80,7 +80,7 @@ export function AchievementCard({
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -2 }}
-      className={`group relative rounded-xl modern-glass border border-border/40 hover:border-primary/50 p-5 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 ${
+      className={`group relative rounded-xl modern-glass border border-border/40 hover:border-primary/50 p-4 sm:p-5 md:p-6 shadow-md hover:shadow-xl transition-all duration-300 ${
         isInteractive
           ? "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           : ""
@@ -239,7 +239,7 @@ export function AchievementsSection() {
       <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-orange-500/1 rounded-full blur-3xl" />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Certifications */}
         <div className="mb-16 sm:mb-20">
           <SectionTitle
@@ -252,7 +252,7 @@ export function AchievementsSection() {
             whileInView="animate"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-5 lg:gap-6"
           >
             {certifications.map((cert, index) => (
               <motion.div key={cert.id} variants={fadeInUp} data-certification-id={cert.id}>
@@ -284,7 +284,7 @@ export function AchievementsSection() {
             whileInView="animate"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6"
           >
             {hackathons.map((hackathon, index) => (
               <motion.div key={hackathon.id} variants={fadeInUp}>
@@ -335,9 +335,9 @@ export function AchievementsSection() {
 
       <AnimatePresence>
         {selectedCertificate && (
-            <motion.div
+          <motion.div
             key="certificate-backdrop"
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-2 sm:p-4 md:p-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -345,113 +345,118 @@ export function AchievementsSection() {
           >
             <motion.div
               key="certificate-content"
-              initial={{ opacity: 0, scale: 0.96 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="relative w-full max-w-5xl rounded-2xl bg-background border border-border/60 shadow-2xl"
+              className="relative w-full h-full max-w-6xl max-h-[95vh] flex flex-col bg-background rounded-2xl border border-border/50 shadow-2xl overflow-hidden"
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex flex-col gap-4 p-6 sm:p-8">
-                <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h3 className="text-xl font-semibold text-foreground">{selectedCertificate.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedCertificate.issuer}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={goPrev}
-                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      aria-label="Previous certificate"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                      Prev
-                    </button>
-                    <button
-                      type="button"
-                      onClick={goNext}
-                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      aria-label="Next certificate"
-                    >
-                      Next
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={requestFullscreen}
-                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      aria-label="Fullscreen"
-                    >
-                      <Maximize2 className="h-4 w-4" />
-                      Fullscreen
-                    </button>
-                    <button
-                      type="button"
-                      onClick={shareCertificate}
-                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      aria-label="Share certificate"
-                    >
-                      <Share2 className="h-4 w-4" />
-                      Share
-                    </button>
-                    <button
-                      type="button"
-                      onClick={closeViewer}
-                      className="inline-flex items-center gap-2 rounded-full border border-border/60 px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      aria-label="Close certificate viewer"
-                    >
-                      <X className="h-4 w-4" />
-                      Close
-                    </button>
-                  </div>
-                </div>
-
-                <div id="certificate-viewer-container" className="relative h-[70vh] w-full overflow-hidden rounded-xl border border-border/40 bg-white">
-                  {isViewerLoading && (
-                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/80">
-                      <span className="h-10 w-10 animate-spin rounded-full border-2 border-primary/60 border-t-transparent" />
-                      <p className="text-sm font-medium text-muted-foreground">Loading certificate…</p>
-                    </div>
-                  )}
-                  <iframe
-                    key={selectedCertificate.id}
-                    src={`${selectedCertificate.certificateUrl}#toolbar=0&navpanes=0`}
-                    title={`${selectedCertificate.name} certificate`}
-                    className="h-full w-full"
-                    onLoad={() => setIsViewerLoading(false)}
-                  />
-                  {isFullscreenError && (
-                    <div className="absolute bottom-3 right-3 rounded-md bg-black/70 text-white text-xs px-2 py-1">
-                      {isFullscreenError}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs text-muted-foreground">
-                    Having trouble viewing? Open the certificate in a new tab below.
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-5 md:p-6 border-b border-border/30 bg-gradient-to-r from-card/80 to-card/60 backdrop-blur-sm flex-shrink-0">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-foreground truncate">{selectedCertificate.name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate mt-0.5">
+                    {selectedCertificate.issuer}
                   </p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={closeViewer}
-                      className="inline-flex items-center justify-center rounded-full border border-border/60 px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    >
-                      Done
-                    </button>
-                    <a
-                      href={selectedCertificate.certificateUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      Open in new tab
-                    </a>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border/40 bg-muted/50 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-foreground transition hover:text-primary hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background touch-manipulation"
+                    aria-label="Previous certificate"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Prev</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border/40 bg-muted/50 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-foreground transition hover:text-primary hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background touch-manipulation"
+                    aria-label="Next certificate"
+                  >
+                    <span className="hidden sm:inline">Next</span>
+                    <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={requestFullscreen}
+                    className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border/40 bg-muted/50 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-foreground transition hover:text-primary hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background touch-manipulation"
+                    aria-label="Fullscreen"
+                  >
+                    <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Fullscreen</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={shareCertificate}
+                    className="inline-flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border/40 bg-muted/50 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium text-foreground transition hover:text-primary hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background touch-manipulation"
+                    aria-label="Share certificate"
+                  >
+                    <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Share</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeViewer}
+                    className="inline-flex items-center justify-center rounded-lg border border-border/40 bg-muted/50 h-9 w-9 sm:h-10 sm:w-10 text-foreground transition hover:text-primary hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background touch-manipulation"
+                    aria-label="Close certificate viewer"
+                  >
+                    <X className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* PDF Viewer */}
+              <div id="certificate-viewer-container" className="relative flex-1 min-h-0 bg-white overflow-hidden">
+                {isViewerLoading && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white/90 backdrop-blur-sm">
+                    <span className="h-10 w-10 animate-spin rounded-full border-2 border-primary/60 border-t-transparent" />
+                    <p className="text-sm font-medium text-muted-foreground">Loading certificate…</p>
                   </div>
+                )}
+                <iframe
+                  key={selectedCertificate.id}
+                  src={`${selectedCertificate.certificateUrl}#toolbar=0&navpanes=0&zoom=page-fit`}
+                  title={`${selectedCertificate.name} certificate`}
+                  className="w-full h-full border-0"
+                  onLoad={() => setIsViewerLoading(false)}
+                />
+                {isFullscreenError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute bottom-4 right-4 rounded-lg bg-black/80 backdrop-blur-sm text-white text-xs sm:text-sm px-3 py-2 shadow-lg z-20"
+                  >
+                    {isFullscreenError}
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 sm:p-5 md:p-6 border-t border-border/30 bg-gradient-to-r from-card/60 to-card/80 backdrop-blur-sm flex-shrink-0">
+                <p className="text-xs text-muted-foreground">
+                  Having trouble viewing? Open the certificate in a new tab below.
+                </p>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={closeViewer}
+                    className="inline-flex items-center justify-center rounded-lg border border-border/40 bg-muted/50 px-4 py-2 text-xs sm:text-sm font-medium text-foreground transition hover:text-primary hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background touch-manipulation"
+                  >
+                    Done
+                  </button>
+                  <a
+                    href={selectedCertificate.certificateUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs sm:text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background touch-manipulation"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span>Open in new tab</span>
+                  </a>
                 </div>
               </div>
             </motion.div>

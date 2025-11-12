@@ -73,7 +73,7 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
       whileInView="animate"
       viewport={{ once: true, margin: "150px" }} // Trigger much later to reduce scroll lag
       variants={staggerContainer}
-      className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6"
       style={{ willChange: "transform", transform: "translateZ(0)" }}
     >
       {categoryEntries.map(([category, categorySkills], catIndex) => {

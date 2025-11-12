@@ -14,7 +14,7 @@ export function ProjectsSection() {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-orange-500/2 to-amber-500/2 rounded-full blur-3xl" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c03_1px,transparent_1px),linear-gradient(to_bottom,#fb923c03_1px,transparent_1px)] bg-[size:32px_32px]" />
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionTitle
           title="Projects"
           subtitle="Some of my recent work"
@@ -25,7 +25,7 @@ export function ProjectsSection() {
           whileInView="animate"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
         >
           {projects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />

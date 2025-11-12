@@ -42,7 +42,7 @@ const TimelineItem = memo(function TimelineItem({
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative pl-6 sm:pl-10 pb-8 sm:pb-12 border-l-2 border-border/50 last:border-l-0 last:pb-0 group"
+        className="relative pl-6 sm:pl-8 md:pl-10 pb-8 sm:pb-10 md:pb-12 border-l-2 border-border/50 last:border-l-0 last:pb-0 group"
       data-experience-id={itemType === 'experience' && itemId ? itemId : undefined}
       data-education-id={itemType === 'education' && itemId ? itemId : undefined}
     >
@@ -59,7 +59,7 @@ const TimelineItem = memo(function TimelineItem({
       
       <motion.div
         whileHover={{ scale: 1.02, x: 5, y: -2 }}
-        className="relative bg-gradient-to-br from-card/95 to-card/90 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-border/50 hover:border-primary/60 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-md overflow-hidden card-shadow-hover"
+        className="relative bg-gradient-to-br from-card/95 to-card/90 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 border border-border/50 hover:border-primary/60 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-md overflow-hidden card-shadow-hover"
       >
         {/* Background gradient on hover */}
         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-amber-600/0 group-hover:from-amber-500/2 group-hover:via-orange-500/2 group-hover:to-amber-600/2 transition-all duration-500" />
@@ -69,12 +69,12 @@ const TimelineItem = memo(function TimelineItem({
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-500/2 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
         <div className="relative z-10">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-5">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 mb-4 sm:mb-5">
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1 sm:mb-2 group-hover:text-primary transition-colors break-words">
+              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 group-hover:text-primary transition-colors break-words">
                 {title}
               </h3>
-              <p className="text-base sm:text-lg md:text-xl font-semibold bg-gradient-to-r from-amber-500/80 to-orange-500/80 bg-clip-text text-transparent break-words">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold bg-gradient-to-r from-amber-500/80 to-orange-500/80 bg-clip-text text-transparent break-words">
                 {organization}
               </p>
             </div>
@@ -90,21 +90,21 @@ const TimelineItem = memo(function TimelineItem({
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 text-sm mb-5">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/20 dark:bg-muted/15 border border-border/20 dark:border-border/15">
-              <MapPin className="h-4 w-4 text-primary" />
-              <span className="text-muted-foreground font-medium">{location}</span>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm mb-4 sm:mb-5">
+            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-muted/20 dark:bg-muted/15 border border-border/20 dark:border-border/15">
+              <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
+              <span className="text-muted-foreground font-medium break-words">{location}</span>
             </div>
             {type && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/8 dark:bg-primary/5 border border-primary/15 dark:border-primary/10">
-                <Briefcase className="h-4 w-4 text-primary" />
-                <span className="text-primary font-medium">{type}</span>
+              <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-primary/8 dark:bg-primary/5 border border-primary/15 dark:border-primary/10">
+                <Briefcase className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
+                <span className="text-primary font-medium break-words">{type}</span>
               </div>
             )}
           </div>
 
           {description && (
-            <p className="text-base text-muted-foreground mb-5 font-medium px-4 py-2 rounded-lg bg-muted/20 dark:bg-muted/15 border-l-4 border-primary/50 dark:border-primary/30">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-5 font-medium px-3 sm:px-4 py-2 rounded-lg bg-muted/20 dark:bg-muted/15 border-l-4 border-primary/50 dark:border-primary/30">
               {description}
             </p>
           )}
@@ -118,7 +118,7 @@ const TimelineItem = memo(function TimelineItem({
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="flex items-start gap-3 text-sm md:text-base"
+                  className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm md:text-base"
                 >
                   <motion.div
                     className="mt-2 w-2 h-2 rounded-full bg-gradient-to-r from-amber-500/60 to-orange-500/60 flex-shrink-0"

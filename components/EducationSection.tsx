@@ -12,7 +12,7 @@ export function EducationSection() {
       <div className="absolute top-0 right-1/4 w-80 h-80 bg-orange-500/1 rounded-full blur-3xl" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c03_1px,transparent_1px),linear-gradient(to_bottom,#fb923c03_1px,transparent_1px)] bg-[size:32px_32px]" />
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionTitle
           title="Education"
           subtitle="Academic background"

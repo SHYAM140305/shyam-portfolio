@@ -12,17 +12,17 @@ export function ContactSection() {
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/1 rounded-full blur-3xl" />
       
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionTitle
           title="Get In Touch"
           subtitle="Let&apos;s connect and build something amazing together"
           className="mb-5 sm:mb-6 md:mb-7 text-center"
         />
-        <div className="grid md:grid-cols-[1fr_1.2fr] gap-5 sm:gap-5 md:gap-6 lg:gap-7 max-w-6xl mx-auto items-start">
-          <div className="w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-5 sm:gap-6 lg:gap-7 max-w-6xl mx-auto items-start">
+          <div className="w-full order-2 lg:order-1">
             <ContactForm />
           </div>
-          <div className="flex items-start justify-start w-full">
+          <div className="flex items-start justify-start w-full order-1 lg:order-2">
             <ContactCard />
           </div>
         </div>

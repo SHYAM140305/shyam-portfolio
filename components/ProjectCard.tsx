@@ -72,7 +72,7 @@ export const ProjectCard = memo(function ProjectCard({ project, index }: Project
       {/* Shine effect */}
       <div className="absolute inset-0 shine-effect opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
-      <div className="relative h-52 sm:h-64 overflow-hidden rounded-t-2xl md:rounded-t-3xl border-b-2 border-amber-500/15 dark:border-amber-500/5">
+      <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden rounded-t-2xl md:rounded-t-3xl border-b-2 border-amber-500/15 dark:border-amber-500/5">
         <Image
           src={imageSrc}
           alt={project.title}
@@ -87,13 +87,13 @@ export const ProjectCard = memo(function ProjectCard({ project, index }: Project
         />
       </div>
 
-      <div className="relative p-5 sm:p-6 md:p-8 z-10 bg-card dark:bg-card/80 rounded-b-2xl md:rounded-b-3xl border-t border-t-amber-500/5 dark:border-t-transparent">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
+      <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 z-10 bg-card dark:bg-card/80 rounded-b-2xl md:rounded-b-3xl border-t border-t-amber-500/5 dark:border-t-transparent">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold group-hover:text-primary transition-colors mb-1 sm:mb-2 break-words">
+            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold group-hover:text-primary transition-colors mb-1 sm:mb-2 break-words">
               {project.title}
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground line-clamp-2 sm:line-clamp-3 leading-relaxed">
               {project.description}
             </p>
           </div>

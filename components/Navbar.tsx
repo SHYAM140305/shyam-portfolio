@@ -467,7 +467,7 @@ export function Navbar() {
       {isScrolled && (
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/15 to-transparent" />
       )}
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
@@ -590,7 +590,7 @@ export function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.12 }}
-                    className="absolute left-0 mt-2 w-80 rounded-xl menu-solid border border-border/50 shadow-xl p-2 z-50"
+                    className="absolute left-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm rounded-xl menu-solid border border-border/50 shadow-xl p-2 z-50"
                   >
                     {(debouncedSearchQuery || searchQuery).trim().length === 0 ? (
                       <div>
@@ -858,7 +858,7 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="fixed top-[73px] left-4 right-4 max-h-[calc(100vh-100px)] overflow-y-auto rounded-xl menu-solid border border-border/50 shadow-xl p-3 z-50 md:hidden"
+                      className="fixed top-[73px] left-4 right-4 max-h-[calc(100vh-100px)] overflow-y-auto rounded-xl menu-solid border border-border/50 shadow-xl p-3 z-50 md:hidden max-w-[calc(100vw-2rem)]"
                     >
                     <form
                       onSubmit={(e) => {

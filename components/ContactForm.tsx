@@ -79,7 +79,7 @@ export const ContactForm = memo(function ContactForm() {
       variants={fadeInUp}
       className="max-w-3xl mx-auto w-full"
     >
-      <div className="relative rounded-2xl modern-glass-strong border border-border/40 hover:border-primary/40 p-5 sm:p-6 md:p-6 shadow-xl overflow-hidden card-shadow card-shadow-hover transition-all duration-300">
+      <div className="relative rounded-2xl modern-glass-strong border border-border/40 hover:border-primary/40 p-4 sm:p-5 md:p-6 shadow-xl overflow-hidden card-shadow card-shadow-hover transition-all duration-300">
         {/* Background decoration - Reduced animations */}
         <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/1 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-orange-500/1 rounded-full blur-3xl" />

@@ -9,6 +9,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '375px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -41,6 +49,23 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
+        'sm': ['0.875rem', { lineHeight: '1.5', letterSpacing: '0.025em' }],
+        'base': ['1rem', { lineHeight: '1.5', letterSpacing: '0' }],
+        'lg': ['1.125rem', { lineHeight: '1.5', letterSpacing: '-0.025em' }],
+        'xl': ['1.25rem', { lineHeight: '1.5', letterSpacing: '-0.025em' }],
+        '2xl': ['1.5rem', { lineHeight: '1.4', letterSpacing: '-0.025em' }],
+        '3xl': ['1.875rem', { lineHeight: '1.3', letterSpacing: '-0.025em' }],
+        '4xl': ['2.25rem', { lineHeight: '1.2', letterSpacing: '-0.025em' }],
+        '5xl': ['3rem', { lineHeight: '1.1', letterSpacing: '-0.025em' }],
+        '6xl': ['3.75rem', { lineHeight: '1.1', letterSpacing: '-0.025em' }],
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-in-out",

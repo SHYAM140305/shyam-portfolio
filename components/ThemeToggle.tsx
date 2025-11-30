@@ -2,7 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 
 export function ThemeToggle() {
@@ -12,6 +12,19 @@ export function ThemeToggle() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const toggleTheme = useCallback(() => {
+    // Add transitioning class to prevent color transitions
+    document.documentElement.classList.add('transitioning');
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    // Remove transitioning class after theme change completes
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.documentElement.classList.remove('transitioning');
+      });
+    });
+  }, [theme, setTheme]);
 
   if (!mounted) {
     return (
@@ -23,7 +36,7 @@ export function ThemeToggle() {
 
   return (
     <motion.button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={toggleTheme}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       className="w-10 h-10 rounded-lg bg-muted hover:bg-accent transition-colors flex items-center justify-center border border-border/50 hover:border-primary/50 shadow-md hover:shadow-lg hover:shadow-amber-500/6 relative overflow-hidden group"
@@ -34,7 +47,7 @@ export function ThemeToggle() {
       />
       <motion.div
         animate={{ rotate: theme === "dark" ? 180 : 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
         className="relative z-10"
       >
         {theme === "dark" ? (

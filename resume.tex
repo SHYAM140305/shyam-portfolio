@@ -1,66 +1,65 @@
+%===========================================================
+% SCOTLAND-READY CV (MODERNCV) — OPTIMISED FOR UK MARKET
+%===========================================================
+
 \documentclass[11pt,a4paper]{moderncv}
-\moderncvstyle{classic}
-\moderncvcolor{blue}
-\usepackage[scale=0.85]{geometry}
+
+% STYLE
+\moderncvstyle{banking}
+\moderncvcolor{black}
+
+\usepackage[scale=0.87]{geometry}
 \usepackage{fontawesome5}
 \usepackage{multicol}
 \usepackage{enumitem}
-\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-% Suppress benign kernel warning about \showhyphens change (modern LaTeX update)
-\usepackage{silence}
-\WarningFilter{latex}{Command \showhyphens has changed}
-% Map Unicode Rupee sign to ASCII fallback for pdfLaTeX
-\DeclareUnicodeCharacter{20B9}{Rs.}
-
-% Suppress academicons warning
-\makeatletter
-\def\moderncv@academicons@warning{}
-\makeatother
+\usepackage[hidelinks]{hyperref}
 
 \setlist[itemize]{leftmargin=*, itemsep=3pt, topsep=2pt}
 
-% Personal data
+%===========================================================
+% PERSONAL DETAILS
+%===========================================================
 \name{Shyam}{J}
-\title{AI/ML Engineer \& Full Stack Developer}
+\title{\kern-0.3em AI/ML Engineer \& Research-driven developer}
 \address{Chennai, Tamil Nadu, India}
-\phone{+91 7395980045}
+\phone{+91~7395980045}
 \email{jshyam2005@gmail.com}
-\homepage{shyamj.vercel.app}
 \social[github]{SHYAM140305}
 \social[linkedin]{shyam-jayakanthan-050a85284}
+\extrainfo{\faGlobe\ \href{https://shyamj.vercel.app}{shyamj.vercel.app}}
 
 \begin{document}
 \makecvtitle
-\vspace{-2.5em}
+\vspace{-1.2em}
 
 %===========================================================
 % PROFESSIONAL SUMMARY
 %===========================================================
 \section{Professional Summary}
-Results-driven AI/ML Engineer with expertise in developing end-to-end machine learning systems, generative AI applications, and full-stack solutions. Proven track record in implementing NLP-based troubleshooting systems, RAG-powered chatbots, and computer vision applications.
+AI/ML Engineer and Research-driven developer with hands-on experience across generative AI, digital twins, computer vision, and applied machine learning. Completed \textbf{5+ internships} and gained \textbf{1 year of industry experience at Sentient Scripts}. Proven ability to build ML pipelines, RAG systems, predictive maintenance models, and deploy full-stack AI solutions for real-world users.
 
 %===========================================================
 % RESEARCH INTERESTS
 %===========================================================
 \section{Research Interests}
-Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning, Efficient and Accelerated Machine Learning, Generative Models, Applied Statistics, Natural Language Processing, Digital Twin Systems, Computer Vision for Industry 4.0, Cloud-Based AI Deployment, and AI-Powered Automation.
+Agentic AI, Reinforcement Learning, Generative AI, Digital Twins, Industry 4.0, Statistical Modelling, AI-powered Automation.
 
 %===========================================================
 % TECHNICAL SKILLS
 %===========================================================
 \section{Technical Skills}
 \begin{multicols}{2}
-\textbf{Languages:} Python (Advanced), C (Intermediate), Java (Basics), TypeScript, JavaScript, SQL, Dart\\
-\textbf{Frontend:} HTML5, CSS3, React.js, Next.js 14, Tailwind CSS, Bootstrap\\
-\textbf{Backend:} Node.js, Flask, Express.js, RESTful APIs\\
-\textbf{AI/ML Frameworks:} PyTorch, TensorFlow, Keras, RAPIDS (cuDF/cuML), Scikit-learn, Hugging Face, FAISS, OpenCV, NLTK\\
-\textbf{Data Science \& Analytics:} Pandas, NumPy, Matplotlib, Seaborn, SPSS, Statistical Analysis, Hypothesis Testing, RAPIDS cuML, Power BI\\
-\textbf{Cloud \& DevOps:} AWS, Oracle Cloud, Docker, Git, GitHub, CI/CD, Serverless, Streamlit, Vercel\\
+\textbf{Languages:} Python, C, Java, TypeScript, JavaScript, SQL, Dart\\
+\textbf{Frontend:} React.js, Next.js 14, Tailwind CSS, Bootstrap, HTML5, CSS3\\
+\textbf{Backend:} Node.js, Flask, Express.js, REST APIs\\
+\textbf{AI/ML:} PyTorch, TensorFlow, Keras, Hugging Face, Scikit-learn, RAPIDS cuML, FAISS, RAG systems, OpenCV\\
+\textbf{Analytics:} Pandas, NumPy, Matplotlib, SPSS, Power BI, Hypothesis Testing\\
+\textbf{Cloud/DevOps:} AWS, Oracle Cloud, Docker, Git, CI/CD, Serverless, Streamlit, Vercel\\
 \textbf{Databases:} MongoDB, SQLite, Redis\\
-\textbf{Tools \& Libraries:} Jupyter, VS Code, Postman, AutoCAD, Canva, Figma, Beautiful Soup, PyTesseract, Pygame\\
-\textbf{Domains:} Machine Learning, Deep Learning, Generative AI, Computer Vision, NLP, Reinforcement Learning, Digital Twin, Statistical Modeling
+\textbf{Tools:} VS Code, Postman, AutoCAD, Canva, Figma, BeautifulSoup, PyTesseract\\
+\textbf{Domains:} Machine Learning, Deep Learning, NLP, Computer Vision, Digital Twins, Industry 4.0
 \end{multicols}
 
 %===========================================================
@@ -68,136 +67,149 @@ Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning,
 %===========================================================
 \section{Professional Experience}
 
-\cventry{Jun 2024 -- Jun 2025}{Student Coordinator (HR / Administrative Coordinator)}{Sentient Scripts}{Remote}{}{
-\textbf{University Collaboration Initiative:}
+%------------------- Linucare --------------------
+\cventry{May 2025 -- Present}{Embedded Firmware Engineer}{Linucare / Protechme}{Denmark (Remote)}{}{
+\textbf{Working on embedded firmware for low-power connected devices}
 \begin{itemize}
-    \item Primary POC between Sentient Scripts and SRM University for projects and communication.
-    \item Consolidated student profiles, scheduled interviews, and coordinated shortlisting.
-    \item Managed student engagement ensuring timely progress and deliverables.
-\end{itemize}
-}
+    \item Developing ESP32-based firmware modules, including device communication logic and peripheral management.
+    \item Optimising system power consumption through efficient task scheduling and hardware-level configuration.
+    \item Enhancing device performance by improving signal acquisition, data handling, and system responsiveness.
+    \item Conducting power profiling across device states and contributing to core firmware documentation and architecture decisions.
+\end{itemize}}
 
-\cventry{Dec 2024 -- Present}{Student Intern}{Chennai Metro Rail Limited (CMRL)}{Chennai, India}{}{
-\textbf{AI-Driven Troubleshooting System:}
+%------------------- Sentient Scripts Coordinator --------------------
+\cventry{Jun 2024 -- Jun 2025}{Student Coordinator / HR Lead}{Sentient Scripts Pvt. Ltd.}{Remote}{}{
+\textbf{Primary point-of-contact for SRM University partnership}
 \begin{itemize}
-    \item Extracted fault codes from PDF manuals using NLP (95\% accuracy). 
-    \item Implemented FAISS semantic search with Gemma 2B LLM for contextual analysis. 
-    \item Developed Streamlit UI serving 50+ daily users.
-\end{itemize}
-}
+    \item Led student recruitment, shortlisting, assessment coordination, and onboarding for multiple project cohorts.
+    \item Managed documentation and communication for 100+ candidates.
+    \item \textbf{Technical Work:} Developed a Generative-AI humorous weather chatbot with full-stack deployment.
+\end{itemize}}
 
-\cventry{Apr 2024 -- Oct 2024}{Student Intern (AI/ML Engineer)}{Sentient Scripts}{Remote}{}{
-\textbf{Weather Chatbot with RAG:}
+%------------------- Tata Steel --------------------
+\cventry{Jan 2025 -- Jun 2025}{AI/ML Intern}{Tata Steel}{Remote}{}{
+\textbf{Guided by Dhilip Kumar R}
 \begin{itemize}
-    \item Developed Retrieval-Augmented Generation chatbot (89\% user satisfaction). 
-    \item Integrated OpenWeatherMap API with LLMs reducing latency by 45\%. 
-    \item Built Streamlit dashboard increasing engagement by 25\%.
-\end{itemize}
-}
+    \item Implemented computer-vision pipelines for steel bar ring/rib analysis.
+    \item Automated dimensional measurement using CNN-based feature extraction.
+\end{itemize}}
 
-\cventry{Apr 2024 -- Oct 2024}{Student Intern (AI/ML Engineer)}{Renault Nissan Automotive India Pvt. Ltd.}{Chennai, India}{}{
-\textbf{Heavy Repair Management System:}
+%------------------- CMRL --------------------
+\cventry{Dec 2024 -- Apr 2025}{AI Intern}{Chennai Metro Rail Limited (CMRL)}{Hybrid}{}{
+\textbf{In collaboration with Mr. Ganavel, Cooling Lab}
 \begin{itemize}
-    \item Implemented role-based access supporting 200+ users.
-    \item Improved workshop efficiency by 28\% and reduced repair time by 22\%.
-\end{itemize}
-}
+    \item Built predictive maintenance and fault-detection ML models.
+    \item Delivered a troubleshooting tool.
+\end{itemize}}
+
+%------------------- Mercedes-Benz --------------------
+\cventry{Nov 2024 -- Apr 2025}{AI/ML Intern}{Mercedes-Benz MBition}{Berlin (Remote)}{}{
+\textbf{Guided by Mr. Karthik VJ}
+\begin{itemize}
+    \item Contributed to digital-twin optimisation for NVIDIA Parker hardware.
+    \item Supported AI-driven improvements to simulation performance.
+\end{itemize}}
+
+%------------------- Renault Nissan --------------------
+\cventry{Apr 2024 -- Oct 2024}{AI/ML Intern}{Renault Nissan Automotive India Pvt. Ltd. (RNAIPL)}{Hybrid}{}{
+\textbf{Guided by Mr. Harishankar Girirajan}
+\begin{itemize}
+    \item Delivered supply-chain dashboards in Power BI and automated reporting workflows using UiPath and Power Automate.
+    \item Developed analytics pipelines for Milkrun route optimisation, reducing routing delays and enhancing operational efficiency.
+\end{itemize}}
+
+%------------------- Sentient Scripts Intern --------------------
+\cventry{Apr 2024 -- Oct 2024}{AI Intern}{Sentient Scripts Pvt. Ltd.}{Remote}{}{
+\begin{itemize}
+    \item Built a Retrieval-Augmented-Generation (RAG) humorous Weather Chatbot achieving 89\% user satisfaction.
+    \item Developed a Streamlit dashboard for monitoring user interactions.
+\end{itemize}}
 
 %===========================================================
-% EDUCATION (NO DATES)
+% EDUCATION
 %===========================================================
 \section{Education}
-\cventry{}{B.Tech in Artificial Intelligence}{SRM Institute of Science and Technology}{Kattankulathur, India}{CGPA: 7.5/10.0}{Ongoing}
-\cvitem{Coursework:}{Machine Learning, Deep Learning, Computer Vision, NLP, Data Structures \& Algorithms, Database Systems, Software Engineering, Reinforcement Learning, Cloud Computing}
 
-\cventry{}{Grade 10 and Grade 12}{St. Michael Academy}{Chennai, India}{}{Grade 10: 74\%, Grade 12: 64\%}
+\cventry{}{B.Tech in Artificial Intelligence}{SRM Institute of Science and Technology}{Kattankulathur}{}{
+\begin{itemize}
+    \item Relevant coursework: Machine Learning, Deep Learning, Computer Vision, NLP, Data Structures and Algorithms, Database Systems, Software Engineering, Reinforcement Learning, Cloud Computing.
+\end{itemize}}
+
+\cventry{}{Secondary \& Higher Secondary Education}{St. Michael Academy}{Chennai}{}{}
 
 %===========================================================
 % CERTIFICATIONS
 %===========================================================
 \section{Certifications}
-\cvitem{Professional:}{Generative AI Professional (2024), Oracle Cloud Infrastructure GenAI (2024)}
-\cvitem{Online:}{Machine Learning (Stanford), Deep Learning (Andrew Ng), Python for Data Science (IBM), React.js Fundamentals (Meta)}
+\cvitem{Professional}{Generative AI Professional (2024); Oracle Cloud Infrastructure GenAI (2024)}
+\cvitem{Online}{AWS Machine Learning; Python for Data Science; AWS Cloud Foundations}
 
 %===========================================================
-% RESEARCH AND PROJECTS
+% PROJECTS
 %===========================================================
-\section{Research and Projects}
-\cventry{Feb 2025 -- Jun 2025}{Edu Smart Bot}{AI-powered Educational Assistant}{}{Technologies: Python, NLP, Flask, React.js, PostgreSQL}{
+\section{Projects and Research}
+
+\cventry{Feb 2025 -- Jun 2025}{Edu Smart Bot}{AI Educational Assistant}{}{}{
 \begin{itemize}
-    \item Built AI assistant integrating OCR, summarization, and context-based Q\&A.
-    \item Developed transformer pipeline (BERT, T5) for content summarization.
-\end{itemize}
-}
+    \item Built OCR + transformer summarisation + context-based Q\&A using BERT/T5.
+    \item Developed Flask backend and React frontend; deployed on Vercel.
+\end{itemize}}
 
-\cventry{Feb 2025 -- Jun 2025}{Self-Driving Car AI Simulation}{Autonomous Driving Simulator}{}{Technologies: PyTorch, Unity3D, CUDA}{
+\cventry{Feb 2025 -- Jun 2025}{Self-Driving Car AI Simulation}{Autonomous Driving}{}{}{
 \begin{itemize}
-    \item Implemented Deep Q-Learning for vision-based navigation and lane detection.
-\end{itemize}
-}
+    \item Designed a Deep Q-Learning agent with CNN-based lane perception.
+\end{itemize}}
 
-\cventry{Feb 2025 -- Jun 2025}{Image Captioning System}{Vision-Language Model}{}{Technologies: PyTorch, CNN, LSTM, MS COCO}{
+\cventry{Feb 2025 -- Jun 2025}{Image Captioning System}{Vision-Language Model}{}{}{
 \begin{itemize}
-    \item Designed CNN–RNN architecture with attention; achieved BLEU-4 = 0.32.
-\end{itemize}
-}
+    \item Built a CNN–LSTM attention model; achieved BLEU-4 score of 0.32.
+\end{itemize}}
+
+\cventry{2025}{In-House Research}{Tamil Computing Centre (TCC), SRMIST}{Chennai}{}{
+\begin{itemize}
+    \item Developed Tamil language models, CNN-based OCR, and AR/VR visualisation for Tamil literature.
+\end{itemize}}
 
 %===========================================================
-% HACKATHON ACHIEVEMENTS
+% HACKATHONS
 %===========================================================
-\section{Hackathon Achievements}
+\section{Hackathons}
 \begin{itemize}
-    \item \textbf{Hackstreet 3.0 (2025)} — 1st Place for real-time AI automation solution with vision analytics.
-    \item \textbf{Appathon 2.0 (2025)} — Winner for AI-driven productivity app (150+ teams).
-    \item \textbf{Tamizh-A-THON 1.0 (2025)} — Winner for Tamil OCR and NLP innovation under SRM TCC.
+    \item \textbf{Hackstreet 3.0 (2025)} — 1st Place for real-time AI automation.
+    \item \textbf{Appathon 2.0 (2025)} — Winner (150+ teams).
+    \item \textbf{Tamizh-A-THON 1.0 (2025)} — Winner for OCR NLP innovation.
 \end{itemize}
 
 %===========================================================
-% LEADERSHIP EXPERIENCE
+% LEADERSHIP
 %===========================================================
 \section{Leadership Experience}
-\cventry{2025 -- Present}{President}{NEXT GEN AI, SRMIST KTR}{}{}{
+
+\cventry{2025 -- 2026}{President}{NEXT GEN AI, SRMIST KTR}{}{}{
 \begin{itemize}
-    \item Directed organizational strategy for 400+ members and industry partnerships.
-\end{itemize}
-}
+    \item Leading 400+ members; managing university-level industry collaborations.
+\end{itemize}}
 
 \cventry{2024 -- 2025}{Vice President}{NEXT GEN AI, SRMIST KTR}{}{}{
 \begin{itemize}
-    \item Led 350+ members, organized 5 events, and managed ₹1,00,000 budget.
-\end{itemize}
-}
+    \item Led 350+ members; organised 5 major events.
+\end{itemize}}
 
 \cventry{2023 -- 2024}{Technical Lead}{AI Research Group}{}{}{
 \begin{itemize}
-    \item Supervised team of 8 researchers and coordinated industry hackathons.
-\end{itemize}
-}
+    \item Mentored an 8-member research team in ML and CV.
+\end{itemize}}
 
-\cventry{2023 -- 2024}{Research Member}{Cintel Students Association, SRMIST KTR}{}{}{
+\cventry{2023 -- 2024}{Research Member}{CINTEL Students Association, SRMIST}{}{}{
 \begin{itemize}
-    \item Conducted AI research and mentored students on emerging technologies.
-\end{itemize}
-}
+    \item Conducted applied AI research for departmental projects.
+\end{itemize}}
 
 %===========================================================
-% ADDITIONAL INFORMATION
+% ADDITIONAL INFO
 %===========================================================
 \section{Additional Information}
 \cvitem{Languages}{English (Fluent), Tamil (Native), Hindi (Conversational), Telugu (Fluent)}
 \cvitem{Professional Skills}{Leadership, Team Management, Problem Solving, Critical Thinking, Communication, Time Management}
-\cvitem{Technical Interests}{AI Research, Open Source Contribution, Technical Writing, Public Speaking}
-
-\cventry{2024 -- 2025}{In-House Research Projects}{Tamil Computing Centre (TCC), SRMIST}{Chennai, India}{}{
-Developed Tamil Language Models, CNN-based OCR pipelines, and AR/VR literature visualizations in collaboration with INFITT and SRM Department of Computational Intelligence.
-}
-
-\cventry{Expected 2025}{Publication}{}{}{}{
-Preparing paper \textit{"Efficient Fault Analysis in Industrial Systems using AI"}.
-}
-
-\cventry{Ongoing}{Volunteer Work}{}{}{}{
-Mentoring students in AI literacy and contributing to open-source AI projects.
-}
 
 \end{document}

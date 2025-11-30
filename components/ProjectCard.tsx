@@ -9,6 +9,10 @@ import { memo } from "react";
 interface ProjectCardProps {
   project: Project;
   index: number;
+  featured?: boolean;
+  onHover?: () => void;
+  onHoverEnd?: () => void;
+  isHovered?: boolean;
 }
 
 const DEFAULT_IMAGE = "https://github.com/SHYAM140305.png";
@@ -44,113 +48,142 @@ function getRemoteProjectImage(project: Project) {
   return DEFAULT_IMAGE;
 }
 
-export const ProjectCard = memo(function ProjectCard({ project, index }: ProjectCardProps) {
-  // Determine the main link URL (prioritize GitHub, then live URL)
+export const ProjectCard = memo(function ProjectCard({ 
+  project, 
+  index, 
+  featured = false,
+  onHover,
+  onHoverEnd,
+  isHovered = false
+}: ProjectCardProps) {
   const mainUrl = project.githubUrl || project.liveUrl;
   const imageSrc = getRemoteProjectImage(project);
 
   return (
-    <motion.a
-      href={mainUrl}
-      target={mainUrl ? "_blank" : undefined}
-      rel={mainUrl ? "noopener noreferrer" : undefined}
-      data-project-id={project.id}
+    <motion.div
+      onMouseEnter={onHover}
+      onMouseLeave={onHoverEnd}
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ delay: index * 0.1, duration: 0.6, type: "spring", stiffness: 100 }}
-      whileHover={{ y: -8, scale: 1.01 }}
-      className="group relative overflow-hidden rounded-2xl md:rounded-3xl modern-glass-strong border border-amber-500/4 hover:border-amber-500/10 card-shadow card-shadow-hover cursor-pointer block"
+      transition={{ delay: index * 0.08, duration: 0.6, type: "spring", stiffness: 100 }}
+      className="group relative h-full"
     >
-      {/* Modern gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-amber-600/0 group-hover:from-amber-500/2 group-hover:via-orange-500/2 group-hover:to-amber-600/2 transition-all duration-500 z-0" />
-      
-      {/* Modern corner accent */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-500/4 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-orange-500/4 to-transparent rounded-tr-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
-      
-      {/* Shine effect */}
-      <div className="absolute inset-0 shine-effect opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-      
-      <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden rounded-t-2xl md:rounded-t-3xl border-b-2 border-amber-500/15 dark:border-amber-500/5">
-        <Image
-          src={imageSrc}
-          alt={project.title}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-          loading={index < 3 ? "eager" : "lazy"}
-          fetchPriority={index < 3 ? "high" : "low"}
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-          unoptimized
-        />
-      </div>
+      <motion.a
+        href={mainUrl}
+        target={mainUrl ? "_blank" : undefined}
+        rel={mainUrl ? "noopener noreferrer" : undefined}
+        data-project-id={project.id}
+        whileHover={{ y: -2 }}
+        className="relative overflow-hidden rounded-xl bg-card border border-border/60 dark:border-border/50 hover:border-border dark:hover:border-border hover:shadow-md cursor-pointer block h-full flex flex-col transition-all duration-200"
+      >
+        {/* Featured badge - Minimal */}
+        {featured && (
+          <motion.div
+            className="absolute top-2 right-2 z-20 px-2 py-0.5 rounded-lg bg-muted/50 border border-border/60 dark:border-border/50 text-[10px] font-medium text-foreground"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1 }}
+          >
+            Featured
+          </motion.div>
+        )}
 
-      <div className="relative p-4 sm:p-5 md:p-6 lg:p-8 z-10 bg-card dark:bg-card/80 rounded-b-2xl md:rounded-b-3xl border-t border-t-amber-500/5 dark:border-t-transparent">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold group-hover:text-primary transition-colors mb-1 sm:mb-2 break-words">
+        {/* Image Section - Adapts to GitHub image aspect ratio (1200x630 ≈ 1.91:1) */}
+        <div className={`relative ${featured ? 'aspect-[19/10]' : 'aspect-[19/10]'} overflow-hidden rounded-t-xl bg-muted/30 dark:bg-muted/20`}>
+          {/* Image overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 dark:from-background/80 via-background/10 dark:via-background/20 to-transparent z-10" />
+          
+          <Image
+            src={imageSrc}
+            alt={project.title}
+            fill
+            sizes={featured ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
+            className="object-contain group-hover:scale-105 transition-transform duration-500 ease-out gpu-accelerated brightness-[0.95] dark:brightness-100 contrast-[1.05] dark:contrast-100"
+            loading={index < 3 ? "eager" : "lazy"}
+            fetchPriority={index < 3 ? "high" : "low"}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+            quality={85}
+            unoptimized
+          />
+        </div>
+
+        {/* Content Section - Very Compact */}
+        <div className={`relative ${featured ? 'p-3 sm:p-4 md:p-5' : 'p-2.5 sm:p-3 md:p-4'} z-10 bg-background rounded-b-xl flex-1 flex flex-col`}>
+          {/* Title and Description */}
+          <div className="flex-1 min-w-0 mb-2">
+            <motion.h3
+              className={`${featured ? 'text-base sm:text-lg md:text-xl' : 'text-sm sm:text-base md:text-lg'} font-semibold text-foreground mb-1 break-words group-hover:text-foreground transition-colors`}
+              whileHover={{ x: 2 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
               {project.title}
-            </h3>
-            <p className="text-xs sm:text-sm md:text-base text-muted-foreground line-clamp-2 sm:line-clamp-3 leading-relaxed">
+            </motion.h3>
+            <p className={`${featured ? 'text-xs sm:text-sm' : 'text-[10px] sm:text-[11px] md:text-xs'} text-muted-foreground line-clamp-2 leading-snug`}>
               {project.description}
             </p>
           </div>
-          <div className="flex gap-2 flex-shrink-0 self-start sm:self-auto">
-            {project.githubUrl && (
-              <motion.button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.open(project.githubUrl, '_blank', 'noopener,noreferrer');
-                }}
-                whileHover={{ scale: 1.15, rotate: 5, y: -2 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-amber-500/15 to-orange-500/15 hover:from-amber-500/25 hover:to-orange-500/25 border border-amber-500/15 hover:border-amber-500/25 transition-all flex items-center justify-center shadow-md hover:shadow-lg hover:shadow-amber-500/8 touch-manipulation relative z-20"
-                aria-label="View on GitHub"
-              >
-                <Github className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              </motion.button>
-            )}
-            {project.liveUrl && (
-              <motion.button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.open(project.liveUrl, '_blank', 'noopener,noreferrer');
-                }}
-                whileHover={{ scale: 1.15, rotate: -5, y: -2 }}
-                whileTap={{ scale: 0.9 }}
-                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-orange-500/15 to-amber-600/15 hover:from-orange-500/25 hover:to-amber-600/25 border border-amber-500/15 hover:border-amber-500/25 transition-all flex items-center justify-center shadow-md hover:shadow-lg hover:shadow-orange-500/8 touch-manipulation relative z-20"
-                aria-label="View live site"
-              >
-                <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              </motion.button>
-            )}
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            {/* Technology Tags - Very Compact */}
+            <div className="flex flex-wrap gap-1 flex-1">
+              {project.technologies.slice(0, featured ? 3 : 2).map((tech, i) => (
+                <span
+                  key={tech}
+                  className="px-1.5 py-0.5 rounded bg-muted/30 border border-border/50 dark:border-border/30 text-[9px] sm:text-[10px] font-medium text-muted-foreground"
+                >
+                  {tech}
+                </span>
+              ))}
+              {project.technologies.length > (featured ? 3 : 2) && (
+                <span className="px-1.5 py-0.5 rounded bg-muted/30 border border-border/30 text-[9px] sm:text-[10px] font-medium text-muted-foreground">
+                  +{project.technologies.length - (featured ? 3 : 2)}
+                </span>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-1.5 flex-shrink-0">
+              {project.githubUrl && (
+                <motion.button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.open(project.githubUrl, '_blank', 'noopener,noreferrer');
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-muted/30 border border-border/50 dark:border-border/30 hover:border-border dark:hover:border-border transition-all flex items-center justify-center touch-manipulation min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px]"
+                  aria-label="View on GitHub"
+                >
+                  <Github className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-foreground" />
+                </motion.button>
+              )}
+              {project.liveUrl && (
+                <motion.button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.open(project.liveUrl, '_blank', 'noopener,noreferrer');
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-muted/30 border border-border/50 dark:border-border/30 hover:border-border dark:hover:border-border transition-all flex items-center justify-center touch-manipulation min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px]"
+                  aria-label="View live site"
+                >
+                  <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-foreground" />
+                </motion.button>
+              )}
+            </div>
           </div>
         </div>
-
-        <div className="flex flex-wrap gap-2 mt-4">
-          {project.technologies.slice(0, 4).map((tech) => (
-            <motion.span
-              key={tech}
-              whileHover={{ scale: 1.08, y: -2 }}
-              className="modern-badge px-3 py-1.5 text-xs font-medium rounded-lg"
-            >
-              <span className="relative z-10">{tech}</span>
-            </motion.span>
-          ))}
-          {project.technologies.length > 4 && (
-            <span className="modern-badge px-3 py-1.5 text-xs font-medium rounded-lg text-muted-foreground">
-              +{project.technologies.length - 4}
-            </span>
-          )}
-        </div>
-      </div>
-    </motion.a>
+      </motion.a>
+    </motion.div>
   );
 });
 

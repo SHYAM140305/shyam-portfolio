@@ -57,7 +57,10 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react'],
     // optimizeCss: true, // Disabled - requires 'critters' package to be installed
+    optimizeServerReact: true,
   },
+  // Exclude react-pdf from server-side processing
+  serverExternalPackages: ['react-pdf', 'pdfjs-dist'],
   // Headers for better caching and security
   async headers() {
     return [
@@ -94,6 +97,19 @@ const nextConfig: NextConfig = {
       {
         source: '/_next/static/:path*',
         headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/pdf.worker.min.mjs',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/javascript',
+          },
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',

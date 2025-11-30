@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "node scripts/copy-pdf-worker.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -17,9 +18,11 @@
     "next": "^16.0.1",
     "next-seo": "^6.6.0",
     "next-themes": "^0.4.4",
+    "pdfjs-dist": "^5.4.449",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.54.2",
+    "react-pdf": "^10.2.0",
     "tailwind-merge": "^2.6.0",
     "zod": "^3.24.1"
   },

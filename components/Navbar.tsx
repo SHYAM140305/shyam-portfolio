@@ -38,13 +38,12 @@ export function Navbar() {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Optimized scroll handler with Intersection Observer for better performance
   useEffect(() => {
     let ticking = false;
     let lastScrollY = 0;
     let rafId: number | null = null;
     let lastProgress = 0;
-    let lastActiveSection = activeSection;
-    let sectionCheckTimeout: NodeJS.Timeout | null = null;
     
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -71,49 +70,73 @@ export function Navbar() {
         lastScrollY = currentScrollY;
       }
 
-      // Throttle section checking more aggressively
+      ticking = false;
+    };
+
+    // Use Intersection Observer for section detection (more performant)
+    const observerOptions = {
+      root: null,
+      rootMargin: '-100px 0px -50% 0px',
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      // Find the most visible section
+      type VisibleSection = { element: Element; ratio: number };
+      let mostVisible: VisibleSection | null = null;
+      
+      for (const entry of entries) {
+        if (entry.isIntersecting && entry.intersectionRatio > 0) {
+          if (!mostVisible || entry.intersectionRatio > mostVisible.ratio) {
+            mostVisible = {
+              element: entry.target,
+              ratio: entry.intersectionRatio,
+            };
+          }
+        }
+      }
+
+      if (mostVisible !== null) {
+        const targetElement = mostVisible.element;
+        if (targetElement instanceof HTMLElement) {
+          const sectionId = targetElement.id;
+          if (sectionId && sectionId !== activeSection) {
+            setActiveSection(sectionId);
+          }
+        }
+      }
+    }, observerOptions);
+
+    // Observe all sections
+    const sections = navItems.map((item) => item.href.slice(1));
+    sections.forEach((sectionId) => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    // Throttled scroll handler for progress
+    const throttledScroll = () => {
       if (!ticking) {
         rafId = window.requestAnimationFrame(() => {
-          // Debounce section checking to reduce DOM queries
-          if (sectionCheckTimeout) {
-            clearTimeout(sectionCheckTimeout);
-          }
-          
-          sectionCheckTimeout = setTimeout(() => {
-            const sections = navItems.map((item) => item.href.slice(1));
-            const current = sections.find((section) => {
-              const element = document.getElementById(section);
-              if (element) {
-                const rect = element.getBoundingClientRect();
-                return rect.top <= 100 && rect.bottom >= 100;
-              }
-              return false;
-            });
-
-            if (current && current !== lastActiveSection) {
-              setActiveSection(current);
-              lastActiveSection = current;
-            }
-          }, 100); // Debounce section checks
-          
+          handleScroll();
           ticking = false;
           rafId = null;
         });
-        
         ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", throttledScroll, { passive: true });
     // Calculate initial progress
     handleScroll();
+    
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", throttledScroll);
+      observer.disconnect();
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
-      }
-      if (sectionCheckTimeout) {
-        clearTimeout(sectionCheckTimeout);
       }
     };
   }, [activeSection, isScrolled]);
@@ -127,7 +150,7 @@ export function Navbar() {
       }
     };
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsDesktopMenuOpen(false);
+      if (e.key && e.key === "Escape") setIsDesktopMenuOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKey);
@@ -140,6 +163,8 @@ export function Navbar() {
   // Global shortcut: Cmd/Ctrl + K to focus search
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Safety check: ensure key exists and is a string
+      if (!e.key || typeof e.key !== 'string') return;
       const isK = e.key.toLowerCase() === "k";
       if ((e.ctrlKey || e.metaKey) && isK) {
         e.preventDefault();
@@ -183,7 +208,10 @@ export function Navbar() {
   }
 
   // Fuzzy search helpers - Memoized
-  const normalize = useCallback((s: string) => s.toLowerCase().trim(), []);
+  const normalize = useCallback((s: string | undefined | null) => {
+    if (!s) return "";
+    return s.toLowerCase().trim();
+  }, []);
   const getScore = useCallback((text: string, query: string, aliases: string[] = []) => {
     const t = normalize(text);
     const q = normalize(query);
@@ -192,6 +220,7 @@ export function Navbar() {
     if (t.startsWith(q)) return 90;
     if (t.includes(q)) return 70;
     for (const a of aliases) {
+      if (!a) continue;
       const an = normalize(a);
       if (an === q) return 85;
       if (an.startsWith(q)) return 75;
@@ -346,9 +375,10 @@ export function Navbar() {
     return getFiltered(debouncedSearchQuery);
   }, [debouncedSearchQuery, getFiltered]);
 
-  const highlightText = (text: string, query: string) => {
+  const highlightText = (text: string | undefined | null, query: string | undefined | null) => {
+    if (!text) return <span></span>;
     const q = normalize(query);
-    if (!q || !text) return <span>{text}</span>;
+    if (!q) return <span>{text}</span>;
     const lowerText = text.toLowerCase();
     const idx = lowerText.indexOf(q);
     if (idx === -1) return <span>{text}</span>;
@@ -397,7 +427,7 @@ export function Navbar() {
       }
     };
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsSearchOpen(false);
+      if (e.key && e.key === "Escape") setIsSearchOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKey);
@@ -446,49 +476,35 @@ export function Navbar() {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 navbar-solid ${
+      transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "shadow-2xl border-b border-amber-500/4 shadow-amber-500/1"
-          : ""
+          ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-sm"
+          : "bg-background/40 backdrop-blur-xl"
       }`}
     >
-      {/* Scroll Progress Bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-transparent overflow-hidden">
+      {/* Minimal scroll progress indicator */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-transparent overflow-hidden">
         <motion.div
-          className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500"
+          className="h-full bg-foreground/20"
           style={{
             width: `${scrollProgress}%`,
           }}
           transition={{ duration: 0.1, ease: "linear" }}
         />
       </div>
-      {/* Subtle gradient line when scrolled */}
-      {isScrolled && (
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/15 to-transparent" />
-      )}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+      <div className="container mx-auto px-4 xs:px-6 sm:px-8 lg:px-12 py-3 sm:py-4 md:py-5">
         <div className="flex items-center justify-between">
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link
               href="#home"
               onClick={(e) => {
                 e.preventDefault();
                 handleNavClick("#home");
               }}
-              className="text-2xl md:text-3xl font-bold flex items-center gap-2 relative z-10"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold tracking-tight text-foreground hover:opacity-80 transition-opacity touch-manipulation"
             >
-              <span className="relative inline-block">
-                <span className="gradient-text">
-                  Shyam J
-                </span>
-                <motion.span
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500/60 to-orange-500/60"
-                  initial={{ scaleX: 0 }}
-                  whileHover={{ scaleX: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </span>
+              Shyam J
             </Link>
           </motion.div>
 
@@ -551,7 +567,7 @@ export function Navbar() {
                     });
                   }
                 }}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card border border-border/50 shadow-sm min-w-[220px] focus-within:border-primary/50"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-muted/50 border border-border/30 shadow-sm min-w-[220px] focus-within:border-border/60 focus-within:bg-muted/70 transition-all"
                 role="search"
               >
                 <Search className="w-4 h-4 text-muted-foreground" />
@@ -566,6 +582,7 @@ export function Navbar() {
                   }}
                   onFocus={() => setIsSearchOpen(true)}
                   onKeyDown={(e) => {
+                    if (!e.key) return;
                     if (e.key === "ArrowDown") {
                       e.preventDefault();
                       setSearchHighlight((prev) => Math.min(prev + 1, Math.max(filteredResults.length - 1, 0)));
@@ -590,7 +607,7 @@ export function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.12 }}
-                    className="absolute left-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm rounded-xl menu-solid border border-border/50 shadow-xl p-2 z-50"
+                    className="absolute left-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm rounded-xl bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl p-2 z-50"
                   >
                     {(debouncedSearchQuery || searchQuery).trim().length === 0 ? (
                       <div>
@@ -771,7 +788,7 @@ export function Navbar() {
                 whileTap={{ y: 0 }}
                 aria-haspopup="menu"
                 aria-expanded={isDesktopMenuOpen}
-                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-xl transition-all font-semibold text-sm sm:text-base text-foreground bg-card hover:bg-accent/30 border border-border/50 shadow-sm"
+                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-lg transition-all font-medium text-sm sm:text-base text-foreground bg-muted/50 hover:bg-muted border border-border/30 shadow-sm"
               >
                 {(() => {
                   const current = navItems.find((i) => i.href.slice(1) === activeSection) || navItems[0];
@@ -794,7 +811,7 @@ export function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-72 rounded-xl menu-solid border border-border/50 shadow-xl p-2 z-50"
+                    className="absolute right-0 mt-2 w-72 rounded-xl bg-background/95 backdrop-blur-xl border border-border/40 shadow-2xl p-2 z-50"
                     role="menu"
                   >
                     <div className="grid grid-cols-1">
@@ -810,8 +827,8 @@ export function Navbar() {
                           }}
                           className={`w-full text-left px-3 py-2 rounded-lg transition-colors font-medium text-sm flex items-center gap-3 ${
                             activeSection === item.href.slice(1)
-                              ? "bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-foreground border border-amber-500/10"
-                              : "hover:bg-accent/30"
+                              ? "bg-muted text-foreground"
+                              : "hover:bg-muted/50"
                           }`}
                           role="menuitem"
                         >
@@ -834,7 +851,7 @@ export function Navbar() {
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-10 h-10 rounded-xl bg-muted hover:bg-accent transition-colors flex items-center justify-center shadow-md hover:shadow-lg border border-border/50 touch-manipulation"
+                className="w-10 h-10 rounded-lg bg-muted/50 hover:bg-muted transition-colors flex items-center justify-center border border-border/30 touch-manipulation min-w-[44px] min-h-[44px]"
                 aria-label="Search"
               >
                 <Search className="h-5 w-5" />
@@ -858,7 +875,7 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="fixed top-[73px] left-4 right-4 max-h-[calc(100vh-100px)] overflow-y-auto rounded-xl menu-solid border border-border/50 shadow-xl p-3 z-50 md:hidden max-w-[calc(100vw-2rem)]"
+                      className="fixed top-[73px] left-2 xs:left-3 sm:left-4 right-2 xs:right-3 sm:right-4 max-h-[calc(100vh-100px)] overflow-y-auto rounded-xl menu-solid border border-border/50 shadow-xl p-3 xs:p-4 z-50 md:hidden max-w-[calc(100vw-1rem)] xs:max-w-[calc(100vw-1.5rem)] sm:max-w-[calc(100vw-2rem)]"
                     >
                     <form
                       onSubmit={(e) => {
@@ -958,6 +975,7 @@ export function Navbar() {
                         }}
                         onFocus={() => setIsSearchOpen(true)}
                         onKeyDown={(e) => {
+                          if (!e.key) return;
                           if (e.key === "ArrowDown") {
                             e.preventDefault();
                             setSearchHighlight((prev) => Math.min(prev + 1, Math.max(filteredResults.length - 1, 0)));
@@ -1145,7 +1163,7 @@ export function Navbar() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="w-10 h-10 rounded-xl bg-muted hover:bg-accent transition-colors flex items-center justify-center shadow-md hover:shadow-lg border border-border/50 touch-manipulation"
+              className="w-10 h-10 rounded-lg bg-muted/50 hover:bg-muted transition-colors flex items-center justify-center border border-border/30 touch-manipulation min-w-[44px] min-h-[44px]"
               aria-label="Toggle menu"
             >
               <AnimatePresence mode="wait">
@@ -1191,10 +1209,10 @@ export function Navbar() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
                   onClick={() => handleNavClick(item.href)}
-                  className={`block w-full text-left px-4 py-3 rounded-xl transition-all font-medium ${
+                  className={`block w-full text-left px-4 py-3 rounded-lg transition-all font-medium ${
                     activeSection === item.href.slice(1)
-                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-primary-foreground shadow-lg shadow-amber-500/8"
-                      : "bg-card hover:bg-accent border border-border/50 hover:border-primary/50"
+                      ? "bg-foreground text-background"
+                      : "bg-muted/50 hover:bg-muted border border-border/30"
                   }`}
                 >
                   {item.label}

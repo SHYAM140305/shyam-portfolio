@@ -74,6 +74,9 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  minimumScale: 1,
+  userScalable: true,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -83,12 +86,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Performance: Preconnect to external domains */}
+        <link rel="preconnect" href="https://opengraph.githubassets.com" />
+        <link rel="preconnect" href="https://github.com" />
+        <link rel="preconnect" href="https://images.weserv.nl" />
+        <link rel="dns-prefetch" href="https://opengraph.githubassets.com" />
+        <link rel="dns-prefetch" href="https://github.com" />
+        <link rel="dns-prefetch" href="https://images.weserv.nl" />
+        <link rel="dns-prefetch" href="https://cdn.simpleicons.org" />
+        <link rel="dns-prefetch" href="https://logo.clearbit.com" />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
-          disableTransitionOnChange={false}
+          disableTransitionOnChange={true}
+          storageKey="theme"
         >
           <Navbar />
           <main>{children}</main>

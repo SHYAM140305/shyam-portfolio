@@ -7,7 +7,14 @@ import { education, certifications } from "@/data/education";
 import { leadership } from "@/data/leadership";
 import { hackathons } from "@/data/hackathons";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+// Lazy initialization to avoid build-time errors when GROQ_API_KEY is not set
+function getGroqClient() {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    throw new Error("GROQ_API_KEY environment variable is not configured");
+  }
+  return new Groq({ apiKey });
+}
 
 // Simple in-memory rate limiting (for production, use Redis or similar)
 // Optimized: Clean up old entries periodically to prevent memory leaks
@@ -128,7 +135,7 @@ function getPortfolioContext(): string {
 
   // Domains/Areas of Expertise
   const domainsSection = `Domains & Expertise:
-Machine Learning, Deep Learning, Generative AI, Computer Vision, NLP, Reinforcement Learning, Digital Twin, Statistical Modeling, Full Stack Development, Cloud Computing, AI-Powered Automation`;
+Machine Learning, Deep Learning, Generative AI, Computer Vision, NLP, Reinforcement Learning, Digital Twin, Statistical Modeling, Research-driven Development, Cloud Computing, AI-Powered Automation`;
 
   // Projects with full details
   const projectsSection = projects
@@ -223,7 +230,7 @@ Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning,
 
   // About Section Details
   const aboutSection = `About Me:
-- Professional Description: Passionate AI/ML Engineer & Full Stack Developer focused on building real-world AI products. I work across the stack—from data pipelines and model serving to delightful web experiences.
+- Professional Description: Passionate AI/ML Engineer & Research-driven developer focused on building real-world AI products. I work across the stack—from data pipelines and model serving to delightful web experiences.
 - Tagline: Building intelligent systems that solve real-world problems
 - Key Highlights:
   * Leading 400+ members as President of NEXT GEN AI
@@ -242,11 +249,11 @@ Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning,
 - Website: shyamj.vercel.app
 - GitHub: github.com/SHYAM140305
 - LinkedIn: linkedin.com/in/shyam-jayakanthan-050a85284
-- Current Role: AI/ML Engineer, Full Stack Developer
+- Current Role: AI/ML Engineer, Research-driven developer
 - Current Position: President, NEXT GEN AI @ SRMIST (400+ members)
 - Education: BTech in Artificial Intelligence @ SRM Institute of Science and Technology (2022-2026, Current)
 - CGPA: 7.5/10.0
-- Research Interests (Portfolio): Agentic AI, Digital Twin, AI Research, Full Stack, NLP, Open Source, Data Analysis, ML Systems`;
+- Research Interests (Portfolio): Agentic AI, Digital Twin, AI Research, Research-driven Development, NLP, Open Source, Data Analysis, ML Systems`;
 
   cachedContext = `PORTFOLIO CONTEXT - Shyam J's Complete Portfolio
 
@@ -362,6 +369,7 @@ IMPORTANT GUIDELINES:
 
     let completion;
     try {
+      const groq = getGroqClient();
       completion = await groq.chat.completions.create({
         model: "llama-3.1-8b-instant",
         messages: chatMessages,
@@ -369,8 +377,16 @@ IMPORTANT GUIDELINES:
         max_tokens: 1200, // Increased for comprehensive detailed answers
       });
     } catch (apiErr: any) {
-      // Normalize Groq rate limit to 429 for the client
+      // Check for missing API key error
       const message = String(apiErr?.message || "");
+      if (message.includes("GROQ_API_KEY") || message.includes("apiKey")) {
+        return NextResponse.json(
+          { error: "AI service is not configured. Please contact the administrator." },
+          { status: 503 }
+        );
+      }
+
+      // Normalize Groq rate limit to 429 for the client
       const status = Number(apiErr?.status || apiErr?.statusCode || 0);
       const code = String(apiErr?.code || "").toLowerCase();
 

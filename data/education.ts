@@ -9,6 +9,9 @@ export interface Education {
   grade?: string;
   coursework?: string[];
   highlights?: string[];
+  logo?: string;
+  logoLight?: string;
+  logoDark?: string;
 }
 
 const AWS_LOGO_LIGHT_URL = "/aws-logo-light.svg";
@@ -20,6 +23,7 @@ const GOOGLE_LOGO_URL = "https://logo.clearbit.com/google.com";
 const INTEL_LOGO_URL = "https://logo.clearbit.com/intel.com";
 const TOYOTA_LOGO_URL = "https://logo.clearbit.com/toyota.com";
 const SRM_LOGO_URL = "/srm-logo.png";
+const SCHOOL_LOGO_URL = "/school.jpg";
 
 export const education: Education[] = [
   {
@@ -31,6 +35,9 @@ export const education: Education[] = [
     endDate: "May 2026",
     current: true,
     grade: "CGPA: 7.5/10.0",
+    logo: SRM_LOGO_URL,
+    logoLight: SRM_LOGO_URL,
+    logoDark: SRM_LOGO_URL,
     coursework: [
       "Machine Learning",
       "Deep Learning",
@@ -52,6 +59,9 @@ export const education: Education[] = [
     endDate: "2020",
     current: false,
     grade: "Grade 10: 74%, Grade 12: 64%",
+    logo: SCHOOL_LOGO_URL,
+    logoLight: SCHOOL_LOGO_URL,
+    logoDark: SCHOOL_LOGO_URL,
   },
 ];
 

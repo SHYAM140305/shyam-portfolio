@@ -12,11 +12,11 @@ export function ContactCard() {
   // vCard download link
   const vcardData = [
     "BEGIN:VCARD",
-    "VERSION=3.0",
-    "N:Jayakanthan;Shyam;;;",
-    "FN:Shyam Jayakanthan",
-    "ORG:SRMIST",
-    "TITLE:AI/ML Engineer;Full Stack Developer",
+    "VERSION:3.0",
+    "N:J;Shyam;;;",
+    "FN:Shyam J",
+    "ORG:AI/ML Engineer",
+    "TITLE:AI/ML Engineer & Research-driven developer",
     "EMAIL;TYPE=INTERNET;TYPE=WORK:jshyam2005@gmail.com",
     "TEL;TYPE=CELL:+91 7395980045",
     "URL:https://shyamj.vercel.app",
@@ -84,22 +84,19 @@ export function ContactCard() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.6 }}
       className="relative w-full"
     >
-      <div className="relative rounded-2xl modern-glass-strong border border-border/40 p-4 sm:p-5 md:p-6 shadow-xl backdrop-blur-xl w-full">
-        {/* Gradient border effect */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-amber-500/10 opacity-0 hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl" />
-        
-        <div className="relative z-10 flex flex-col justify-center min-h-[140px] sm:min-h-[160px] md:min-h-[170px]">
+      <div className="relative rounded-xl bg-card border border-border/50 p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 shadow-sm">
+        <div className="flex flex-col">
           <motion.h3
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-xl sm:text-2xl font-bold gradient-text mb-1.5 text-center"
+            className="text-lg sm:text-xl md:text-2xl font-semibold text-foreground mb-2"
           >
             Let&apos;s Collaborate
           </motion.h3>
@@ -109,43 +106,34 @@ export function ContactCard() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-center text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-5"
+            className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6"
           >
             Connect with me on these platforms
           </motion.p>
 
-          <div className="flex flex-wrap sm:flex-nowrap items-stretch gap-2 sm:gap-2.5 md:gap-3 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
             {buttons.map((button, index) => {
               const Icon = button.icon;
+              
+              const motionProps = {
+                initial: { opacity: 0, y: 10 },
+                whileInView: { opacity: 1, y: 0 },
+                viewport: { once: true },
+                transition: { delay: index * 0.05 },
+                whileHover: { y: -2 },
+                whileTap: { scale: 0.98 },
+                className: "group relative flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-lg bg-muted/30 border border-border/50 hover:border-border hover:bg-muted/50 transition-all duration-200",
+              };
+
               const buttonContent = (
                 <>
-                  {/* Glow effect */}
-                  <div
-                    className={`absolute inset-0 blur-xl rounded-full opacity-0 group-hover:opacity-60 transition-opacity duration-300 bg-gradient-to-br ${button.glow}`}
-                  />
-                  
-                  <div className="relative z-10 flex items-center justify-center gap-1.5 sm:gap-2 w-full">
-                    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
-                    <span className="text-xs whitespace-nowrap">
-                      <span className="sm:hidden">{((button as any).getLabelMobile ? (button as any).getLabelMobile() : button.label)}</span>
-                      <span className="hidden sm:inline">{button.label}</span>
-                    </span>
-                  </div>
-                  
-                  {/* Shine effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                  <Icon className="h-5 w-5 text-foreground" />
+                  <span className="text-xs font-medium text-foreground text-center">
+                    <span className="sm:hidden">{((button as any).getLabelMobile ? (button as any).getLabelMobile() : button.label)}</span>
+                    <span className="hidden sm:inline">{button.label}</span>
+                  </span>
                 </>
               );
-
-              const motionProps = {
-                initial: { opacity: 0, x: -20 },
-                whileInView: { opacity: 1, x: 0 },
-                viewport: { once: true },
-                transition: { delay: index * 0.1 },
-                whileHover: { scale: 1.02 },
-                whileTap: { scale: 0.98 },
-                className: `group relative flex items-center justify-center gap-1.5 sm:gap-2 flex-1 min-w-[calc(50%-0.25rem)] sm:min-w-0 py-2.5 sm:py-3 rounded-lg bg-gradient-to-br ${button.color} ${button.hoverColor} text-white font-semibold text-xs shadow-lg transition-all duration-300 overflow-hidden border border-white/10`,
-              };
 
               return button.href ? (
                 <Link
@@ -154,7 +142,6 @@ export function ContactCard() {
                   target={button.href.startsWith('data:') ? undefined : "_blank"}
                   rel={button.href.startsWith('data:') ? undefined : "noopener noreferrer"}
                   download={(button as any).download}
-                  className="flex-1"
                 >
                   <motion.div {...motionProps}>
                     {buttonContent}

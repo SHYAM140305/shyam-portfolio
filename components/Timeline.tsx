@@ -38,96 +38,111 @@ const TimelineItem = memo(function TimelineItem({
 }: TimelineItemProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative pl-6 sm:pl-8 md:pl-10 pb-8 sm:pb-10 md:pb-12 border-l-2 border-border/50 last:border-l-0 last:pb-0 group"
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="relative pl-6 sm:pl-8 md:pl-10 lg:pl-12 pb-10 sm:pb-12 md:pb-14 lg:pb-16 last:pb-0 group"
       data-experience-id={itemType === 'experience' && itemId ? itemId : undefined}
       data-education-id={itemType === 'education' && itemId ? itemId : undefined}
     >
-      {/* Animated timeline dot */}
-      <motion.div
-        className="absolute left-0 top-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-to-r from-amber-500/80 to-orange-500/80 border-2 sm:border-4 border-background -translate-x-[10px] sm:-translate-x-[13px] shadow-lg group-hover:scale-125 transition-transform z-10"
-        whileHover={{ scale: 1.3 }}
-      />
+      {/* Clean Timeline Line - Apple Style */}
+      <div className="absolute left-0 top-0 bottom-0 w-px bg-border/30 group-hover:bg-foreground/20 transition-colors duration-300" />
       
-      {/* Subtle indicator for current items - No infinite animation */}
+      {/* Minimal Timeline Dot */}
+      <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full bg-foreground border-2 border-background -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] shadow-sm z-10" />
+      
+      {/* Current Role Indicator */}
       {current && (
-        <div className="absolute left-0 top-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary/40 -translate-x-[10px] sm:-translate-x-[13px] ring-2 ring-primary/20" />
+        <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full bg-foreground -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] ring-2 ring-foreground/20 z-10" />
       )}
       
+      {/* Apple-style Card */}
       <motion.div
-        whileHover={{ scale: 1.02, x: 5, y: -2 }}
-        className="relative bg-gradient-to-br from-card/95 to-card/90 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 border border-border/50 hover:border-primary/60 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-md overflow-hidden card-shadow-hover"
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="relative bg-card rounded-xl p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md"
       >
-        {/* Background gradient on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-orange-500/0 to-amber-600/0 group-hover:from-amber-500/2 group-hover:via-orange-500/2 group-hover:to-amber-600/2 transition-all duration-500" />
-        
-        {/* Corner accents */}
-        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/2 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-500/2 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        
         <div className="relative z-10">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 mb-4 sm:mb-5">
+          {/* Header Section - Clean */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-5 md:mb-6">
             <div className="flex-1 min-w-0">
-              <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 group-hover:text-primary transition-colors break-words">
+              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-1 sm:mb-2 text-foreground break-words">
                 {title}
               </h3>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold bg-gradient-to-r from-amber-500/80 to-orange-500/80 bg-clip-text text-transparent break-words">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-medium text-muted-foreground break-words">
                 {organization}
               </p>
             </div>
             {!hideDates && (
-              <div className="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-muted/30 dark:bg-muted/20 border border-border/30 dark:border-border/20 flex-shrink-0">
-                <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/50 flex-shrink-0">
+                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-xs sm:text-sm font-medium text-foreground whitespace-nowrap">
                   {startDate} - {current ? (
-                    <span className="text-primary font-semibold">Present</span>
+                    <span className="text-foreground font-semibold">Present</span>
                   ) : endDate}
                 </span>
               </div>
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm mb-4 sm:mb-5">
-            <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-muted/20 dark:bg-muted/15 border border-border/20 dark:border-border/15">
-              <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-              <span className="text-muted-foreground font-medium break-words">{location}</span>
+          {/* Meta Information - Minimal */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/30 border border-border/30">
+              <MapPin className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+              <span className="text-sm font-medium text-muted-foreground break-words">{location}</span>
             </div>
             {type && (
-              <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-primary/8 dark:bg-primary/5 border border-primary/15 dark:border-primary/10">
-                <Briefcase className="h-3 w-3 sm:h-4 sm:w-4 text-primary flex-shrink-0" />
-                <span className="text-primary font-medium break-words">{type}</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/30 border border-border/30">
+                <Briefcase className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-sm font-medium text-muted-foreground break-words">{type}</span>
+              </div>
+            )}
+            {current && (
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/30 border border-border/30">
+                <div className="w-1.5 h-1.5 rounded-full bg-foreground" />
+                <span className="text-xs font-medium text-foreground uppercase tracking-wider">
+                  Current
+                </span>
               </div>
             )}
           </div>
 
+          {/* Description - Clean */}
           {description && (
-            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-5 font-medium px-3 sm:px-4 py-2 rounded-lg bg-muted/20 dark:bg-muted/15 border-l-4 border-primary/50 dark:border-primary/30">
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-sm sm:text-base text-muted-foreground mb-6 leading-relaxed"
+            >
               {description}
-            </p>
+            </motion.p>
           )}
 
+          {/* Highlights - Minimal */}
           {highlights && highlights.length > 0 && (
-            <ul className="space-y-3">
-              {highlights.map((highlight, index) => (
-                <motion.li
-                  key={index}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm md:text-base"
-                >
-                  <motion.div
-                    className="mt-2 w-2 h-2 rounded-full bg-gradient-to-r from-amber-500/60 to-orange-500/60 flex-shrink-0"
-                    whileHover={{ scale: 1.5 }}
-                  />
-                  <span className="text-muted-foreground leading-relaxed">{highlight}</span>
-                </motion.li>
-              ))}
-            </ul>
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider mb-4">
+                Key Achievements
+              </h4>
+              <ul className="space-y-3">
+                {highlights.map((highlight, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.05 }}
+                    className="flex items-start gap-3 text-sm sm:text-base"
+                  >
+                    <div className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 flex-shrink-0" />
+                    <span className="text-muted-foreground leading-relaxed flex-1">{highlight}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       </motion.div>

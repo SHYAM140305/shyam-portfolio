@@ -1,16 +1,16 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState, useRef, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Skill } from "@/data/skills";
-import { Sparkles, Code2, Database, Cloud, Wrench, Brain, Layers, Zap } from "lucide-react";
+import { Sparkles, Code2, Database, Cloud, Wrench, Brain, Layers, Zap, ChevronRight } from "lucide-react";
 import { skillIconMap, DefaultSkillIcon } from "@/data/skillIcons";
 
 interface CompactSkillsProps {
   groupedSkills: Record<string, Skill[]>;
 }
 
-// Category icons mapping - Memoized to prevent recreation
+// Category icons mapping
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   "Languages": Code2,
   "Frontend": Layers,
@@ -22,200 +22,147 @@ const categoryIcons: Record<string, React.ComponentType<{ className?: string }>>
   "Tools": Wrench,
 };
 
+// Category colors for visual distinction
+const categoryColors: Record<string, string> = {
+  "Languages": "from-blue-500/20 to-cyan-500/20",
+  "Frontend": "from-purple-500/20 to-pink-500/20",
+  "Backend": "from-green-500/20 to-emerald-500/20",
+  "ML/AI": "from-orange-500/20 to-amber-500/20",
+  "Data Processing": "from-indigo-500/20 to-blue-500/20",
+  "Databases": "from-teal-500/20 to-cyan-500/20",
+  "Cloud & DevOps": "from-sky-500/20 to-blue-500/20",
+  "Tools": "from-gray-500/20 to-slate-500/20",
+};
+
+// Simplified variants for better performance
 const cardVariants = {
   initial: {
     opacity: 0,
     y: 20,
-    scale: 0.98,
   },
   animate: {
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
-      duration: 0.3,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 0.4,
+      ease: [0.25, 0.46, 0.45, 0.94],
     },
   },
 };
 
-// Simplified skill badge variants - no individual delays to reduce animation overhead
-const skillBadgeVariants = {
-  initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: {
-      duration: 0.2,
-      ease: "easeOut",
-    },
-  },
-};
-
-// Local stagger container with minimal delay for better performance
 const staggerContainer = {
   initial: {},
   animate: {
     transition: {
-      staggerChildren: 0.01, // Reduced stagger for faster rendering and less scroll lag
+      staggerChildren: 0.05,
+      delayChildren: 0.1,
     },
   },
 };
 
 export const CompactSkills = memo(function CompactSkills({ groupedSkills }: CompactSkillsProps) {
   const shouldReduceMotion = useReducedMotion();
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
-  // Memoize category entries to prevent unnecessary re-renders
   const categoryEntries = useMemo(() => Object.entries(groupedSkills), [groupedSkills]);
 
   return (
-    <motion.div
-      initial={false}
-      whileInView="animate"
-      viewport={{ once: true, margin: "150px" }} // Trigger much later to reduce scroll lag
-      variants={staggerContainer}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6"
-      style={{ willChange: "transform", transform: "translateZ(0)" }}
-    >
-      {categoryEntries.map(([category, categorySkills], catIndex) => {
-        const IconComponent = categoryIcons[category] || Sparkles;
-        
-        return (
-        <motion.div
-          key={category}
-          variants={cardVariants}
-          whileHover={shouldReduceMotion ? undefined : { 
-            y: -4, 
-            scale: 1.01,
-            transition: { duration: 0.2, ease: "easeOut" }
-          }}
-          className="group relative rounded-2xl overflow-hidden"
-          style={{ willChange: "transform" }}
-        >
-          {/* Gradient border wrapper */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/30 via-orange-500/20 to-amber-600/30 p-[1.5px] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <div className="w-full h-full rounded-2xl bg-background" />
-          </div>
+    <div className="w-full" ref={containerRef}>
+      {/* Creative Skills Grid - Compact - Optimized */}
+      <motion.div
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={staggerContainer}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5"
+        style={{ contain: "layout style paint" }}
+      >
+        {categoryEntries.map(([category, categorySkills], catIndex) => {
+          const IconComponent = categoryIcons[category] || Sparkles;
+          const categoryColor = categoryColors[category] || "from-foreground/10 to-foreground/5";
+          const isHovered = hoveredCategory === category;
+          
+          return (
+            <motion.div
+              key={category}
+              variants={cardVariants}
+              onHoverStart={() => !shouldReduceMotion && setHoveredCategory(category)}
+              onHoverEnd={() => setHoveredCategory(null)}
+              className="group relative gpu-accelerated"
+              style={{ willChange: "transform" }}
+            >
+              {/* Modern Card Design - Compact - Optimized */}
+              <div className="relative rounded-2xl bg-muted/30 backdrop-blur-md border border-border/50 p-4 sm:p-5 overflow-hidden h-full flex flex-col transition-all duration-300 hover:border-foreground/30 hover:shadow-lg hover:-translate-y-1">
+                {/* Animated gradient background - CSS only for better performance */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${categoryColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl`}
+                />
+                
+                {/* Decorative corner elements - Reduced blur for performance */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-foreground/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-foreground/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-          {/* Main card - Reduced backdrop-blur for better performance */}
-          <div className="relative rounded-2xl modern-glass-strong border border-border/40 group-hover:border-amber-500/50 transition-all duration-500 p-4 sm:p-5 shadow-xl group-hover:shadow-2xl bg-gradient-to-br from-card/95 via-card/90 to-card/95 overflow-hidden h-full flex flex-col">
-            {/* Animated background gradient - Only animate on hover, use CSS for better performance */}
-            {!shouldReduceMotion && (
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                style={{
-                  background: "radial-gradient(circle at 0% 0%, rgba(251, 146, 60, 0.08), transparent 60%)",
-                  willChange: "opacity",
-                }}
-              />
-            )}
-
-            {/* Shimmer effect on hover - Use CSS animation for better performance */}
-            {!shouldReduceMotion && (
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100"
-                style={{
-                  background: "linear-gradient(135deg, transparent 30%, rgba(251, 146, 60, 0.1) 50%, transparent 70%)",
-                  backgroundSize: "200% 200%",
-                  animation: "shimmer 3s linear infinite",
-                  willChange: "background-position",
-                }}
-              />
-            )}
-
-            {/* Content */}
-            <div className="relative z-10 flex flex-col h-full">
-              {/* Header */}
-              <div className="mb-4 pb-4 border-b border-border/30 group-hover:border-amber-500/40 transition-all duration-500">
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                    {/* Category icon */}
-                    <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 via-orange-500/15 to-amber-600/10 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-lg shadow-amber-500/10 group-hover:shadow-amber-500/20 transition-all duration-200 group-hover:scale-105">
-                      <IconComponent className="w-4 h-4" />
-                    </div>
-
-                    {/* Category title */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-xl sm:text-2xl font-extrabold gradient-text tracking-tight leading-tight truncate">
-                        {category}
-                      </h3>
+                <div className="relative z-10 flex flex-col h-full">
+                  {/* Header Section - Compact - Simplified */}
+                  <div className="mb-4 pb-3 border-b border-border/30 group-hover:border-foreground/20 transition-colors duration-300">
+                    <div className="flex items-center justify-between gap-3 mb-3">
+                      {/* Category Icon & Title */}
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="relative flex-shrink-0 group/icon">
+                          <div className="absolute inset-0 rounded-xl bg-foreground/10 blur-md opacity-0 group-hover/icon:opacity-100 transition-opacity duration-300" />
+                          <div className="relative w-10 h-10 rounded-xl bg-background/80 border border-border/50 flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover/icon:scale-110">
+                            <IconComponent className="w-4 h-4 text-foreground" />
+                          </div>
+                        </div>
+                        
+                        {/* Category Title */}
+                        <h3 className="text-lg sm:text-xl font-bold text-foreground truncate">
+                          {category}
+                        </h3>
+                      </div>
+                      
+                      {/* Skill Count - Compact */}
+                      <div className="flex-shrink-0 inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/50 border border-border/40 transition-transform duration-200 hover:scale-105">
+                        <Sparkles className="w-3 h-3 text-foreground/60" />
+                        <span className="text-xs font-semibold text-foreground/80">
+                          {categorySkills.length}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                {/* Skill count badge */}
-                <div className="flex items-center gap-2">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 border border-amber-500/25 shadow-sm group-hover:border-amber-500/40 group-hover:shadow-md transition-all duration-300">
-                    <Sparkles className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                    <span className="text-xs font-bold text-foreground/90">
-                      {categorySkills.length} {categorySkills.length === 1 ? 'skill' : 'skills'}
-                    </span>
+                  
+                  {/* Skills Grid - Compact - Optimized with CSS */}
+                  <div className="flex-1 flex flex-wrap gap-2 content-start">
+                    {categorySkills.map((skill, index) => {
+                      const IconComponent = skillIconMap[skill.name] || DefaultSkillIcon;
+                      return (
+                        <div
+                          key={`${category}-${skill.name}`}
+                          data-skill-name={skill.name}
+                          className="group/badge relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-background/60 backdrop-blur-sm border border-border/40 hover:border-foreground/30 text-xs sm:text-sm font-medium text-foreground cursor-default shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 overflow-hidden gpu-accelerated"
+                          style={{ willChange: "transform" }}
+                        >
+                          {/* Hover background effect - CSS only */}
+                          <div className="absolute inset-0 bg-foreground/5 scale-0 group-hover/badge:scale-100 transition-transform duration-200 rounded-lg" />
+                          
+                          {/* Icon */}
+                          <IconComponent className="w-3.5 h-3.5 relative z-10 text-foreground/70 group-hover/badge:text-foreground transition-colors duration-200 flex-shrink-0" />
+                          
+                          {/* Skill name */}
+                          <span className="relative z-10 whitespace-nowrap group-hover/badge:font-semibold transition-all duration-200">
+                            {skill.name}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
-              
-              {/* Skills grid - Simplified: batch animate all badges together */}
-              <motion.div 
-                className="flex-1 flex flex-wrap gap-2 content-start"
-                variants={{
-                  initial: {},
-                  animate: {
-                    transition: {
-                      staggerChildren: 0.005, // Further reduced stagger for less scroll lag
-                      delayChildren: 0.02,
-                    },
-                  },
-                }}
-              >
-                {categorySkills.map((skill, index) => (
-                  <motion.span
-                    key={`${category}-${skill.name}`}
-                    data-skill-name={skill.name}
-                    variants={skillBadgeVariants}
-                    style={{ willChange: "opacity, transform" }}
-                    whileHover={shouldReduceMotion ? undefined : { 
-                      y: -2, 
-                      scale: 1.05,
-                      transition: { duration: 0.15, ease: "easeOut" }
-                    }}
-                    className="group/badge relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-semibold bg-gradient-to-br from-muted/70 via-muted/60 to-muted/70 hover:from-amber-500/20 hover:via-orange-500/15 hover:to-amber-500/20 border border-border/40 hover:border-amber-500/50 text-foreground cursor-default shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden"
-                  >
-                    {/* Badge shimmer - Only on hover, use CSS for better performance */}
-                    {!shouldReduceMotion && (
-                      <div
-                        className="absolute inset-0 opacity-0 group-hover/badge:opacity-100"
-                        style={{
-                          background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
-                          width: "50%",
-                          animation: "badge-shimmer 1.5s ease-in-out infinite",
-                          animationDelay: "2s",
-                          willChange: "transform",
-                        }}
-                      />
-                    )}
-
-                    {/* Icon */}
-                    {(() => {
-                      const IconComponent = skillIconMap[skill.name] || DefaultSkillIcon;
-                      return (
-                        <IconComponent 
-                          className="w-3.5 h-3.5 relative z-10 flex-shrink-0 text-foreground/70 group-hover/badge:text-amber-600 dark:group-hover/badge:text-amber-400 transition-colors duration-200"
-                          aria-hidden="true"
-                        />
-                      );
-                    })()}
-                    
-                    {/* Skill name */}
-                    <span className="relative z-10 whitespace-nowrap group-hover/badge:text-amber-700 dark:group-hover/badge:text-amber-300 transition-colors duration-300">
-                      {skill.name}
-                    </span>
-                  </motion.span>
-                ))}
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
-        );
-      })}
-    </motion.div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+    </div>
   );
 });

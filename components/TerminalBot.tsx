@@ -57,7 +57,7 @@ const responses: Record<string, string[]> = {
     "• Edu Smart Bot - AI-powered educational assistant with OCR, summarization, and Q&A",
     "• Self-Driving Car AI - Reinforcement learning simulation with Deep Q-Learning",
     "• Image Captioning System - CNN-RNN architecture with attention (BLEU-4: 0.32)",
-    "• GenAI Chatbot - Custom LLM with fine-tuning capabilities",
+    "• Power BI SuperStore Analytics - Comprehensive BI dashboard with ML forecasts and predictive analytics",
     "• High Efficiency RAG System - Dual-phase path optimization for retrieval",
     "• Smart Parking System - YOLO-based real-time parking space detection",
     "Check out my projects section for more details!",
@@ -67,7 +67,7 @@ const responses: Record<string, string[]> = {
     "• Edu Smart Bot - AI-powered educational assistant with OCR, summarization, and Q&A",
     "• Self-Driving Car AI - Reinforcement learning simulation with Deep Q-Learning",
     "• Image Captioning System - CNN-RNN architecture with attention (BLEU-4: 0.32)",
-    "• GenAI Chatbot - Custom LLM with fine-tuning capabilities",
+    "• Power BI SuperStore Analytics - Comprehensive BI dashboard with ML forecasts and predictive analytics",
     "• High Efficiency RAG System - Dual-phase path optimization for retrieval",
     "• Smart Parking System - YOLO-based real-time parking space detection",
     "Check out my projects section for more details!",
@@ -434,23 +434,35 @@ export const TerminalBot = memo(function TerminalBot() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="relative w-full max-w-4xl mx-auto"
+      className="relative w-full max-w-4xl mx-auto px-2 xs:px-3 sm:px-4"
     >
-      <div className="rounded-xl overflow-hidden modern-glass border border-border/40 shadow-xl">
-        {/* Terminal Header */}
-        <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 dark:from-zinc-900 dark:to-zinc-950 px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 border-b border-zinc-700/50">
-          <div className="flex gap-1.5 sm:gap-2">
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-red-500"></div>
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500"></div>
+      <div className="rounded-lg overflow-hidden bg-background border border-border/50 shadow-2xl" style={{ boxShadow: '0 20px 60px -12px rgba(0, 0, 0, 0.25)' }}>
+        {/* Apple Terminal Header */}
+        <div className="bg-[#2d2d2d] dark:bg-[#1e1e1e] px-3 sm:px-4 py-2 sm:py-2.5 flex items-center gap-2 sm:gap-3 border-b border-black/20 dark:border-white/5">
+          {/* Traffic Light Buttons - Apple Style */}
+          <div className="flex gap-2 flex-shrink-0">
+            <div className="w-3 h-3 rounded-full bg-[#ff5f57] shadow-[0_0_0_0.5px_rgba(0,0,0,0.3)] hover:bg-[#ff3b30] transition-colors"></div>
+            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] shadow-[0_0_0_0.5px_rgba(0,0,0,0.3)] hover:bg-[#ff9500] transition-colors"></div>
+            <div className="w-3 h-3 rounded-full bg-[#28c840] shadow-[0_0_0_0.5px_rgba(0,0,0,0.3)] hover:bg-[#20d046] transition-colors"></div>
           </div>
-          <Terminal className="h-3 w-3 sm:h-4 sm:w-4 text-zinc-400 ml-2" />
-          <span className="text-[10px] sm:text-xs font-medium text-zinc-400 ml-2">Ask Me Anything Terminal</span>
+          {/* Window Title */}
+          <div className="flex-1 flex items-center justify-center">
+            <span className="text-[11px] font-medium text-[#8e8e93] dark:text-[#6e6e73] tracking-wide">
+              shyam@portfolio — Terminal
+            </span>
+          </div>
+          {/* Spacer for symmetry */}
+          <div className="w-[44px] flex-shrink-0"></div>
         </div>
 
-        {/* Terminal Body */}
-        <div className="bg-zinc-950 dark:bg-black p-4 sm:p-6 min-h-[300px] sm:min-h-[400px] max-h-[400px] sm:max-h-[500px] overflow-y-auto">
-          <div className="space-y-2 font-mono text-xs sm:text-sm">
+        {/* Terminal Body - Apple Style */}
+        <div 
+          className="terminal-scrollbar bg-[#1e1e1e] dark:bg-black p-3 sm:p-4 md:p-5 lg:p-6 min-h-[250px] sm:min-h-[350px] md:min-h-[400px] lg:min-h-[450px] max-h-[350px] sm:max-h-[450px] md:max-h-[500px] lg:max-h-[600px] overflow-y-auto overscroll-contain"
+          style={{
+            fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+          }}
+        >
+          <div className="space-y-1.5 text-xs sm:text-[13px] md:text-[14px] leading-relaxed">
             {messages.map((message, index) => {
               // Check if message starts with "$" to style it as a command
               const isCommand = message.startsWith("$ ");
@@ -459,21 +471,40 @@ export const TerminalBot = memo(function TerminalBot() {
                   key={`msg-${index}-${message.slice(0, 20)}`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className={`whitespace-pre-line ${isCommand ? "text-amber-500" : "text-green-400"}`}
+                  transition={{ duration: 0.15 }}
+                  className={`whitespace-pre-line ${
+                    isCommand 
+                      ? "text-[#ffd60a]" 
+                      : "text-[#30d158]"
+                  }`}
+                  style={{ 
+                    fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                  }}
                 >
                   {message}
                 </motion.div>
               );
             })}
             {isTyping && (
-              <div className="text-green-400 flex items-center gap-1">
-                <span>█</span>
+              <div className="text-[#30d158] flex items-center gap-1">
+                <motion.span
+                  animate={{ opacity: [1, 0.3, 1] }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                  style={{ 
+                    fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                  }}
+                >
+                  █
+                </motion.span>
               </div>
             )}
             {!isTyping && (
               <div className="flex items-center gap-2 mt-2">
-                <span className="text-amber-500 flex-shrink-0">$</span>
+                <span className="text-[#ffd60a] flex-shrink-0" style={{ 
+                  fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                }}>
+                  shyam@portfolio:~$ 
+                </span>
                 <form onSubmit={handleSubmit} className="relative flex-1">
                   <input
                     ref={inputRef}
@@ -490,10 +521,11 @@ export const TerminalBot = memo(function TerminalBot() {
                     onFocus={() => scheduleCaretUpdate()}
                     onSelect={() => scheduleCaretUpdate()}
                     onMouseUp={() => scheduleCaretUpdate()}
-                    className="w-full bg-transparent text-green-400 outline-none placeholder:text-zinc-600 caret-transparent font-mono text-xs sm:text-sm"
-                    placeholder="Type your question..."
+                    className="w-full bg-transparent text-[#ffffff] outline-none placeholder:text-[#6e6e73] caret-transparent touch-manipulation"
+                    placeholder=""
                     style={{ 
-                      fontFamily: 'monospace',
+                      fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                      fontSize: 'inherit',
                       padding: '0',
                       margin: '0',
                       border: 'none',
@@ -504,10 +536,11 @@ export const TerminalBot = memo(function TerminalBot() {
                   />
                   <span
                     ref={measureRef}
-                    className="pointer-events-none absolute whitespace-pre font-mono text-xs sm:text-sm"
+                    className="pointer-events-none absolute whitespace-pre"
                     aria-hidden="true"
                     style={{ 
-                      fontFamily: 'monospace',
+                      fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                      fontSize: 'inherit',
                       visibility: 'hidden',
                       position: 'absolute',
                       top: '0',
@@ -522,22 +555,24 @@ export const TerminalBot = memo(function TerminalBot() {
                       boxSizing: 'content-box'
                     }}
                   />
-                  <span
-                    className="pointer-events-none absolute top-0 bottom-0 flex items-center text-green-400 font-mono opacity-100"
+                  <motion.span
+                    className="pointer-events-none absolute top-0 bottom-0 flex items-center text-[#ffffff]"
                     aria-hidden="true"
+                    animate={{ opacity: [1, 0.3, 1] }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
                     style={{ 
                       left: `${caretOffset}px`,
-                      fontFamily: 'monospace',
+                      fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                      fontSize: 'inherit',
                       lineHeight: 'inherit',
                       height: '100%',
                       transition: 'none',
                       transitionProperty: 'none',
-                      animation: 'none',
                       willChange: 'auto'
                     }}
                   >
                     █
-                  </span>
+                  </motion.span>
                 </form>
               </div>
             )}
@@ -545,9 +580,6 @@ export const TerminalBot = memo(function TerminalBot() {
           </div>
         </div>
       </div>
-
-      {/* Subtle glow effect */}
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 rounded-xl blur-xl -z-10" />
     </motion.div>
   );
 });

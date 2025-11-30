@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { SectionTitle } from "@/components/SectionTitle";
+import { motion } from "framer-motion";
 import { Timeline } from "@/components/Timeline";
 import { experiences } from "@/data/experience";
 
@@ -46,18 +46,38 @@ export function ExperienceSection() {
   }, []);
 
   return (
-    <section id="experience" className="py-16 sm:py-20 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
-      {/* Background decoration - Reduced animations */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#fb923c05_1px,transparent_1px),linear-gradient(to_bottom,#fb923c05_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/1 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-orange-500/1 rounded-full blur-3xl" />
+    <section id="experience" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-background relative overflow-hidden">
+      {/* Clean section divider */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <SectionTitle
-          title="Experience"
-          subtitle="Professional journey"
-          className="mb-8 sm:mb-10"
-        />
+      <div className="container mx-auto px-4 xs:px-6 sm:px-8 lg:px-12 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="mb-8 sm:mb-12 md:mb-16"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-foreground mb-2 sm:mb-3 text-center px-2">
+              Experience
+            </h2>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="text-sm xs:text-base sm:text-lg text-muted-foreground text-center font-light max-w-2xl mx-auto px-2"
+          >
+            Professional journey
+          </motion.p>
+        </motion.div>
         <div className="max-w-4xl mx-auto">
           <Timeline items={sortedExperiences} />
         </div>

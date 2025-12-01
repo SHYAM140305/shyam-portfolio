@@ -515,11 +515,12 @@ export function PDFViewerInternal({
       <div
         ref={containerRef}
         id="pdf-container"
-        className="flex-1 overflow-auto pdf-viewer-scroll-container flex items-start justify-center p-1 sm:p-2 md:p-3 lg:p-4"
+        className="flex-1 overflow-hidden sm:overflow-auto pdf-viewer-scroll-container flex items-start justify-center p-1 sm:p-2 md:p-3 lg:p-4"
         style={{ 
           minHeight: 0, 
           width: "100%", 
-          WebkitOverflowScrolling: "touch"
+          WebkitOverflowScrolling: "touch",
+          overscrollBehavior: "none"
         }}
       >
         {(() => {

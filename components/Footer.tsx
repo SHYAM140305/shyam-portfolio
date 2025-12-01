@@ -29,7 +29,7 @@ export function Footer() {
 
   return (
     <footer className="relative border-t border-border/50 bg-background">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
+      <div className="section-premium-content container mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-16">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -37,7 +37,8 @@ export function Footer() {
             viewport={{ once: true }}
             className="text-sm text-muted-foreground text-center md:text-left"
           >
-            © {new Date().getFullYear()} <span className="font-medium text-foreground">Shyam J</span>. All rights reserved.
+            © {new Date().getFullYear()}{" "}
+            <span className="font-medium gradient-text">Shyam J</span>. All rights reserved.
           </motion.div>
 
           <div className="flex items-center gap-4">

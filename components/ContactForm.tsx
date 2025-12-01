@@ -81,7 +81,7 @@ export const ContactForm = memo(function ContactForm() {
       transition={{ duration: 0.6 }}
       className="w-full"
     >
-      <div className="relative rounded-xl bg-card border border-border/50 p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 shadow-sm">
+      <div className="relative rounded-xl bg-card gold-card card-professional border border-border/50 p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 shadow-sm overflow-hidden">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
           <div className="space-y-2">
             <label htmlFor="name" className="text-sm font-medium text-foreground">
@@ -135,7 +135,7 @@ export const ContactForm = memo(function ContactForm() {
               id="message"
               {...register("message")}
               rows={5}
-              className="w-full px-4 py-3 rounded-lg bg-background border border-border/50 focus:border-foreground focus:outline-none transition-all duration-200 placeholder:text-muted-foreground resize-none text-foreground"
+              className="w-full px-4 py-3 rounded-lg bg-background border border-border/50 focus:border-foreground focus:outline-none transition-all duration-200 placeholder:text-muted-foreground resize-none text-foreground contact-textarea-gold"
               placeholder="Your message..."
             />
             {errors.message && (
@@ -154,7 +154,7 @@ export const ContactForm = memo(function ContactForm() {
             disabled={isSubmitting}
             whileHover={{ y: -1 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full px-6 py-3.5 rounded-lg bg-foreground text-background font-medium text-base hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[48px]"
+            className="w-full px-6 py-3.5 rounded-lg font-medium text-base transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[48px] btn-gold"
           >
             {isSubmitted ? (
               <>

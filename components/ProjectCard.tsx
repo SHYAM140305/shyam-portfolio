@@ -74,26 +74,20 @@ export const ProjectCard = memo(function ProjectCard({
         target={mainUrl ? "_blank" : undefined}
         rel={mainUrl ? "noopener noreferrer" : undefined}
         data-project-id={project.id}
-        whileHover={{ y: -2 }}
-        className="relative overflow-hidden rounded-xl bg-card border border-border/60 dark:border-border/50 hover:border-border dark:hover:border-border hover:shadow-md cursor-pointer block h-full flex flex-col transition-all duration-200"
+        whileHover={{ y: -6, scale: 1.01 }}
+        className="relative overflow-hidden rounded-professional-lg bg-card gold-card border border-border/60 dark:border-border/50 hover:border-border/80 dark:hover:border-border/80 cursor-pointer block h-full flex flex-col transition-all duration-300 card-professional card-shadow-hover"
       >
-        {/* Featured badge - Minimal */}
-        {featured && (
+        {/* Image Section - Enhanced with professional styling */}
+        <div className={`relative ${featured ? 'aspect-[19/10]' : 'aspect-[19/10]'} overflow-hidden rounded-t-professional-lg bg-muted/30 dark:bg-muted/20`}>
+          {/* Enhanced image overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/70 dark:from-background/85 via-background/15 dark:via-background/25 to-transparent z-10" />
+          {/* Subtle shine effect on hover */}
           <motion.div
-            className="absolute top-2 right-2 z-20 px-2 py-0.5 rounded-lg bg-muted/50 border border-border/60 dark:border-border/50 text-[10px] font-medium text-foreground"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1 }}
-          >
-            Featured
-          </motion.div>
-        )}
-
-        {/* Image Section - Adapts to GitHub image aspect ratio (1200x630 ≈ 1.91:1) */}
-        <div className={`relative ${featured ? 'aspect-[19/10]' : 'aspect-[19/10]'} overflow-hidden rounded-t-xl bg-muted/30 dark:bg-muted/20`}>
-          {/* Image overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 dark:from-background/80 via-background/10 dark:via-background/20 to-transparent z-10" />
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            style={{ transform: 'translateX(-100%)' }}
+            whileHover={{ transform: 'translateX(100%)' }}
+            transition={{ duration: 0.6 }}
+          />
           
           <Image
             src={imageSrc}
@@ -110,13 +104,13 @@ export const ProjectCard = memo(function ProjectCard({
           />
         </div>
 
-        {/* Content Section - Very Compact */}
-        <div className={`relative ${featured ? 'p-3 sm:p-4 md:p-5' : 'p-2.5 sm:p-3 md:p-4'} z-10 bg-background rounded-b-xl flex-1 flex flex-col`}>
+        {/* Content Section - Professional spacing */}
+        <div className={`relative ${featured ? 'p-4 sm:p-5 md:p-6' : 'p-3 sm:p-4 md:p-5'} z-10 bg-background rounded-b-professional-lg flex-1 flex flex-col`}>
           {/* Title and Description */}
           <div className="flex-1 min-w-0 mb-2">
             <motion.h3
-              className={`${featured ? 'text-base sm:text-lg md:text-xl' : 'text-sm sm:text-base md:text-lg'} font-semibold text-foreground mb-1 break-words group-hover:text-foreground transition-colors`}
-              whileHover={{ x: 2 }}
+              className={`${featured ? 'text-base sm:text-lg md:text-xl' : 'text-sm sm:text-base md:text-lg'} font-semibold mb-1 break-words group-hover:text-foreground transition-colors gradient-text`}
+              whileHover={{ x: 3 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               {project.title}
@@ -128,25 +122,36 @@ export const ProjectCard = memo(function ProjectCard({
 
           {/* Action Buttons */}
           <div className="flex items-center justify-between gap-2 mb-2">
-            {/* Technology Tags - Very Compact */}
-            <div className="flex flex-wrap gap-1 flex-1">
+            {/* Technology Tags - Professional styling */}
+            <div className="flex flex-wrap gap-1.5 flex-1">
               {project.technologies.slice(0, featured ? 3 : 2).map((tech, i) => (
-                <span
+                <motion.span
                   key={tech}
-                  className="px-1.5 py-0.5 rounded bg-muted/30 border border-border/50 dark:border-border/30 text-[9px] sm:text-[10px] font-medium text-muted-foreground"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ scale: 1.05, y: -1 }}
+                  className="px-2 py-1 rounded-professional text-[9px] sm:text-[10px] font-medium transition-all gold-chip"
                 >
                   {tech}
-                </span>
+                </motion.span>
               ))}
               {project.technologies.length > (featured ? 3 : 2) && (
-                <span className="px-1.5 py-0.5 rounded bg-muted/30 border border-border/30 text-[9px] sm:text-[10px] font-medium text-muted-foreground">
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ scale: 1.05, y: -1 }}
+                  className="px-2 py-1 rounded-professional text-[9px] sm:text-[10px] font-medium transition-all gold-chip"
+                >
                   +{project.technologies.length - (featured ? 3 : 2)}
-                </span>
+                </motion.span>
               )}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-1.5 flex-shrink-0">
+            {/* Action Buttons - Professional styling */}
+            <div className="flex gap-2 flex-shrink-0">
               {project.githubUrl && (
                 <motion.button
                   type="button"
@@ -155,12 +160,12 @@ export const ProjectCard = memo(function ProjectCard({
                     e.stopPropagation();
                     window.open(project.githubUrl, '_blank', 'noopener,noreferrer');
                   }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-muted/30 border border-border/50 dark:border-border/30 hover:border-border dark:hover:border-border transition-all flex items-center justify-center touch-manipulation min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px]"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-professional transition-all flex items-center justify-center touch-manipulation min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] focus-professional gold-icon-button"
                   aria-label="View on GitHub"
                 >
-                  <Github className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-foreground" />
+                  <Github className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
                 </motion.button>
               )}
               {project.liveUrl && (
@@ -171,12 +176,12 @@ export const ProjectCard = memo(function ProjectCard({
                     e.stopPropagation();
                     window.open(project.liveUrl, '_blank', 'noopener,noreferrer');
                   }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-muted/30 border border-border/50 dark:border-border/30 hover:border-border dark:hover:border-border transition-all flex items-center justify-center touch-manipulation min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px]"
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-professional transition-all flex items-center justify-center touch-manipulation min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] focus-professional gold-icon-button"
                   aria-label="View live site"
                 >
-                  <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-foreground" />
+                  <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
                 </motion.button>
               )}
             </div>

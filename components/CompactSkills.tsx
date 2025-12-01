@@ -22,18 +22,6 @@ const categoryIcons: Record<string, React.ComponentType<{ className?: string }>>
   "Tools": Wrench,
 };
 
-// Category colors for visual distinction
-const categoryColors: Record<string, string> = {
-  "Languages": "from-blue-500/20 to-cyan-500/20",
-  "Frontend": "from-purple-500/20 to-pink-500/20",
-  "Backend": "from-green-500/20 to-emerald-500/20",
-  "ML/AI": "from-orange-500/20 to-amber-500/20",
-  "Data Processing": "from-indigo-500/20 to-blue-500/20",
-  "Databases": "from-teal-500/20 to-cyan-500/20",
-  "Cloud & DevOps": "from-sky-500/20 to-blue-500/20",
-  "Tools": "from-gray-500/20 to-slate-500/20",
-};
-
 // Simplified variants for better performance
 const cardVariants = {
   initial: {
@@ -80,7 +68,6 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
       >
         {categoryEntries.map(([category, categorySkills], catIndex) => {
           const IconComponent = categoryIcons[category] || Sparkles;
-          const categoryColor = categoryColors[category] || "from-foreground/10 to-foreground/5";
           const isHovered = hoveredCategory === category;
           
           return (
@@ -92,16 +79,15 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
               className="group relative gpu-accelerated"
               style={{ willChange: "transform" }}
             >
-              {/* Modern Card Design - Compact - Optimized */}
-              <div className="relative rounded-2xl bg-muted/30 backdrop-blur-md border border-border/50 p-4 sm:p-5 overflow-hidden h-full flex flex-col transition-all duration-300 hover:border-foreground/30 hover:shadow-lg hover:-translate-y-1">
-                {/* Animated gradient background - CSS only for better performance */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${categoryColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl`}
-                />
-                
-                {/* Decorative corner elements - Reduced blur for performance */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-foreground/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-foreground/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Modern glass card with internal gold glow (no gold border) */}
+              <div className="relative rounded-2xl p-4 sm:p-5 overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 modern-glass card-professional">
+                {/* Top glass highlight strip (white) */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white/20 via-white/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Gold-tinted internal glow */}
+                <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-90 transition-opacity duration-300 gold-glass-overlay" />
+                {/* Corner gold light blobs */}
+                <div className="absolute -top-10 -right-10 w-28 h-28 bg-accent/18 rounded-full blur-2xl opacity-0 group-hover:opacity-90 transition-opacity duration-300" />
+                <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-primary/18 rounded-full blur-2xl opacity-0 group-hover:opacity-90 transition-opacity duration-300" />
 
                 <div className="relative z-10 flex flex-col h-full">
                   {/* Header Section - Compact - Simplified */}
@@ -110,22 +96,22 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
                       {/* Category Icon & Title */}
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="relative flex-shrink-0 group/icon">
-                          <div className="absolute inset-0 rounded-xl bg-foreground/10 blur-md opacity-0 group-hover/icon:opacity-100 transition-opacity duration-300" />
-                          <div className="relative w-10 h-10 rounded-xl bg-background/80 border border-border/50 flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover/icon:scale-110">
-                            <IconComponent className="w-4 h-4 text-foreground" />
+                          <div className="absolute inset-0 rounded-xl bg-amber-500/20 blur-md opacity-0 group-hover/icon:opacity-100 transition-opacity duration-300" />
+                          <div className="relative w-10 h-10 rounded-xl bg-background/80 border border-amber-500/40 flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover/icon:scale-110">
+                            <IconComponent className="w-4 h-4 text-primary" />
                           </div>
                         </div>
                         
-                        {/* Category Title */}
-                        <h3 className="text-lg sm:text-xl font-bold text-foreground truncate">
+                        {/* Category Title with subtle gold gradient */}
+                        <h3 className="text-lg sm:text-xl font-bold text-foreground truncate text-gradient-professional">
                           {category}
                         </h3>
                       </div>
                       
-                      {/* Skill Count - Compact */}
-                      <div className="flex-shrink-0 inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-background/50 border border-border/40 transition-transform duration-200 hover:scale-105">
-                        <Sparkles className="w-3 h-3 text-foreground/60" />
-                        <span className="text-xs font-semibold text-foreground/80">
+                      {/* Skill Count - Compact with gold touch */}
+                      <div className="flex-shrink-0 inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-500/10 border border-amber-500/50 text-xs sm:text-sm font-medium text-primary transition-transform duration-200 hover:scale-105">
+                        <Sparkles className="w-3 h-3 text-primary" />
+                        <span className="text-xs font-semibold">
                           {categorySkills.length}
                         </span>
                       </div>
@@ -140,7 +126,7 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
                         <div
                           key={`${category}-${skill.name}`}
                           data-skill-name={skill.name}
-                          className="group/badge relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-background/60 backdrop-blur-sm border border-border/40 hover:border-foreground/30 text-xs sm:text-sm font-medium text-foreground cursor-default shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 overflow-hidden gpu-accelerated"
+                          className="group/badge relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-background/70 backdrop-blur-sm border border-amber-500/35 hover:border-amber-500/60 text-xs sm:text-sm font-medium text-foreground/90 cursor-default shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 overflow-hidden gpu-accelerated"
                           style={{ willChange: "transform" }}
                         >
                           {/* Hover background effect - CSS only */}

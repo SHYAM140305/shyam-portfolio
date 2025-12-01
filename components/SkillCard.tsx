@@ -35,12 +35,9 @@ export function SkillCard({ skill, category, delay = 0, icon }: SkillCardProps) 
     >
       <motion.div
         className={`
-          relative rounded-lg p-3 min-h-[80px] flex flex-col justify-center items-center
-          modern-glass border transition-all duration-300 cursor-default
-          ${isDigitalTwin 
-            ? "border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-amber-500/10 shadow-lg shadow-amber-500/10 hover:shadow-amber-500/20 hover:border-amber-500/60" 
-            : "border-border/40 hover:border-primary/50 shadow-sm hover:shadow-md"
-          }
+          relative rounded-professional-lg p-4 min-h-[90px] flex flex-col justify-center items-center
+          modern-glass border transition-all duration-300 cursor-default card-professional gold-card
+          ${isDigitalTwin ? "gold-card-feature" : ""}
         `}
       >
         {/* Glow effect for Digital Twin */}
@@ -55,25 +52,37 @@ export function SkillCard({ skill, category, delay = 0, icon }: SkillCardProps) 
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 blur-xl -z-10"
+            className="absolute inset-0 rounded-xl gold-glow -z-10"
           />
         )}
         
         <div className="relative z-10 text-center">
           {icon && (
-            <span className="text-xl mb-1 block">{icon}</span>
+            <motion.span 
+              className="text-2xl mb-2 block"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              {icon}
+            </motion.span>
           )}
-          <span className={`text-xs font-semibold leading-tight ${
+          <span className={`text-sm font-semibold leading-tight ${
             isDigitalTwin 
-              ? "gradient-text text-sm" 
+              ? "gradient-text text-base" 
               : "text-foreground"
           }`}>
             {skill}
           </span>
           {isDigitalTwin && (
-            <span className="block text-[10px] text-muted-foreground mt-0.5 font-medium">
+            <motion.span 
+              className="block text-[10px] text-muted-foreground mt-1 font-medium uppercase tracking-wider"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
               Core
-            </span>
+            </motion.span>
           )}
         </div>
       </motion.div>

@@ -49,9 +49,9 @@ export function AchievementCard({
 }: AchievementCardProps) {
   const Icon = iconMap[type] || Award;
   const colors = {
-    certification: "from-blue-500 to-cyan-500",
-    hackathon: "from-amber-500 to-orange-500",
-    leadership: "from-purple-500 to-pink-500",
+    certification: "from-primary/70 via-accent/70 to-primary/70",
+    hackathon: "from-primary/70 via-accent/80 to-primary/70",
+    leadership: "from-accent/80 via-primary/70 to-accent/80",
   };
   const { resolvedTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
@@ -81,7 +81,7 @@ export function AchievementCard({
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -2 }}
-      className={`group relative rounded-xl modern-glass border border-border/40 hover:border-primary/50 p-4 sm:p-5 md:p-6 shadow-md hover:shadow-xl transition-all duration-300 ${
+      className={`group relative rounded-xl modern-glass gold-card card-professional border border-border/40 hover:border-primary/50 p-4 sm:p-5 md:p-6 shadow-md hover:shadow-xl transition-all duration-300 ${
         isInteractive
           ? "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           : ""
@@ -93,9 +93,9 @@ export function AchievementCard({
       onClick={onClick}
       onKeyDown={handleKeyDown}
     >
-      {/* Gradient overlay on hover */}
+      {/* Gold-tinted gradient overlay on hover */}
       <div
-        className={`absolute inset-0 rounded-xl bg-gradient-to-br ${colors[type]} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
+        className={`absolute inset-0 rounded-xl bg-gradient-to-br ${colors[type]} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
       />
 
       <div className="relative z-10">
@@ -259,7 +259,7 @@ export function AchievementsSection() {
   };
 
   return (
-    <section id="achievements" className="py-16 sm:py-20 md:py-24 bg-background relative overflow-hidden" onKeyDown={handleKeyNav}>
+    <section id="achievements" className="py-16 sm:py-20 md:py-24 relative overflow-hidden" onKeyDown={handleKeyNav}>
       {/* Clean section divider */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
 
@@ -292,7 +292,7 @@ export function AchievementsSection() {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="relative h-full"
                 >
-                  {/* Apple-style Certification Card */}
+                  {/* Apple-style Certification Card with gold accent */}
                   <div
                     onClick={() => {
                       setSelectedCertificate(cert);
@@ -310,7 +310,7 @@ export function AchievementsSection() {
                         }
                       }, 300);
                     }}
-                    className="relative h-full rounded-xl bg-card border border-border/50 cursor-pointer transition-all duration-200 hover:border-border hover:shadow-md"
+                    className="relative h-full rounded-xl bg-card gold-card card-professional border border-border/50 cursor-pointer transition-all duration-200 hover:border-border hover:shadow-md"
                   >
                     {/* Content */}
                     <div className="p-5 sm:p-6 flex flex-col h-full">
@@ -337,9 +337,9 @@ export function AchievementsSection() {
                           })()}
                         </div>
                         
-                        {/* Year Badge */}
-                        <div className="px-3 py-1 rounded-lg bg-muted/50 border border-border/60 dark:border-border/50">
-                          <span className="text-xs font-medium text-foreground">{cert.year}</span>
+                        {/* Year Badge with subtle gold accent */}
+                        <div className="px-3 py-1 rounded-lg bg-muted/60 border border-amber-500/35 dark:border-amber-400/40">
+                          <span className="text-xs font-semibold text-primary">{cert.year}</span>
                         </div>
                       </div>
 
@@ -349,14 +349,14 @@ export function AchievementsSection() {
                           {cert.name}
                         </h3>
                         {cert.issuer && (
-                          <p className="text-sm font-medium text-muted-foreground mb-3">
+                          <p className="text-sm font-semibold text-primary mb-3">
                             {cert.issuer}
                           </p>
                         )}
                         
-                        {/* Category Badge */}
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted/30 border border-border/30">
-                          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                        {/* Category Badge with gold touch */}
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/8 border border-amber-500/40">
+                          <span className="text-[10px] font-semibold text-primary uppercase tracking-wider">
                             {cert.category}
                           </span>
                         </div>
@@ -543,8 +543,8 @@ export function AchievementsSection() {
                     transition={{ duration: 0.2, ease: "easeOut" }}
                     className="relative h-full"
                   >
-                    {/* Apple-style Hackathon Card */}
-                    <div className="relative h-full rounded-xl bg-card border border-border/50 transition-all duration-200 hover:border-border hover:shadow-md">
+                    {/* Apple-style Hackathon Card with gold accent */}
+                    <div className="relative h-full rounded-xl bg-card gold-card card-professional border border-border/50 transition-all duration-200 hover:border-border hover:shadow-md">
                       {/* Content */}
                       <div className="p-5 sm:p-6 flex flex-col h-full">
                         {/* Header Section with Achievement and Year */}
@@ -567,15 +567,15 @@ export function AchievementsSection() {
                           
                           {/* Year and Achievement Badges - Stacked */}
                           <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                            {/* Achievement Badge */}
-                            <div className="px-3 py-1.5 rounded-lg bg-muted/50 border border-border/50">
-                              <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                            {/* Achievement Badge with gold accent */}
+                            <div className="px-3 py-1.5 rounded-lg bg-amber-500/8 border border-amber-500/40">
+                              <span className="text-xs font-semibold text-primary uppercase tracking-wider">
                                 {hackathon.achievement}
                               </span>
                             </div>
-                            {/* Year Badge */}
-                            <div className="px-3 py-1 rounded-lg bg-muted/50 border border-border/50">
-                              <span className="text-xs font-medium text-foreground">
+                            {/* Year Badge with subtle gold accent */}
+                            <div className="px-3 py-1 rounded-lg bg-muted/60 border border-amber-500/35">
+                              <span className="text-xs font-medium text-primary">
                                 {hackathon.year}
                               </span>
                             </div>
@@ -642,8 +642,8 @@ export function AchievementsSection() {
                     transition={{ duration: 0.2, ease: "easeOut" }}
                     className="relative h-full"
                   >
-                    {/* Apple-style Leadership Card */}
-                    <div className="relative h-full rounded-xl bg-card border border-border/50 transition-all duration-200 hover:border-border hover:shadow-md">
+                    {/* Apple-style Leadership Card with gold accent */}
+                    <div className="relative h-full rounded-xl bg-card gold-card card-professional border border-border/50 transition-all duration-200 hover:border-border hover:shadow-md">
                       {/* Current Role Badge */}
                       {isCurrent && (
                         <div className="absolute top-4 right-4 z-10">
@@ -677,9 +677,9 @@ export function AchievementsSection() {
                             )}
                           </div>
                           
-                          {/* Date Badge */}
-                          <div className="px-3 py-1 rounded-lg bg-muted/50 border border-border/50">
-                            <span className="text-xs font-medium text-foreground">
+                          {/* Date Badge with subtle gold accent */}
+                          <div className="px-3 py-1 rounded-lg bg-muted/60 border border-amber-500/35">
+                            <span className="text-xs font-medium text-primary">
                               {role.startDate} - {role.endDate}
                             </span>
                           </div>
@@ -692,7 +692,7 @@ export function AchievementsSection() {
                           </h3>
                           
                           {role.organization && (
-                            <p className="text-sm font-medium text-muted-foreground mb-3">
+                            <p className="text-sm font-semibold text-primary mb-3">
                               {role.organization}
                             </p>
                           )}
@@ -727,8 +727,8 @@ export function AchievementsSection() {
                         {/* Footer */}
                         <div className="flex items-center justify-between pt-4 border-t border-border/30">
                           <div className="flex items-center gap-2">
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                            <Users className="h-4 w-4 text-primary" />
+                            <span className="text-xs font-semibold text-primary uppercase tracking-wider">
                               Leadership
                             </span>
                           </div>

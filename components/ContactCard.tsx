@@ -41,34 +41,34 @@ export function ContactCard() {
       label: "GitHub",
       icon: Github,
       href: "https://github.com/SHYAM140305",
-      color: "from-zinc-600 to-zinc-800",
-      hoverColor: "hover:from-zinc-700 hover:to-zinc-900",
-      glow: "from-zinc-400/50 via-zinc-500/50 to-zinc-400/50",
+      color: "from-primary/80 to-onyx",
+      hoverColor: "hover:from-primary hover:to-onyx",
+      glow: "from-primary/40 via-accent/40 to-primary/40",
     },
     {
       label: "LinkedIn",
       icon: Linkedin,
       href: "https://linkedin.com/in/shyam-jayakanthan-050a85284",
-      color: "from-blue-600 to-blue-700",
-      hoverColor: "hover:from-blue-700 hover:to-blue-800",
-      glow: "from-blue-400/50 via-blue-500/50 to-blue-400/50",
+      color: "from-accent/80 to-primary/80",
+      hoverColor: "hover:from-accent hover:to-primary",
+      glow: "from-accent/40 via-primary/40 to-accent/40",
     },
     {
       label: "Email",
       icon: Mail,
       href: `mailto:${email}`,
-      color: "from-rose-500 to-rose-600",
-      hoverColor: "hover:from-rose-600 hover:to-rose-700",
-      glow: "from-rose-400/50 via-rose-500/50 to-rose-400/50",
+      color: "from-primary/80 to-accent/80",
+      hoverColor: "hover:from-primary hover:to-accent",
+      glow: "from-primary/40 via-accent/40 to-primary/40",
     },
     {
       label: emailCopied ? "Copied!" : "Copy Email",
       icon: emailCopied ? Check : Copy,
       href: null,
       onClick: handleCopyEmail,
-      color: "from-amber-500 to-orange-600",
-      hoverColor: "hover:from-amber-600 hover:to-orange-700",
-      glow: "from-amber-400/50 via-orange-500/50 to-amber-400/50",
+      color: "from-gold-soft to-gold-bright",
+      hoverColor: "hover:from-gold-soft hover:to-gold-bright",
+      glow: "from-primary/45 via-accent/45 to-primary/45",
       getLabelMobile: () => emailCopied ? "Copied!" : "Copy",
     },
     {
@@ -76,9 +76,9 @@ export function ContactCard() {
       icon: Download,
       href: vcardHref,
       download: "Shyam_Jayakanthan.vcf",
-      color: "from-zinc-800 to-zinc-900",
-      hoverColor: "hover:from-zinc-900 hover:to-black",
-      glow: "from-zinc-400/50 via-zinc-500/50 to-zinc-400/50",
+      color: "from-onyx to-primary/80",
+      hoverColor: "hover:from-onyx hover:to-primary",
+      glow: "from-primary/35 via-accent/35 to-primary/35",
     },
   ];
 
@@ -90,13 +90,13 @@ export function ContactCard() {
       transition={{ duration: 0.6 }}
       className="relative w-full"
     >
-      <div className="relative rounded-xl bg-card border border-border/50 p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 shadow-sm">
+      <div className="relative rounded-xl bg-card gold-card card-professional border border-border/50 p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 shadow-sm contact-card-gold">
         <div className="flex flex-col">
           <motion.h3
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-lg sm:text-xl md:text-2xl font-semibold text-foreground mb-2"
+            className="text-lg sm:text-xl md:text-2xl font-semibold text-foreground mb-2 text-gradient-professional"
           >
             Let&apos;s Collaborate
           </motion.h3>
@@ -122,14 +122,18 @@ export function ContactCard() {
                 transition: { delay: index * 0.05 },
                 whileHover: { y: -2 },
                 whileTap: { scale: 0.98 },
-                className: "group relative flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-lg bg-muted/30 border border-border/50 hover:border-border hover:bg-muted/50 transition-all duration-200",
+                className: "group relative flex flex-col items-center justify-center gap-2 py-4 px-3 rounded-lg bg-muted/30 border border-border/50 hover:border-border hover:bg-muted/50 transition-all duration-200 contact-card-button-gold",
               };
 
               const buttonContent = (
                 <>
-                  <Icon className="h-5 w-5 text-foreground" />
-                  <span className="text-xs font-medium text-foreground text-center">
-                    <span className="sm:hidden">{((button as any).getLabelMobile ? (button as any).getLabelMobile() : button.label)}</span>
+                  <Icon className="h-5 w-5 contact-card-button-icon" />
+                  <span className="text-xs font-medium text-center contact-card-button-label">
+                    <span className="sm:hidden">
+                      {(button as any).getLabelMobile
+                        ? (button as any).getLabelMobile()
+                        : button.label}
+                    </span>
                     <span className="hidden sm:inline">{button.label}</span>
                   </span>
                 </>

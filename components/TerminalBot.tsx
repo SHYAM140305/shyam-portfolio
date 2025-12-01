@@ -180,6 +180,7 @@ export const TerminalBot = memo(function TerminalBot() {
   const [isTyping, setIsTyping] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [caretOffset, setCaretOffset] = useState(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
@@ -286,11 +287,28 @@ export const TerminalBot = memo(function TerminalBot() {
     // Cursor position will be updated automatically by useLayoutEffect when input changes
   }, []);
 
-  // Removed auto-scroll on message updates
+  // Keep view pinned to latest messages as the conversation grows,
+  // but only after the user has interacted (avoid scroll jump on initial page load)
+  useEffect(() => {
+    if (!hasInteracted) return;
+    if (!messagesEndRef.current) return;
+    try {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    } catch {
+      // no-op if scroll fails
+    }
+  }, [messages, isTyping, hasInteracted]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isTyping) return;
+
+    if (!hasInteracted) {
+      setHasInteracted(true);
+    }
 
     const userMessage = input.trim();
     // Show the command in output area with $ prefix
@@ -426,7 +444,10 @@ export const TerminalBot = memo(function TerminalBot() {
       };
       animationFrameId = requestAnimationFrame(typeChar);
     }, 300); // Reduced delay
-  }, [isTyping, input, scheduleCaretUpdate, conversationHistory]);
+  }, [isTyping, input, scheduleCaretUpdate, conversationHistory, hasInteracted]);
+
+  const monoFont =
+    '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace';
 
   return (
     <motion.div
@@ -434,37 +455,41 @@ export const TerminalBot = memo(function TerminalBot() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="relative w-full max-w-4xl mx-auto px-2 xs:px-3 sm:px-4"
+      className="relative w-full max-w-5xl mx-auto px-2 xs:px-3 sm:px-4"
     >
-      <div className="rounded-lg overflow-hidden bg-background border border-border/50 shadow-2xl" style={{ boxShadow: '0 20px 60px -12px rgba(0, 0, 0, 0.25)' }}>
-        {/* Apple Terminal Header */}
-        <div className="bg-[#2d2d2d] dark:bg-[#1e1e1e] px-3 sm:px-4 py-2 sm:py-2.5 flex items-center gap-2 sm:gap-3 border-b border-black/20 dark:border-white/5">
-          {/* Traffic Light Buttons - Apple Style */}
-          <div className="flex gap-2 flex-shrink-0">
-            <div className="w-3 h-3 rounded-full bg-[#ff5f57] shadow-[0_0_0_0.5px_rgba(0,0,0,0.3)] hover:bg-[#ff3b30] transition-colors"></div>
-            <div className="w-3 h-3 rounded-full bg-[#ffbd2e] shadow-[0_0_0_0.5px_rgba(0,0,0,0.3)] hover:bg-[#ff9500] transition-colors"></div>
-            <div className="w-3 h-3 rounded-full bg-[#28c840] shadow-[0_0_0_0.5px_rgba(0,0,0,0.3)] hover:bg-[#20d046] transition-colors"></div>
+      <div className="relative group card-professional gold-card rounded-professional-xl border border-border/60 overflow-hidden bg-background/80 backdrop-blur-xl">
+        {/* Gold reflection overlay – hidden on very small screens to keep it cleaner */}
+        <div className="hidden sm:block gold-reflection" />
+
+        {/* Modern header */}
+        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-4 px-3 sm:px-6 pt-3 sm:pt-5 pb-2.5 sm:pb-3 border-b border-border/50">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="gold-icon-button rounded-2xl p-2.5 sm:p-3 flex items-center justify-center">
+              <Terminal className="w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+            <div>
+              <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.18em] sm:tracking-[0.2em] text-muted-foreground mb-1">
+                Portfolio Assistant
+              </p>
+              <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-semibold text-gradient-professional">
+                Chat with my work
+              </h3>
+              <p className="mt-1 text-[11px] sm:text-sm text-muted-foreground">
+                Ask about projects, roles, skills, education, research, hackathons, or anything AI/ML.
+              </p>
+            </div>
           </div>
-          {/* Window Title */}
-          <div className="flex-1 flex items-center justify-center">
-            <span className="text-[11px] font-medium text-[#8e8e93] dark:text-[#6e6e73] tracking-wide">
-              shyam@portfolio — Terminal
-            </span>
-          </div>
-          {/* Spacer for symmetry */}
-          <div className="w-[44px] flex-shrink-0"></div>
         </div>
 
-        {/* Terminal Body - Apple Style */}
-        <div 
-          className="terminal-scrollbar bg-[#1e1e1e] dark:bg-black p-3 sm:p-4 md:p-5 lg:p-6 min-h-[250px] sm:min-h-[350px] md:min-h-[400px] lg:min-h-[450px] max-h-[350px] sm:max-h-[450px] md:max-h-[500px] lg:max-h-[600px] overflow-y-auto overscroll-contain"
+        {/* Conversation body */}
+        <div
+          className="relative z-10 terminal-scrollbar pt-3 pb-2.5 sm:pt-4 sm:pb-3 md:pt-5 md:pb-4 lg:pt-6 lg:pb-5 px-3 sm:px-4 md:px-5 lg:px-6 max-h-[70vh] sm:max-h-[70vh] md:max-h-[65vh] overflow-y-auto overscroll-contain bg-gradient-to-br from-black/75 via-slate-950/90 to-black/85 dark:from-slate-950/95 dark:via-black/95 dark:to-slate-950/90"
           style={{
-            fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+            fontFamily: monoFont,
           }}
         >
           <div className="space-y-1.5 text-xs sm:text-[13px] md:text-[14px] leading-relaxed">
             {messages.map((message, index) => {
-              // Check if message starts with "$" to style it as a command
               const isCommand = message.startsWith("$ ");
               return (
                 <motion.div
@@ -473,37 +498,45 @@ export const TerminalBot = memo(function TerminalBot() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.15 }}
                   className={`whitespace-pre-line ${
-                    isCommand 
-                      ? "text-[#ffd60a]" 
-                      : "text-[#30d158]"
+                    isCommand
+                      ? "text-amber-300"
+                      : "text-emerald-300"
                   }`}
-                  style={{ 
-                    fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                  style={{
+                    fontFamily: monoFont,
                   }}
                 >
                   {message}
                 </motion.div>
               );
             })}
+
             {isTyping && (
-              <div className="text-[#30d158] flex items-center gap-1">
+              <div className="text-emerald-300 flex items-center gap-1">
                 <motion.span
-                  animate={{ opacity: [1, 0.3, 1] }}
+                  animate={{ opacity: [1, 0.35, 1] }}
                   transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                  style={{ 
-                    fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+                  style={{
+                    fontFamily: monoFont,
                   }}
                 >
                   █
                 </motion.span>
+                <span className="text-[11px] sm:text-xs text-muted-foreground">
+                  Thinking…
+                </span>
               </div>
             )}
+
             {!isTyping && (
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-[#ffd60a] flex-shrink-0" style={{ 
-                  fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-                }}>
-                  shyam@portfolio:~$ 
+              <div className="mt-3 sm:mt-4 rounded-xl sm:rounded-2xl border border-amber-500/40 bg-black/60 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3">
+                <span
+                  className="text-amber-300 flex-shrink-0"
+                  style={{
+                    fontFamily: monoFont,
+                  }}
+                >
+                  shyam@portfolio:~$
                 </span>
                 <form onSubmit={handleSubmit} className="relative flex-1">
                   <input
@@ -512,63 +545,73 @@ export const TerminalBot = memo(function TerminalBot() {
                     value={input}
                     onChange={handleInputChange}
                     onKeyDown={(e) => {
-                      // Only update cursor for arrow keys, not regular typing
-                      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End') {
+                      if (
+                        e.key === "ArrowLeft" ||
+                        e.key === "ArrowRight" ||
+                        e.key === "Home" ||
+                        e.key === "End"
+                      ) {
                         scheduleCaretUpdate();
                       }
                     }}
-                    onClick={() => scheduleCaretUpdate()}
-                    onFocus={() => scheduleCaretUpdate()}
+                    onClick={() => {
+                      if (!hasInteracted) setHasInteracted(true);
+                      scheduleCaretUpdate();
+                    }}
+                    onFocus={() => {
+                      if (!hasInteracted) setHasInteracted(true);
+                      scheduleCaretUpdate();
+                    }}
                     onSelect={() => scheduleCaretUpdate()}
                     onMouseUp={() => scheduleCaretUpdate()}
-                    className="w-full bg-transparent text-[#ffffff] outline-none placeholder:text-[#6e6e73] caret-transparent touch-manipulation"
-                    placeholder=""
-                    style={{ 
-                      fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-                      fontSize: 'inherit',
-                      padding: '0',
-                      margin: '0',
-                      border: 'none',
-                      lineHeight: 'inherit',
-                      caretColor: 'transparent',
-                      color: 'inherit'
+                    className="w-full bg-transparent text-[#f4f4f5] outline-none placeholder:text-[#71717a] caret-transparent touch-manipulation"
+                    placeholder="Ask me anything about my work, experience, or skills…"
+                    style={{
+                      fontFamily: monoFont,
+                      fontSize: "inherit",
+                      padding: "0",
+                      margin: "0",
+                      border: "none",
+                      lineHeight: "inherit",
+                      caretColor: "transparent",
+                      color: "inherit",
                     }}
                   />
                   <span
                     ref={measureRef}
                     className="pointer-events-none absolute whitespace-pre"
                     aria-hidden="true"
-                    style={{ 
-                      fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-                      fontSize: 'inherit',
-                      visibility: 'hidden',
-                      position: 'absolute',
-                      top: '0',
-                      left: '0',
-                      whiteSpace: 'pre',
-                      height: 'auto',
-                      lineHeight: 'inherit',
-                      overflow: 'visible',
-                      padding: '0',
-                      margin: '0',
-                      border: 'none',
-                      boxSizing: 'content-box'
+                    style={{
+                      fontFamily: monoFont,
+                      fontSize: "inherit",
+                      visibility: "hidden",
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      whiteSpace: "pre",
+                      height: "auto",
+                      lineHeight: "inherit",
+                      overflow: "visible",
+                      padding: "0",
+                      margin: "0",
+                      border: "none",
+                      boxSizing: "content-box",
                     }}
                   />
                   <motion.span
-                    className="pointer-events-none absolute top-0 bottom-0 flex items-center text-[#ffffff]"
+                    className="pointer-events-none absolute top-0 bottom-0 flex items-center text-amber-200"
                     aria-hidden="true"
-                    animate={{ opacity: [1, 0.3, 1] }}
+                    animate={{ opacity: [1, 0.35, 1] }}
                     transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                    style={{ 
+                    style={{
                       left: `${caretOffset}px`,
-                      fontFamily: '-apple-system, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-                      fontSize: 'inherit',
-                      lineHeight: 'inherit',
-                      height: '100%',
-                      transition: 'none',
-                      transitionProperty: 'none',
-                      willChange: 'auto'
+                      fontFamily: monoFont,
+                      fontSize: "inherit",
+                      lineHeight: "inherit",
+                      height: "100%",
+                      transition: "none",
+                      transitionProperty: "none",
+                      willChange: "auto",
                     }}
                   >
                     █
@@ -576,6 +619,7 @@ export const TerminalBot = memo(function TerminalBot() {
                 </form>
               </div>
             )}
+
             <div ref={messagesEndRef} />
           </div>
         </div>

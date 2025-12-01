@@ -46,40 +46,40 @@ const TimelineItem = memo(function TimelineItem({
       data-experience-id={itemType === 'experience' && itemId ? itemId : undefined}
       data-education-id={itemType === 'education' && itemId ? itemId : undefined}
     >
-      {/* Clean Timeline Line - Apple Style */}
-      <div className="absolute left-0 top-0 bottom-0 w-px bg-border/30 group-hover:bg-foreground/20 transition-colors duration-300" />
+      {/* Premium Timeline Line */}
+      <div className="absolute left-0 top-0 bottom-0 w-px timeline-line opacity-80" />
       
-      {/* Minimal Timeline Dot */}
-      <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full bg-foreground border-2 border-background -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] shadow-sm z-10" />
+      {/* Premium Timeline Dot */}
+      <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] timeline-dot z-10" />
       
       {/* Current Role Indicator */}
       {current && (
-        <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full bg-foreground -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] ring-2 ring-foreground/20 z-10" />
+        <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] timeline-dot timeline-dot-current z-10" />
       )}
       
       {/* Apple-style Card */}
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="relative bg-card rounded-xl p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md"
+        className="relative rounded-xl p-4 sm:p-5 md:p-6 lg:p-7 xl:p-8 timeline-card"
       >
         <div className="relative z-10">
           {/* Header Section - Clean */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-5 md:mb-6">
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-1 sm:mb-2 text-foreground break-words">
+              <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-1 sm:mb-2 text-foreground break-words text-gradient-professional">
                 {title}
               </h3>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-medium text-muted-foreground break-words">
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-primary break-words">
                 {organization}
               </p>
             </div>
             {!hideDates && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 border border-border/50 flex-shrink-0">
-                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-xs sm:text-sm font-medium text-foreground whitespace-nowrap">
+              <div className="meta-pill flex-shrink-0 border-amber-500/40 bg-amber-500/8">
+                <Calendar className="h-3.5 w-3.5 meta-pill-icon text-primary" />
+                <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
                   {startDate} - {current ? (
-                    <span className="text-foreground font-semibold">Present</span>
+                    <span className="font-semibold">Present</span>
                   ) : endDate}
                 </span>
               </div>
@@ -88,20 +88,20 @@ const TimelineItem = memo(function TimelineItem({
 
           {/* Meta Information - Minimal */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-6">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/30 border border-border/30">
-              <MapPin className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-              <span className="text-sm font-medium text-muted-foreground break-words">{location}</span>
+            <div className="meta-pill">
+              <MapPin className="h-3.5 w-3.5 meta-pill-icon flex-shrink-0 text-primary" />
+              <span className="text-sm font-medium break-words">{location}</span>
             </div>
             {type && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/30 border border-border/30">
-                <Briefcase className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
-                <span className="text-sm font-medium text-muted-foreground break-words">{type}</span>
+              <div className="meta-pill">
+                <Briefcase className="h-3.5 w-3.5 meta-pill-icon flex-shrink-0 text-primary" />
+                <span className="text-sm font-medium break-words">{type}</span>
               </div>
             )}
             {current && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/30 border border-border/30">
-                <div className="w-1.5 h-1.5 rounded-full bg-foreground" />
-                <span className="text-xs font-medium text-foreground uppercase tracking-wider">
+              <div className="meta-pill border-amber-500/40 bg-amber-500/8">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-primary">
                   Current
                 </span>
               </div>
@@ -137,7 +137,7 @@ const TimelineItem = memo(function TimelineItem({
                     transition={{ delay: index * 0.05 }}
                     className="flex items-start gap-3 text-sm sm:text-base"
                   >
-                    <div className="mt-2 w-1.5 h-1.5 rounded-full bg-foreground/40 flex-shrink-0" />
+                    <div className="golden-dot mt-2 flex-shrink-0" />
                     <span className="text-muted-foreground leading-relaxed flex-1">{highlight}</span>
                   </motion.li>
                 ))}

@@ -19,8 +19,9 @@ export function SectionTitle({ title, subtitle, className }: SectionTitleProps) 
       className={`${className || ""}`}
     >
       <h2 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-foreground mb-2 sm:mb-3 text-center px-2">
-        {title}
+        <span className="gradient-text block">{title}</span>
       </h2>
+      <div className="golden-divider" aria-hidden="true" />
       {subtitle && (
         <motion.p
           initial={{ opacity: 0, y: 10 }}

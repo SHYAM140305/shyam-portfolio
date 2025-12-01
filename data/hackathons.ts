@@ -15,7 +15,7 @@ export const hackathons: Hackathon[] = [
     id: "hackstreet-3",
     name: "Hackstreet 3.0",
     year: "2025",
-    achievement: "1st Place",
+    achievement: "Winner",
     description: "Real-time AI automation solution with vision analytics",
     logo: SRM_LOGO,
   },

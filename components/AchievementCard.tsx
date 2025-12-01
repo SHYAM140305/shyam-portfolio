@@ -530,8 +530,6 @@ export function AchievementsSection() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6"
           >
             {hackathons.map((hackathon, index) => {
-              const isWinner = hackathon.achievement.toLowerCase().includes("winner") || hackathon.achievement.toLowerCase().includes("1st");
-              
               return (
                 <motion.div 
                   key={hackathon.id} 
@@ -592,12 +590,8 @@ export function AchievementsSection() {
                           </p>
                         </div>
 
-                        {/* Achievement Level */}
-                        <div className="flex items-center justify-between pt-3 border-t border-border/30">
-                          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                            {isWinner ? "Winner" : "Finalist"}
-                          </span>
-                        </div>
+                        {/* Card Footer */}
+                        <div className="pt-3 border-t border-border/30" />
                       </div>
                     </div>
                   </motion.div>

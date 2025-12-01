@@ -95,15 +95,20 @@ export default function Home() {
   useEffect(() => {
     if (!showResume) return;
 
-    const previousOverflow = document.body.style.overflow;
-    const previousTouchAction = document.body.style.touchAction;
+    const body = document.body;
+    const html = document.documentElement;
+    const previousBodyOverflow = body.style.overflow;
+    const previousBodyTouchAction = body.style.touchAction;
+    const previousHtmlOverflow = html.style.overflow;
 
-    document.body.style.overflow = "hidden";
-    document.body.style.touchAction = "none";
+    body.style.overflow = "hidden";
+    body.style.touchAction = "none";
+    html.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      document.body.style.touchAction = previousTouchAction;
+      body.style.overflow = previousBodyOverflow;
+      body.style.touchAction = previousBodyTouchAction;
+      html.style.overflow = previousHtmlOverflow;
     };
   }, [showResume]);
   
@@ -443,14 +448,14 @@ export default function Home() {
             >
               <div className="relative w-full h-full max-w-full max-h-full flex flex-col bg-background xs:rounded-xl sm:rounded-2xl shadow-2xl border border-border/60 dark:border-border/50 overflow-hidden">
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-2 sm:p-3 md:p-4 border-b border-border/50 dark:border-border/30 bg-gradient-to-r from-card/80 to-card/60 backdrop-blur-sm flex-shrink-0">
+                <div className="resume-viewer-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-2 sm:p-3 md:p-4 border-b border-border/50 dark:border-border/30 flex-shrink-0">
                   <div className="flex items-center gap-2 min-w-0 flex-shrink">
-                    <div className="flex-shrink-0 grid h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 place-items-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 shadow-inner border border-gray-300 dark:border-gray-700">
+                    <div className="resume-viewer-icon flex-shrink-0 grid h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 place-items-center rounded-lg">
                       <Briefcase className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 dark:text-gray-100 leading-tight truncate">Resume</h2>
-                      <p className="text-xs font-medium text-muted-foreground truncate">Shyam Jayakanthan</p>
+                      <h2 className="resume-viewer-title text-sm sm:text-base md:text-lg truncate">Resume</h2>
+                      <p className="resume-viewer-subtitle truncate">Shyam Jayakanthan</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0 flex-wrap sm:flex-nowrap">
@@ -538,7 +543,7 @@ export default function Home() {
                       onClick={shareResume}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/50 dark:border-border/40 bg-muted/50 text-foreground hover:text-primary hover:border-primary/40 transition-all shadow-sm touch-manipulation"
+                      className="resume-viewer-action-button touch-manipulation"
                       aria-label="Share"
                     >
                       <Share2 className="h-3.5 w-3.5" />
@@ -547,7 +552,7 @@ export default function Home() {
                       href="/resume.pdf"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm touch-manipulation"
+                      className="resume-viewer-action-button touch-manipulation"
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Open"
@@ -559,7 +564,7 @@ export default function Home() {
                       download
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 transition-all hover:border-gray-400 dark:hover:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm touch-manipulation"
+                      className="resume-viewer-action-button touch-manipulation"
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Download"
@@ -590,6 +595,7 @@ export default function Home() {
                     className="w-full h-full"
                     scale={resumeZoom !== 1 ? resumeZoom : undefined}
                     currentPage={resumePage}
+                    restrictScroll
                     onLoadSuccess={(numPages) => {
                       setResumeNumPages(numPages);
                       setResumePage(1);

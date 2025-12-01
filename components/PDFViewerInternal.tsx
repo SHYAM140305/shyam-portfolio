@@ -83,6 +83,7 @@ interface PDFViewerProps {
   showControls?: boolean;
   onPageChange?: (page: number) => void;
   currentPage?: number;
+  restrictScroll?: boolean;
 }
 
 export function PDFViewerInternal({
@@ -94,6 +95,7 @@ export function PDFViewerInternal({
   showControls = false,
   onPageChange,
   currentPage,
+  restrictScroll,
 }: PDFViewerProps) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -515,16 +517,20 @@ export function PDFViewerInternal({
       <div
         ref={containerRef}
         id="pdf-container"
-        className="flex-1 overflow-hidden sm:overflow-auto pdf-viewer-scroll-container flex items-start justify-center p-1 sm:p-2 md:p-3 lg:p-4"
+        className={`flex-1 ${restrictScroll ? "overflow-hidden" : "overflow-hidden sm:overflow-auto"} pdf-viewer-scroll-container flex items-start justify-center p-1 sm:p-2 md:p-3 lg:p-4`}
         style={{ 
           minHeight: 0, 
           width: "100%", 
           WebkitOverflowScrolling: "touch",
-          overscrollBehavior: "none"
+          overscrollBehavior: restrictScroll ? "contain" : "none"
         }}
       >
         {(() => {
           const DocumentComponent = Document!; // Non-null assertion - we've already checked above
+          const pagesContainerSpacing = restrictScroll
+            ? "gap-0 py-0"
+            : "gap-2 sm:gap-3 md:gap-4 lg:gap-5 py-1 sm:py-2 md:py-3 lg:py-4";
+
           return (
             <DocumentComponent
               file={file}
@@ -556,7 +562,10 @@ export function PDFViewerInternal({
               className="flex flex-col items-center w-full"
             >
            {numPages && (
-             <div className="flex flex-col items-center gap-2 sm:gap-3 md:gap-4 lg:gap-5 w-full py-1 sm:py-2 md:py-3 lg:py-4 pdf-pages-container" style={{ maxWidth: "100%" }}>
+             <div
+               className={`flex flex-col items-center w-full ${pagesContainerSpacing} pdf-pages-container`}
+               style={{ maxWidth: "100%" }}
+             >
                {/* Show only the current page when pageNumber is set, otherwise show all pages */}
                {currentPage !== undefined ? (
                  // Single page view mode

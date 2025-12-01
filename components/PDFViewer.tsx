@@ -12,6 +12,7 @@ interface PDFViewerProps {
   showControls?: boolean;
   onPageChange?: (page: number) => void;
   currentPage?: number;
+  restrictScroll?: boolean;
 }
 
 // Use Next.js dynamic import with ssr: false to prevent server-side rendering

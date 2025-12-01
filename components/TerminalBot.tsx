@@ -181,7 +181,6 @@ export const TerminalBot = memo(function TerminalBot() {
   const [isInitialized, setIsInitialized] = useState(false);
   const [caretOffset, setCaretOffset] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
 
@@ -286,21 +285,6 @@ export const TerminalBot = memo(function TerminalBot() {
     setInput(newValue);
     // Cursor position will be updated automatically by useLayoutEffect when input changes
   }, []);
-
-  // Keep view pinned to latest messages as the conversation grows,
-  // but only after the user has interacted (avoid scroll jump on initial page load)
-  useEffect(() => {
-    if (!hasInteracted) return;
-    if (!messagesEndRef.current) return;
-    try {
-      messagesEndRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    } catch {
-      // no-op if scroll fails
-    }
-  }, [messages, isTyping, hasInteracted]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -619,8 +603,7 @@ export const TerminalBot = memo(function TerminalBot() {
                 </form>
               </div>
             )}
-
-            <div ref={messagesEndRef} />
+            <div className="h-0" />
           </div>
         </div>
       </div>

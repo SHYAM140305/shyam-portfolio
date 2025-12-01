@@ -24,24 +24,35 @@ function parseDate(dateStr: string): number {
 }
 
 export function ExperienceSection() {
-  // Sort experiences chronologically (most recent first)
+  // Sort experiences so the most recent roles always appear first
   const sortedExperiences = useMemo(() => {
     return [...experiences].sort((a, b) => {
-      // If current, prioritize it
-      if (a.current && !b.current) return -1;
-      if (!a.current && b.current) return 1;
-      
-      // Sort by end date first (most recent end date first)
+      // Current roles should float to the top
+      if (a.current !== b.current) {
+        return a.current ? -1 : 1;
+      }
+
+      // Sort primarily by end date (descending)
       const endDateA = parseDate(a.endDate);
       const endDateB = parseDate(b.endDate);
-      if (endDateB !== endDateA) {
+      if (endDateA !== endDateB) {
         return endDateB - endDateA;
       }
-      
-      // If end dates are same, sort by start date (most recent start date first)
+
+      // Then by start date (descending)
       const startDateA = parseDate(a.startDate);
       const startDateB = parseDate(b.startDate);
-      return startDateB - startDateA;
+      if (startDateA !== startDateB) {
+        return startDateB - startDateA;
+      }
+
+      // Final deterministic fallback by company then role
+      const companyComparison = a.company.localeCompare(b.company);
+      if (companyComparison !== 0) {
+        return companyComparison;
+      }
+
+      return a.role.localeCompare(b.role);
     });
   }, []);
 
@@ -49,7 +60,7 @@ export function ExperienceSection() {
     <section id="experience" className="py-12 sm:py-16 md:py-20 lg:py-24">
       <div className="section-premium-content container mx-auto px-4 xs:px-6 sm:px-8 lg:px-12">
         <SectionTitle
-          title="Experience"
+          title="Professional Experience"
           subtitle="Professional journey"
           className="mb-8 sm:mb-12 md:mb-16"
         />

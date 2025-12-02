@@ -618,7 +618,19 @@ export function PDFViewerInternal({
       <div
         ref={containerRef}
         id="pdf-container"
-        className={`flex-1 ${restrictScroll ? "overflow-hidden" : "overflow-hidden sm:overflow-auto"} pdf-viewer-scroll-container flex items-start justify-center p-1 sm:p-2 md:p-3 lg:p-4`}
+        className={`flex-1 ${(() => {
+          // Check if this is inside resume-viewer-container - always allow scrolling
+          // The parent resume-viewer-container handles scrolling, so this container should not restrict it
+          if (typeof window !== "undefined") {
+            const resumeContainer = document.getElementById("resume-viewer-container");
+            if (resumeContainer) {
+              // We're inside resume-viewer-container, let parent handle scrolling
+              return "overflow-visible";
+            }
+          }
+          // For other cases, respect restrictScroll prop
+          return restrictScroll ? "overflow-hidden" : "overflow-auto";
+        })()} pdf-viewer-scroll-container flex items-start justify-center p-1 sm:p-2 md:p-3 lg:p-4`}
         style={{ 
           minHeight: 0, 
           width: "100%", 
@@ -700,8 +712,8 @@ export function PDFViewerInternal({
                              width: "auto",
                              objectFit: "contain"
                            }}
-                         renderTextLayer={true}
-                         renderAnnotationLayer={true}
+                         renderTextLayer={!isCertificateViewer}
+                         renderAnnotationLayer={!isCertificateViewer}
                          onLoadSuccess={(page: any) => {
                            if (page && typeof page.getViewport === "function") {
                              try {
@@ -806,8 +818,8 @@ export function PDFViewerInternal({
                              width: "auto",
                              objectFit: "contain"
                            }}
-                         renderTextLayer={true}
-                         renderAnnotationLayer={true}
+                         renderTextLayer={!isCertificateViewer}
+                         renderAnnotationLayer={!isCertificateViewer}
                          onLoadSuccess={(page: any) => {
                            if (page && typeof page.getViewport === "function") {
                              try {

@@ -20,6 +20,7 @@ interface TimelineItemProps {
   hideDates?: boolean;
   itemId?: string;
   itemType?: 'experience' | 'education' | 'leadership';
+  isFirst?: boolean;
 }
 
 const TimelineItem = memo(function TimelineItem({
@@ -35,7 +36,15 @@ const TimelineItem = memo(function TimelineItem({
   hideDates = false,
   itemId,
   itemType,
+  isFirst = false,
 }: TimelineItemProps) {
+  // Calculate circle center position - for first item, line should start from circle center
+  const circleSize = {
+    base: 'w-2.5 h-2.5', // 10px
+    sm: 'sm:w-3 sm:h-3', // 12px
+    md: 'md:w-3.5 md:h-3.5', // 14px
+  };
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -49,13 +58,11 @@ const TimelineItem = memo(function TimelineItem({
       {/* Premium Timeline Line */}
       <div className="absolute left-0 top-0 bottom-0 w-px timeline-line opacity-80" />
       
-      {/* Premium Timeline Dot */}
-      <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] timeline-dot z-10" />
-      
-      {/* Current Role Indicator */}
-      {current && (
-        <div className="absolute left-0 top-0 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 rounded-full -translate-x-[6px] sm:-translate-x-[7px] md:-translate-x-[8px] timeline-dot timeline-dot-current z-10" />
-      )}
+      {/* Premium Timeline Dot - centered on the 1px line (center at 0.5px) */}
+      <div 
+        className={`absolute top-0 ${circleSize.base} ${circleSize.sm} ${circleSize.md} rounded-full timeline-dot z-10`}
+        style={{ left: '0.5px', transform: 'translateX(-50%)' }}
+      />
       
       {/* Apple-style Card */}
       <motion.div
@@ -171,7 +178,8 @@ function isLeadership(item: TimelineItemType): item is Leadership {
 export const Timeline = memo(function Timeline({ items }: TimelineProps) {
   return (
     <div className="space-y-0">
-      {items.map((item) => {
+      {items.map((item, index) => {
+        const isFirst = index === 0;
         if (isExperience(item)) {
           return (
             <TimelineItem
@@ -187,6 +195,7 @@ export const Timeline = memo(function Timeline({ items }: TimelineProps) {
               type={item.type}
               itemId={item.id}
               itemType="experience"
+              isFirst={isFirst}
             />
           );
         } else if (isEducation(item)) {
@@ -204,6 +213,7 @@ export const Timeline = memo(function Timeline({ items }: TimelineProps) {
               hideDates={true}
               itemId={item.id}
               itemType="education"
+              isFirst={isFirst}
             />
           );
         } else if (isLeadership(item)) {
@@ -220,6 +230,7 @@ export const Timeline = memo(function Timeline({ items }: TimelineProps) {
               highlights={item.highlights}
               itemId={item.id}
               itemType="leadership"
+              isFirst={isFirst}
             />
           );
         }

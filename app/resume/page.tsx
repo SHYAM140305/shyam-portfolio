@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Briefcase, X, Maximize2, Share2, ExternalLink, Download, ZoomIn, ZoomOut, RotateCw, ChevronLeft, ChevronRight } from "lucide-react";
 
 const PDFViewerLazy = dynamic(() => import("@/components/PDFViewer").then(mod => ({ default: mod.PDFViewer })), {
@@ -15,14 +15,55 @@ const PDFViewerLazy = dynamic(() => import("@/components/PDFViewer").then(mod =>
   ssr: false
 });
 
-export default function ResumePage() {
+function ResumePageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [resumeToast, setResumeToast] = useState<string | null>(null);
   const [resumeZoom, setResumeZoom] = useState(1);
   const [resumePage, setResumePage] = useState(1);
   const [resumeNumPages, setResumeNumPages] = useState(0);
 
   const resumeUrl = "/resume.pdf";
+  
+  // Get the origin section from query parameter
+  const fromSection = searchParams.get("from") || "hero";
+  
+  // Function to handle closing and returning to the appropriate section
+  const handleClose = () => {
+    const targetSection = fromSection === "contact" ? "contact" : "home";
+    
+    // Navigate to home page with hash
+    router.push(`/#${targetSection}`);
+    
+    // Use a more reliable approach: wait for navigation and then scroll
+    // Store the target in sessionStorage so the main page can handle it
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("scrollToSection", targetSection);
+    }
+    
+    // Also try direct scrolling after navigation
+    setTimeout(() => {
+      const scrollToTarget = () => {
+        const element = document.getElementById(targetSection);
+        if (element) {
+          // Use scrollIntoView with offset consideration
+          const offset = 100; // Navbar offset
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - offset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+      };
+      
+      // Try multiple times with delays
+      scrollToTarget();
+      setTimeout(scrollToTarget, 200);
+      setTimeout(scrollToTarget, 500);
+    }, 100);
+  };
 
   const resumeRequestFullscreen = async () => {
     try {
@@ -205,7 +246,7 @@ export default function ResumePage() {
             </motion.a>
             <motion.button
               type="button"
-              onClick={() => router.push("/")}
+              onClick={handleClose}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/50 dark:border-border/40 bg-muted/50 text-foreground hover:text-primary hover:border-primary/40 transition-all shadow-sm touch-manipulation"
@@ -246,3 +287,14 @@ export default function ResumePage() {
   );
 }
 
+export default function ResumePage() {
+  return (
+    <Suspense fallback={
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <div className="text-muted-foreground">Loading resume viewer...</div>
+      </div>
+    }>
+      <ResumePageContent />
+    </Suspense>
+  );
+}

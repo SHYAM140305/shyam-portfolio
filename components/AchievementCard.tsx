@@ -5,7 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Award, Trophy, Star, GraduationCap, Users, FileCheck, X, ExternalLink, ChevronLeft, ChevronRight, Maximize2, Share2, ZoomIn, ZoomOut, RotateCw, Download } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
-import { PDFViewer } from "@/components/PDFViewer";
+import dynamic from "next/dynamic";
+
+const PDFViewerLazy = dynamic(() => import("@/components/PDFViewer").then(mod => ({ default: mod.PDFViewer })), {
+  loading: () => (
+    <div className="flex h-full w-full items-center justify-center min-h-[400px]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/60 border-t-transparent" />
+        <p className="text-sm text-muted-foreground">Loading certificate...</p>
+      </div>
+    </div>
+  ),
+  ssr: false
+});
 import { certifications, type Certification } from "@/data/education";
 import { hackathons } from "@/data/hackathons";
 import { staggerContainer, fadeInUp } from "@/lib/utils";
@@ -472,7 +484,7 @@ export function AchievementsSection() {
                 id="certificate-viewer-container" 
                 className="relative min-h-[400px] sm:min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-white dark:bg-background overflow-auto"
               >
-                <PDFViewer
+                <PDFViewerLazy
                   key={selectedCertificate.id}
                   file={selectedCertificate.certificateUrl!}
                   className="w-full h-full"

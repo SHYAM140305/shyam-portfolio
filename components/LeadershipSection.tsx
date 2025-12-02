@@ -5,7 +5,7 @@ import { Timeline } from "@/components/Timeline";
 import { leadership } from "@/data/leadership";
 import { SectionTitle } from "@/components/SectionTitle";
 
-// Helper function to parse date string (e.g., "Sep 2024" or "Apr 2025") to a comparable format
+// Helper function to parse date string (e.g., "Sep 2024", "Apr 2025", or "2025") to a comparable format
 function parseDate(dateStr: string): number {
   // Handle "Present" as a very large number to sort it first
   if (dateStr === "Present") {
@@ -18,6 +18,14 @@ function parseDate(dateStr: string): number {
   };
   
   const parts = dateStr.split(" ");
+  
+  // Handle year-only format (e.g., "2025")
+  if (parts.length === 1) {
+    const year = parseInt(parts[0]) || 0;
+    return year * 100 + 12; // Use December as default month for year-only dates
+  }
+  
+  // Handle month + year format (e.g., "Sep 2024")
   const month = months[parts[0]] || 0;
   const year = parseInt(parts[1]) || 0;
   return year * 100 + month; // Creates sortable number like 202409 for Sep 2024

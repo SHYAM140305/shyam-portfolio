@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
-import { Download, Code, Brain, Sparkles, Briefcase, Github, Linkedin, Mail, X, Maximize2, Share2, ExternalLink, ZoomIn, ZoomOut, RotateCw, ChevronLeft, ChevronRight } from "lucide-react";
+import { Download, Code, Brain, Sparkles, Briefcase, Github, Linkedin, Mail } from "lucide-react";
 import { SectionTitle } from "@/components/SectionTitle";
 import { SkillCard } from "@/components/SkillCard";
 import { ProjectCard } from "@/components/ProjectCard";
@@ -16,8 +16,9 @@ import { education } from "@/data/education";
 import { fadeInUp, staggerContainer } from "@/lib/utils";
 import dynamic from "next/dynamic";
 
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import { useReducedMotion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 // Force recompilation
 
@@ -52,14 +53,6 @@ const CompactSkillsLazy = dynamic(() => import("@/components/CompactSkills").the
   ssr: false
 });
 
-const PDFViewerLazy = dynamic(() => import("@/components/PDFViewer").then(mod => ({ default: mod.PDFViewer })), {
-  loading: () => (
-    <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
-      Loading resume...
-    </div>
-  ),
-  ssr: false
-});
 
 // Lazy load sections below the fold for better initial load performance
 const ProjectsSection = dynamic(() => import("@/components/ProjectsSection").then(mod => ({ default: mod.ProjectsSection })), {
@@ -88,34 +81,8 @@ const ContactSection = dynamic(() => import("@/components/ContactSection").then(
 });
 
 export default function Home() {
-  const [showResume, setShowResume] = useState(false);
-  const [resumeToast, setResumeToast] = useState<string | null>(null);
-  const [resumeZoom, setResumeZoom] = useState(1);
-  const [resumePage, setResumePage] = useState(1);
-  const [resumeNumPages, setResumeNumPages] = useState(0);
+  const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
-  
-  
-  // Prevent background/page scroll when resume modal is open (especially on mobile)
-  useEffect(() => {
-    if (!showResume) return;
-
-    const body = document.body;
-    const html = document.documentElement;
-    const previousBodyOverflow = body.style.overflow;
-    const previousBodyTouchAction = body.style.touchAction;
-    const previousHtmlOverflow = html.style.overflow;
-
-    body.style.overflow = "hidden";
-    body.style.touchAction = "none";
-    html.style.overflow = "hidden";
-
-    return () => {
-      body.style.overflow = previousBodyOverflow;
-      body.style.touchAction = previousBodyTouchAction;
-      html.style.overflow = previousHtmlOverflow;
-    };
-  }, [showResume]);
   
   // Memoize expensive computations - Optimized with single pass
   const groupedSkills = useMemo(() => {
@@ -153,6 +120,37 @@ export default function Home() {
     }
   }, []);
 
+  // Handle scrolling to section when returning from resume page
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const scrollToSectionId = sessionStorage.getItem("scrollToSection");
+      if (scrollToSectionId) {
+        // Clear it immediately
+        sessionStorage.removeItem("scrollToSection");
+        
+        // Wait for page to be fully loaded, then scroll
+        const scrollToTarget = () => {
+          const element = document.getElementById(scrollToSectionId);
+          if (element) {
+            const offset = 100; // Navbar offset
+            const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - offset;
+            
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
+          }
+        };
+        
+        // Try multiple times with delays to ensure element is available
+        setTimeout(scrollToTarget, 100);
+        setTimeout(scrollToTarget, 300);
+        setTimeout(scrollToTarget, 600);
+      }
+    }
+  }, []);
+
   // vCard download link for About profile card
   const vcardData = [
     "BEGIN:VCARD",
@@ -170,58 +168,6 @@ export default function Home() {
   ].join("\r\n");
   const vcardHref = `data:text/vcard;charset=utf-8,${encodeURIComponent(vcardData)}`;
 
-  const resumeUrl = "/resume.pdf";
-  const resumeRequestFullscreen = async () => {
-    try {
-      const container = document.getElementById("resume-viewer-container");
-      if (container && container.requestFullscreen) {
-        await container.requestFullscreen();
-      } else {
-        setResumeToast("Fullscreen not supported");
-        setTimeout(() => setResumeToast(null), 1500);
-      }
-    } catch {
-      setResumeToast("Failed to enter fullscreen");
-      setTimeout(() => setResumeToast(null), 1500);
-    }
-  };
-
-  const shareResume = async () => {
-    const absoluteUrl = typeof window !== "undefined" ? new URL(resumeUrl, window.location.origin).toString() : resumeUrl;
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Resume – Shyam Jayakanthan",
-          text: "My latest resume",
-          url: absoluteUrl,
-        });
-      } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(absoluteUrl);
-        setResumeToast("Link copied");
-        setTimeout(() => setResumeToast(null), 1500);
-      }
-    } catch {
-      // user cancelled
-    }
-  };
-
-  const zoomInResume = () => {
-    setResumeZoom(prev => Math.min(prev + 0.25, 2));
-  };
-
-  const zoomOutResume = () => {
-    setResumeZoom(prev => Math.max(prev - 0.25, 0.5));
-  };
-
-  const resetZoomResume = () => {
-    setResumeZoom(1);
-  };
-
-  const goToResumePage = (page: number) => {
-    if (page >= 1 && page <= resumeNumPages) {
-      setResumePage(page);
-    }
-  };
 
   return (
     <div className="min-h-screen">
@@ -362,11 +308,7 @@ export default function Home() {
               </motion.button>
               
               <motion.button
-                onClick={() => {
-                  setShowResume(true);
-                  setResumeZoom(1);
-                  setResumePage(1);
-                }}
+                onClick={() => router.push("/resume?from=hero")}
                 whileHover={{ scale: 1.05, y: -4 }}
                 whileTap={{ scale: 0.97 }}
                 className="group relative w-full sm:w-auto px-10 sm:px-12 py-3.5 sm:py-4 rounded-professional-xl font-semibold text-sm sm:text-base md:text-lg overflow-hidden min-h-[48px] sm:min-h-[52px] md:min-h-[56px] transition-all duration-300 touch-manipulation btn-professional btn-gold-outline"
@@ -433,196 +375,6 @@ export default function Home() {
         </div>
       </section>
 
-      <AnimatePresence>
-        {showResume && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowResume(false)}
-              className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md"
-            />
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[70] flex items-center justify-center p-0"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative w-full h-full max-w-full max-h-full flex flex-col bg-background xs:rounded-xl sm:rounded-2xl shadow-2xl border border-border/60 dark:border-border/50 overflow-hidden">
-                {/* Header */}
-                <div className="resume-viewer-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-2 sm:p-3 md:p-4 border-b border-border/50 dark:border-border/30 flex-shrink-0">
-                  <div className="flex items-center gap-2 min-w-0 flex-shrink">
-                    <div className="resume-viewer-icon flex-shrink-0 grid h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 place-items-center rounded-lg">
-                      <Briefcase className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h2 className="resume-viewer-title text-sm sm:text-base md:text-lg truncate">Resume</h2>
-                      <p className="resume-viewer-subtitle truncate">Shyam Jayakanthan</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 flex-shrink-0 flex-wrap sm:flex-nowrap">
-                    {/* Zoom Controls */}
-                    <div className="flex items-center gap-0.5 rounded-md border border-border/50 dark:border-border/40 bg-muted/50 p-0.5">
-                      <motion.button
-                        type="button"
-                        onClick={zoomOutResume}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded text-foreground hover:text-primary transition-all touch-manipulation"
-                        aria-label="Zoom out"
-                      >
-                        <ZoomOut className="h-3.5 w-3.5" />
-                      </motion.button>
-                      <span className="text-xs font-medium text-foreground min-w-[2.25rem] text-center px-0.5">
-                        {Math.round(resumeZoom * 100)}%
-                      </span>
-                      <motion.button
-                        type="button"
-                        onClick={zoomInResume}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded text-foreground hover:text-primary transition-all touch-manipulation"
-                        aria-label="Zoom in"
-                      >
-                        <ZoomIn className="h-3.5 w-3.5" />
-                      </motion.button>
-                      {resumeZoom !== 1 && (
-                        <motion.button
-                          type="button"
-                          onClick={resetZoomResume}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="inline-flex h-7 w-7 items-center justify-center rounded text-foreground hover:text-primary transition-all touch-manipulation ml-0.5"
-                          aria-label="Reset zoom"
-                        >
-                          <RotateCw className="h-3 w-3" />
-                        </motion.button>
-                      )}
-                    </div>
-                    {/* Page Navigation */}
-                    {resumeNumPages > 1 && (
-                      <div className="flex items-center gap-0.5 rounded-md border border-border/40 bg-muted/50 px-1 py-1">
-                        <motion.button
-                          type="button"
-                          onClick={() => goToResumePage(resumePage - 1)}
-                          disabled={resumePage <= 1}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="inline-flex h-7 w-7 items-center justify-center rounded text-foreground hover:text-primary transition-all touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
-                          aria-label="Previous page"
-                        >
-                          <ChevronLeft className="h-3.5 w-3.5" />
-                        </motion.button>
-                        <span className="text-xs font-medium text-foreground min-w-[2.25rem] text-center">
-                          {resumePage}/{resumeNumPages}
-                        </span>
-                        <motion.button
-                          type="button"
-                          onClick={() => goToResumePage(resumePage + 1)}
-                          disabled={resumePage >= resumeNumPages}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="inline-flex h-7 w-7 items-center justify-center rounded text-foreground hover:text-primary transition-all touch-manipulation disabled:opacity-50 disabled:cursor-not-allowed"
-                          aria-label="Next page"
-                        >
-                          <ChevronRight className="h-3.5 w-3.5" />
-                        </motion.button>
-                      </div>
-                    )}
-                    {/* Action Buttons - All visible on all devices */}
-                    <motion.button
-                      type="button"
-                      onClick={resumeRequestFullscreen}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/50 dark:border-border/40 bg-muted/50 text-foreground hover:text-primary hover:border-primary/40 transition-all shadow-sm touch-manipulation"
-                      aria-label="Fullscreen"
-                    >
-                      <Maximize2 className="h-3.5 w-3.5" />
-                    </motion.button>
-                    <motion.button
-                      type="button"
-                      onClick={shareResume}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="resume-viewer-action-button touch-manipulation"
-                      aria-label="Share"
-                    >
-                      <Share2 className="h-3.5 w-3.5" />
-                    </motion.button>
-                    <motion.a
-                      href="/resume.pdf"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="resume-viewer-action-button touch-manipulation"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Open"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </motion.a>
-                    <motion.a
-                      href="/resume.pdf"
-                      download
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="resume-viewer-action-button touch-manipulation"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Download"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                    </motion.a>
-                    <motion.button
-                      type="button"
-                      onClick={() => {
-                        setShowResume(false);
-                        setResumeZoom(1);
-                        setResumePage(1);
-                      }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/50 dark:border-border/40 bg-muted/50 text-foreground hover:text-primary hover:border-primary/40 transition-all shadow-sm touch-manipulation"
-                      aria-label="Close"
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </motion.button>
-                  </div>
-                </div>
-                
-                {/* PDF Viewer */}
-                <div id="resume-viewer-container" className="relative flex-1 min-h-0 bg-muted/20 overflow-hidden">
-                  <PDFViewerLazy
-                    file="/resume.pdf"
-                    className="w-full h-full"
-                    scale={resumeZoom !== 1 ? resumeZoom : undefined}
-                    currentPage={resumePage}
-                    restrictScroll
-                    onLoadSuccess={(numPages) => {
-                      setResumeNumPages(numPages);
-                      setResumePage(1);
-                    }}
-                    onPageChange={(page) => setResumePage(page)}
-                  />
-                  {resumeToast && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 rounded-lg bg-black/80 backdrop-blur-sm text-white text-xs sm:text-sm px-2 py-1.5 sm:px-3 sm:py-2 shadow-lg z-10"
-                    >
-                      {resumeToast}
-                    </motion.div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
       {/* About Section - Professional & Compact */}
       <section

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, Home, User, Wrench, Code, Terminal, Trophy, Briefcase, GraduationCap, Mail, Search, FolderKanban, Award, ExternalLink, Github } from "lucide-react";
+import { Menu, X, ChevronDown, Home, User, Users, Wrench, Code, Terminal, Trophy, Briefcase, GraduationCap, Mail, Search, FolderKanban, Award, ExternalLink, Github } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import Link from "next/link";
 import { projects, type Project } from "@/data/projects";
@@ -16,7 +16,9 @@ const navItems = [
   { label: "Skills", href: "#skills", icon: Wrench, aliases: ["tech", "stack", "tools"] },
   { label: "Projects", href: "#projects", icon: Code, aliases: ["work", "portfolio", "builds"] },
   { label: "Terminal", href: "#terminal", icon: Terminal, aliases: ["bot", "ask", "chat"] },
-  { label: "Achievements", href: "#achievements", icon: Trophy, aliases: ["awards", "certifications", "wins"] },
+  { label: "Certifications", href: "#certifications", icon: Award, aliases: ["certs", "credentials", "certification"] },
+  { label: "Achievements", href: "#hackathon-achievements", icon: Trophy, aliases: ["awards", "wins"] },
+  { label: "Leadership", href: "#leadership", icon: Users, aliases: ["lead", "clubs", "teams"] },
   { label: "Experience", href: "#experience", icon: Briefcase, aliases: ["work experience", "jobs", "career"] },
   { label: "Education", href: "#education", icon: GraduationCap, aliases: ["study", "college", "school"] },
   { label: "Contact", href: "#contact", icon: Mail, aliases: ["reach", "email", "connect"] },
@@ -29,6 +31,9 @@ export function Navbar() {
   const [activeSection, setActiveSection] = useState("home");
   const [scrollProgress, setScrollProgress] = useState(0);
   const desktopMenuRef = useRef<HTMLDivElement | null>(null);
+  const navbarRef = useRef<HTMLDivElement | null>(null);
+  const activeSectionRef = useRef(activeSection);
+  const isScrolledRef = useRef(isScrolled);
   const searchRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +42,14 @@ export function Navbar() {
   const [searchHighlight, setSearchHighlight] = useState(0);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    activeSectionRef.current = activeSection;
+  }, [activeSection]);
+
+  useEffect(() => {
+    isScrolledRef.current = isScrolled;
+  }, [isScrolled]);
 
   // Optimized scroll handler with Intersection Observer for better performance
   useEffect(() => {
@@ -64,7 +77,8 @@ export function Navbar() {
       // Only update scrolled state if it changed significantly
       if (Math.abs(currentScrollY - lastScrollY) > 20) {
         const newIsScrolled = currentScrollY > 20;
-        if (newIsScrolled !== isScrolled) {
+        if (newIsScrolled !== isScrolledRef.current) {
+          isScrolledRef.current = newIsScrolled;
           setIsScrolled(newIsScrolled);
         }
         lastScrollY = currentScrollY;
@@ -100,21 +114,41 @@ export function Navbar() {
         const targetElement = mostVisible.element;
         if (targetElement instanceof HTMLElement) {
           const sectionId = targetElement.id;
-          if (sectionId && sectionId !== activeSection) {
+          if (sectionId && sectionId !== activeSectionRef.current) {
+            activeSectionRef.current = sectionId;
             setActiveSection(sectionId);
           }
         }
       }
     }, observerOptions);
 
-    // Observe all sections
+    // Observe all sections, retrying for lazy-loaded ones
     const sections = navItems.map((item) => item.href.slice(1));
-    sections.forEach((sectionId) => {
+    const pendingSections = new Set(sections);
+
+    const tryObserveSection = (sectionId: string) => {
       const element = document.getElementById(sectionId);
       if (element) {
         observer.observe(element);
+        pendingSections.delete(sectionId);
       }
-    });
+    };
+
+    sections.forEach(tryObserveSection);
+
+    let retryCount = 0;
+    const maxRetries = 30; // ~12 seconds
+
+    const retryInterval = window.setInterval(() => {
+      if (pendingSections.size === 0 || retryCount >= maxRetries) {
+        window.clearInterval(retryInterval);
+        return;
+      }
+      retryCount += 1;
+      pendingSections.forEach((sectionId) => {
+        tryObserveSection(sectionId);
+      });
+    }, 400);
 
     // Throttled scroll handler for progress
     const throttledScroll = () => {
@@ -134,12 +168,13 @@ export function Navbar() {
     
     return () => {
       window.removeEventListener("scroll", throttledScroll);
+      window.clearInterval(retryInterval);
       observer.disconnect();
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
       }
     };
-  }, [activeSection, isScrolled]);
+  }, []);
 
   // Close desktop dropdown on outside click or Escape
   useEffect(() => {
@@ -357,7 +392,7 @@ export function Navbar() {
           id: cert.id,
           title: cert.name,
           subtitle: `${cert.issuer} • ${cert.year}`,
-          href: '#achievements',
+          href: '#certifications',
           icon: Award,
           score: maxScore,
         });
@@ -445,10 +480,10 @@ export function Navbar() {
       // Try both querySelector and getElementById for better compatibility
       const id = href.replace('#', '');
       const element = document.getElementById(id) || document.querySelector(href);
-      const navbarHeight = 80; // Approximate navbar height
+      const navbarHeight = navbarRef.current?.offsetHeight ?? 80; // Match dynamic navbar height
       
       if (element) {
-        // Calculate the position accounting for fixed navbar
+        // Calculate the position accounting for sticky navbar
         const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
         const offsetPosition = elementTop - navbarHeight;
         
@@ -475,22 +510,21 @@ export function Navbar() {
 
   return (
     <motion.nav
+      ref={navbarRef}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full relative transition-all duration-300 ${
         isScrolled
           ? "bg-background/90 backdrop-blur-xl border-b border-border/60 shadow-lg"
           : "bg-background/50 backdrop-blur-xl"
       }`}
     >
-      {/* Minimal scroll progress indicator */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-transparent overflow-hidden">
+      {/* Scroll progress indicator */}
+      <div className="absolute inset-x-4 sm:inset-x-6 top-0 h-1 rounded-full bg-border/50 overflow-hidden">
         <motion.div
-          className="h-full bg-foreground/20"
-          style={{
-            width: `${scrollProgress}%`,
-          }}
+          className="h-full bg-gradient-to-r from-primary via-accent to-primary/70"
+          style={{ width: `${scrollProgress}%` }}
           transition={{ duration: 0.1, ease: "linear" }}
         />
       </div>

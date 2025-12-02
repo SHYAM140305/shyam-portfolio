@@ -276,7 +276,7 @@ export function AchievementsSection() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Certifications - Apple Design */}
-        <div className="mb-12 sm:mb-16 md:mb-20">
+        <div id="certifications" className="mb-12 sm:mb-16 md:mb-20">
           <SectionTitle
             title="Certifications"
             subtitle="Professional and online credentials"
@@ -524,7 +524,11 @@ export function AchievementsSection() {
         </AnimatePresence>
 
         {/* Hackathon Achievements - Apple Design */}
-        <div className="mb-12 sm:mb-16 md:mb-20" key={`hackathons-${selectedCertificate ? 'with-viewer' : 'no-viewer'}`}>
+        <div
+          id="hackathon-achievements"
+          className="mb-12 sm:mb-16 md:mb-20"
+          key={`hackathons-${selectedCertificate ? 'with-viewer' : 'no-viewer'}`}
+        >
           <SectionTitle
             title="Hackathon Achievements"
             subtitle="Competitions and recognitions"

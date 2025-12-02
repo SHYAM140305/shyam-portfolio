@@ -3136,6 +3136,91 @@ canvas {
   animation: gold-reflection 1.8s ease-out forwards;
 }
 
+/* Gold glass reflection animation for skills - bottom right to top left with tilt */
+@keyframes gold-glass-reflection {
+  0% {
+    transform: translate(75%, 75%) rotate(45deg) scaleY(0.7);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(45deg) scaleY(1);
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(-175%, -175%) rotate(45deg) scaleY(0.7);
+    opacity: 0;
+  }
+}
+
+.skill-gold-reflection {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250%;
+  height: 50%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 215, 0, 0) 20%,
+    rgba(255, 223, 0, 0.15) 35%,
+    rgba(255, 215, 0, 0.35) 44%,
+    rgba(255, 200, 0, 0.6) 47%,
+    rgba(255, 215, 0, 0.85) 49%,
+    rgba(255, 223, 100, 0.95) 50%,
+    rgba(255, 215, 0, 0.85) 51%,
+    rgba(255, 200, 0, 0.6) 53%,
+    rgba(255, 215, 0, 0.35) 56%,
+    rgba(255, 223, 0, 0.15) 65%,
+    rgba(255, 215, 0, 0) 80%,
+    transparent 100%
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  transform-origin: center center;
+  filter: blur(0.8px) brightness(1.1);
+  box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.4),
+    0 0 60px rgba(255, 200, 0, 0.2),
+    inset 0 0 40px rgba(255, 223, 100, 0.3);
+}
+
+/* Target group hover on the card - gold glass reflection */
+.group:hover .skill-gold-reflection {
+  opacity: 1;
+  animation: gold-glass-reflection 2s ease-in-out forwards;
+}
+
+/* Continuous animation variant for skills */
+.skill-gold-reflection-continuous {
+  position: absolute;
+  inset: -30%;
+  left: -20%;
+  right: -20%;
+  background: linear-gradient(
+    165deg,
+    transparent 0%,
+    hsl(var(--gold-soft) / 0.0) 15%,
+    hsl(var(--gold-soft) / 0.5) 35%,
+    hsl(var(--gold-bright) / 0.75) 50%,
+    hsl(var(--gold-soft) / 0.5) 65%,
+    hsl(var(--gold-soft) / 0.0) 85%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+  animation: gold-glass-reflection 3s ease-in-out infinite;
+}
+
 /* Enhanced border radius for modern look */
 .rounded-professional {
   border-radius: calc(var(--radius) + 2px);

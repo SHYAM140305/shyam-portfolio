@@ -77,6 +77,11 @@ const EducationSection = dynamic(() => import("@/components/EducationSection").t
   ssr: true
 });
 
+const LeadershipSection = dynamic(() => import("@/components/LeadershipSection").then(mod => ({ default: mod.LeadershipSection })), {
+  loading: () => <div className="min-h-[200px]" />,
+  ssr: true
+});
+
 const ContactSection = dynamic(() => import("@/components/ContactSection").then(mod => ({ default: mod.ContactSection })), {
   loading: () => <div className="min-h-[200px]" />,
   ssr: true
@@ -942,8 +947,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Achievements Section (Certifications, Hackathons, Leadership) */}
+      {/* Achievements Section (Certifications, Hackathons) */}
       <AchievementsSection />
+
+      {/* Leadership Section - Lazy loaded */}
+      <LeadershipSection />
 
       {/* Experience Section - Lazy loaded */}
       <ExperienceSection />

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { GraduationCap, MapPin, Calendar, Award } from "lucide-react";
+import { GraduationCap, MapPin } from "lucide-react";
 import { education } from "@/data/education";
 import { staggerContainer, fadeInUp } from "@/lib/utils";
 import { useTheme } from "next-themes";
@@ -84,26 +84,6 @@ export function EducationSection() {
                           );
                         })()}
                       </div>
-                      
-                      {/* Date Badge */}
-                      <div className="flex flex-col gap-2 sm:mt-4">
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60 border border-border/60 text-[11px] sm:text-xs font-medium text-muted-foreground whitespace-nowrap">
-                          <Calendar className="h-3.5 w-3.5 text-primary" />
-                          <span>
-                            {edu.startDate} - {edu.current ? (
-                              <span className="text-foreground font-semibold">Present</span>
-                            ) : edu.endDate}
-                          </span>
-                        </div>
-                        {edu.current && (
-                          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60 border border-border/60 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary/70" />
-                            <span className="text-xs">
-                              Current
-                            </span>
-                          </div>
-                        )}
-                      </div>
                     </div>
                   </div>
                   
@@ -124,14 +104,6 @@ export function EducationSection() {
                         <span className="font-medium">{edu.location}</span>
                       </div>
                     </div>
-                    
-                    {/* Grade / CGPA (neutral style) */}
-                    {edu.grade && (
-                      <div className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/60 border border-border/60 text-xs sm:text-sm text-muted-foreground">
-                        <Award className="h-3.5 w-3.5 flex-shrink-0 text-primary" />
-                        <span className="font-medium text-foreground">{edu.grade}</span>
-                      </div>
-                    )}
                     
                     {/* Coursework */}
                     {edu.coursework && edu.coursework.length > 0 && (

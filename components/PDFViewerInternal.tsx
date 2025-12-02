@@ -180,14 +180,23 @@ export function PDFViewerInternal({
     // Otherwise use width-based responsive rendering
     if (scale !== undefined && scale !== 1) return undefined;
     
-    // Measure container directly if ref is available
+    // Measure container directly if ref is available - force measurement if needed
     let measuredWidth = containerWidth;
-    if (containerRef.current && measuredWidth === 0) {
+    if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      const computedStyle = window.getComputedStyle(containerRef.current);
-      const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
-      const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
-      measuredWidth = rect.width - paddingLeft - paddingRight;
+      if (rect.width > 0) {
+        const computedStyle = window.getComputedStyle(containerRef.current);
+        const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+        const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+        const calculatedWidth = rect.width - paddingLeft - paddingRight;
+        if (calculatedWidth > 0) {
+          measuredWidth = calculatedWidth;
+          // Update state if it's different to trigger re-render
+          if (Math.abs(measuredWidth - containerWidth) > 1) {
+            setContainerWidth(Math.max(measuredWidth, 280));
+          }
+        }
+      }
     }
     
     // If still no width, use window width as fallback
@@ -293,9 +302,10 @@ export function PDFViewerInternal({
     return undefined;
   };
 
-  // Update container width on resize
+  // Update container width on resize - improved with immediate measurement
   useEffect(() => {
     let resizeTimeout: NodeJS.Timeout | null = null;
+    let rafId: number | null = null;
     
     const updateWidth = () => {
       // Use ref first, then fallback to element IDs
@@ -318,10 +328,20 @@ export function PDFViewerInternal({
       }
     };
 
-    // Initial measurement with multiple attempts to ensure DOM is ready
-    const initialTimeout1 = setTimeout(updateWidth, 50);
-    const initialTimeout2 = setTimeout(updateWidth, 200);
-    const initialTimeout3 = setTimeout(updateWidth, 500);
+    // Immediate measurement using requestAnimationFrame for better reliability
+    const measureImmediate = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        updateWidth();
+        // Also measure after a short delay to catch any layout changes
+        setTimeout(updateWidth, 0);
+      });
+    };
+
+    // Initial measurement - immediate and with fallbacks
+    measureImmediate();
+    const initialTimeout1 = setTimeout(updateWidth, 100);
+    const initialTimeout2 = setTimeout(updateWidth, 300);
     
     // Use ResizeObserver for better performance
     const container = containerRef.current || 
@@ -330,33 +350,35 @@ export function PDFViewerInternal({
                      document.getElementById("certificate-viewer-container");
     
     if (container && window.ResizeObserver) {
-      const resizeObserver = new ResizeObserver(() => {
+      const resizeObserver = new ResizeObserver((entries) => {
         // Debounce resize updates for better performance
         if (resizeTimeout) clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(updateWidth, 100);
+        resizeTimeout = setTimeout(() => {
+          measureImmediate();
+        }, 50);
       });
       resizeObserver.observe(container);
       
       // Also observe window resize for cases where container doesn't trigger ResizeObserver
-      window.addEventListener("resize", updateWidth);
+      window.addEventListener("resize", measureImmediate);
       
       return () => {
+        if (rafId) cancelAnimationFrame(rafId);
         clearTimeout(initialTimeout1);
         clearTimeout(initialTimeout2);
-        clearTimeout(initialTimeout3);
         if (resizeTimeout) clearTimeout(resizeTimeout);
         resizeObserver.disconnect();
-        window.removeEventListener("resize", updateWidth);
+        window.removeEventListener("resize", measureImmediate);
       };
     } else {
       // Fallback for browsers without ResizeObserver
-      window.addEventListener("resize", updateWidth);
+      window.addEventListener("resize", measureImmediate);
       return () => {
+        if (rafId) cancelAnimationFrame(rafId);
         clearTimeout(initialTimeout1);
         clearTimeout(initialTimeout2);
-        clearTimeout(initialTimeout3);
         if (resizeTimeout) clearTimeout(resizeTimeout);
-        window.removeEventListener("resize", updateWidth);
+        window.removeEventListener("resize", measureImmediate);
       };
     }
   }, []);
@@ -368,6 +390,77 @@ export function PDFViewerInternal({
     }
   }, [currentPage, pageNumber]);
 
+  // Force recalculation when container becomes visible (for resume viewer)
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const container = containerRef.current;
+    const checkVisibility = () => {
+      const rect = container.getBoundingClientRect();
+      const isVisible = rect.width > 0 && rect.height > 0;
+      
+      if (isVisible) {
+        // Container is visible - always measure to ensure accuracy
+        const computedStyle = window.getComputedStyle(container);
+        const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+        const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+        const availableWidth = rect.width - paddingLeft - paddingRight;
+        if (availableWidth > 0) {
+          const newWidth = Math.max(availableWidth, 280);
+          // Only update if significantly different to avoid unnecessary re-renders
+          if (Math.abs(newWidth - containerWidth) > 1) {
+            setContainerWidth(newWidth);
+          }
+        }
+      }
+    };
+
+    // Use IntersectionObserver to detect when container becomes visible
+    if (window.IntersectionObserver) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0) {
+            // Use double RAF to ensure layout is complete
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                checkVisibility();
+              });
+            });
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      observer.observe(container);
+      
+      // Check immediately and with delays to catch layout changes
+      requestAnimationFrame(() => {
+        checkVisibility();
+        setTimeout(() => {
+          requestAnimationFrame(checkVisibility);
+        }, 100);
+        setTimeout(() => {
+          requestAnimationFrame(checkVisibility);
+        }, 300);
+      });
+      
+      return () => {
+        observer.disconnect();
+      };
+    } else {
+      // Fallback: check periodically
+      const interval = setInterval(() => {
+        checkVisibility();
+      }, 100);
+      
+      // Check immediately
+      requestAnimationFrame(() => {
+        checkVisibility();
+      });
+      
+      return () => clearInterval(interval);
+    }
+  }, [containerWidth]);
+
   const handleLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
     setLoading(false);
@@ -376,26 +469,32 @@ export function PDFViewerInternal({
     if (numPages > 0) {
       setPageDimensions(new Array(numPages).fill(null).map(() => ({ width: 0, height: 0 })));
     }
-    // Trigger width recalculation after PDF loads (multiple attempts to ensure it works)
+    
+    // Trigger width recalculation after PDF loads - use requestAnimationFrame for reliability
     const recalculateWidth = () => {
-      const container = containerRef.current ||
-                       document.getElementById("pdf-container") ||
-                       document.getElementById("resume-viewer-container") ||
-                       document.getElementById("certificate-viewer-container");
-      if (container) {
-        const rect = container.getBoundingClientRect();
-        const computedStyle = window.getComputedStyle(container);
-        const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
-        const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
-        const availableWidth = rect.width - paddingLeft - paddingRight;
-        if (availableWidth > 0) {
-          setContainerWidth(Math.max(availableWidth, 280));
+      requestAnimationFrame(() => {
+        const container = containerRef.current ||
+                         document.getElementById("pdf-container") ||
+                         document.getElementById("resume-viewer-container") ||
+                         document.getElementById("certificate-viewer-container");
+        if (container) {
+          const rect = container.getBoundingClientRect();
+          const computedStyle = window.getComputedStyle(container);
+          const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+          const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+          const availableWidth = rect.width - paddingLeft - paddingRight;
+          if (availableWidth > 0) {
+            setContainerWidth(Math.max(availableWidth, 280));
+          }
         }
-      }
+      });
     };
-    setTimeout(recalculateWidth, 100);
-    setTimeout(recalculateWidth, 300);
-    setTimeout(recalculateWidth, 600);
+    
+    // Immediate recalculation and with slight delays to catch layout changes
+    recalculateWidth();
+    setTimeout(recalculateWidth, 50);
+    setTimeout(recalculateWidth, 200);
+    setTimeout(recalculateWidth, 500);
     
     // Reset scroll position to top for certificate viewer
     const containerId = containerRef.current?.id || 
@@ -405,11 +504,13 @@ export function PDFViewerInternal({
     const isCertificateViewer = containerId === "certificate-viewer-container";
     if (isCertificateViewer && containerRef.current) {
       // Scroll to top when certificate loads
-      setTimeout(() => {
-        if (containerRef.current) {
-          containerRef.current.scrollTop = 0;
-        }
-      }, 100);
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.scrollTop = 0;
+          }
+        }, 100);
+      });
     }
     
     onLoadSuccess?.(numPages);
@@ -611,7 +712,29 @@ export function PDFViewerInternal({
                                    while (newDims.length <= pageIndex) {
                                      newDims.push({ width: 0, height: 0 });
                                    }
+                                   const oldWidth = newDims[pageIndex]?.width || 0;
                                    newDims[pageIndex] = { width: viewport.width, height: viewport.height };
+                                   
+                                   // If this is the first page and dimensions just became available, trigger width recalculation
+                                   if (pageIndex === 0 && oldWidth === 0 && viewport.width > 0) {
+                                     requestAnimationFrame(() => {
+                                       const container = containerRef.current ||
+                                                        document.getElementById("pdf-container") ||
+                                                        document.getElementById("resume-viewer-container") ||
+                                                        document.getElementById("certificate-viewer-container");
+                                       if (container) {
+                                         const rect = container.getBoundingClientRect();
+                                         const computedStyle = window.getComputedStyle(container);
+                                         const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+                                         const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+                                         const availableWidth = rect.width - paddingLeft - paddingRight;
+                                         if (availableWidth > 0) {
+                                           setContainerWidth(Math.max(availableWidth, 280));
+                                         }
+                                       }
+                                     });
+                                   }
+                                   
                                    return newDims;
                                  });
                                }
@@ -695,7 +818,29 @@ export function PDFViewerInternal({
                                    while (newDims.length <= index) {
                                      newDims.push({ width: 0, height: 0 });
                                    }
+                                   const oldWidth = newDims[index]?.width || 0;
                                    newDims[index] = { width: viewport.width, height: viewport.height };
+                                   
+                                   // If this is the first page and dimensions just became available, trigger width recalculation
+                                   if (index === 0 && oldWidth === 0 && viewport.width > 0) {
+                                     requestAnimationFrame(() => {
+                                       const container = containerRef.current ||
+                                                        document.getElementById("pdf-container") ||
+                                                        document.getElementById("resume-viewer-container") ||
+                                                        document.getElementById("certificate-viewer-container");
+                                       if (container) {
+                                         const rect = container.getBoundingClientRect();
+                                         const computedStyle = window.getComputedStyle(container);
+                                         const paddingLeft = parseFloat(computedStyle.paddingLeft) || 0;
+                                         const paddingRight = parseFloat(computedStyle.paddingRight) || 0;
+                                         const availableWidth = rect.width - paddingLeft - paddingRight;
+                                         if (availableWidth > 0) {
+                                           setContainerWidth(Math.max(availableWidth, 280));
+                                         }
+                                       }
+                                     });
+                                   }
+                                   
                                    return newDims;
                                  });
                                }

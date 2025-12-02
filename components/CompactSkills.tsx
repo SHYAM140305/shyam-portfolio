@@ -81,6 +81,9 @@ export const CompactSkills = memo(function CompactSkills({ groupedSkills }: Comp
             >
               {/* Modern glass card with internal gold glow (no gold border) */}
               <div className="relative rounded-2xl p-4 sm:p-5 overflow-hidden h-full flex flex-col transition-all duration-300 hover:-translate-y-1 modern-glass card-professional">
+                {/* Gold glass reflection effect - bottom to top with tilt */}
+                <div className="skill-gold-reflection" />
+                
                 {/* Top glass highlight strip (white) */}
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white/20 via-white/8 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {/* Gold-tinted internal glow */}

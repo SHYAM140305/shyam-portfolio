@@ -616,7 +616,7 @@ export default function Home() {
                     Research Interests
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                    {["Agentic AI", "Digital Twin", "AI Research", "Research-driven Development", "NLP", "Open Source", "Data Analysis", "ML Systems"].map((interest, i) => (
+                    {["Agentic AI", "Reinforcement Learning", "Generative AI", "Digital Twins", "Industry 4.0", "Statistical Modelling", "AI-powered Automation", "Data Science"].map((interest, i) => (
                       <motion.span
                         key={interest}
                         className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-amber-500/8 border border-amber-500/40 text-xs sm:text-sm font-medium text-primary relative overflow-hidden group/interest"

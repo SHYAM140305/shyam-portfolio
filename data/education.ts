@@ -177,7 +177,7 @@ export const certifications: Certification[] = [
     id: "oci-foundations",
     name: "Oracle Cloud Infrastructure Foundations",
     issuer: "Oracle",
-    year: "2024",
+    year: "2025",
     category: "Professional",
     logo: ORACLE_LOGO_URL,
     logoLight: ORACLE_LOGO_URL,

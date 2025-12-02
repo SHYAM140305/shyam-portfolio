@@ -33,7 +33,7 @@ export function ContactSection() {
                 </span>
                 <span className="hidden sm:inline text-muted-foreground">•</span>
                 <span className="text-xs sm:text-sm text-muted-foreground">
-                  I&apos;ll reply as soon as possible
+                  I will respond to your inquiry within 24 hours
                 </span>
               </div>
             </div>

@@ -226,7 +226,7 @@ Results-driven AI/ML Engineer with expertise in developing end-to-end machine le
 
   // Detailed Research Interests
   const researchInterests = `Research Interests:
-Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning, Efficient and Accelerated Machine Learning, Generative Models, Applied Statistics, Natural Language Processing, Digital Twin Systems, Computer Vision for Industry 4.0, Cloud-Based AI Deployment, and AI-Powered Automation.`;
+Agentic AI, Reinforcement Learning, Generative AI, Digital Twins, Industry 4.0, Statistical Modelling, AI-powered Automation, Data Science.`;
 
   // About Section Details
   const aboutSection = `About Me:
@@ -253,7 +253,7 @@ Computer Vision, Deep Learning, Representation Learning, Reinforcement Learning,
 - Current Position: President, NEXT GEN AI @ SRMIST (400+ members)
 - Education: BTech in Artificial Intelligence @ SRM Institute of Science and Technology (2022-2026, Current)
 - CGPA: 7.5/10.0
-- Research Interests (Portfolio): Agentic AI, Digital Twin, AI Research, Research-driven Development, NLP, Open Source, Data Analysis, ML Systems`;
+- Research Interests (Portfolio): Agentic AI, Reinforcement Learning, Generative AI, Digital Twins, Industry 4.0, Statistical Modelling, AI-powered Automation, Data Science`;
 
   cachedContext = `PORTFOLIO CONTEXT - Shyam J's Complete Portfolio
 

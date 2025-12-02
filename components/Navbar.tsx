@@ -66,12 +66,12 @@ export function Navbar() {
       const documentHeight = document.documentElement.scrollHeight;
       const scrollableHeight = documentHeight - windowHeight;
       const progress = scrollableHeight > 0 ? (currentScrollY / scrollableHeight) * 100 : 0;
-      const roundedProgress = Math.min(100, Math.max(0, Math.round(progress)));
+      const clampedProgress = Math.min(100, Math.max(0, progress));
       
-      // Only update if progress changed by at least 2% (reduced updates)
-      if (Math.abs(roundedProgress - lastProgress) >= 2) {
-        setScrollProgress(roundedProgress);
-        lastProgress = roundedProgress;
+      // Only update if progress changed by at least 0.5% for smoother visual motion
+      if (Math.abs(clampedProgress - lastProgress) >= 0.5) {
+        setScrollProgress(clampedProgress);
+        lastProgress = clampedProgress;
       }
       
       // Only update scrolled state if it changed significantly
@@ -521,11 +521,12 @@ export function Navbar() {
       }`}
     >
       {/* Scroll progress indicator */}
-      <div className="absolute inset-x-4 sm:inset-x-6 top-0 h-1 rounded-full bg-border/50 overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-1 bg-border/50 overflow-hidden">
         <motion.div
-          className="h-full bg-gradient-to-r from-primary via-accent to-primary/70"
-          style={{ width: `${scrollProgress}%` }}
-          transition={{ duration: 0.1, ease: "linear" }}
+          className="h-full bg-gradient-to-r from-primary via-accent to-primary/70 origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: scrollProgress / 100 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
         />
       </div>
       <div className="container mx-auto px-4 xs:px-6 sm:px-8 lg:px-12 py-3 sm:py-4 md:py-5">

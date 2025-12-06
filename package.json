@@ -15,7 +15,7 @@
     "framer-motion": "^11.5.4",
     "groq-sdk": "^0.34.0",
     "lucide-react": "^0.462.0",
-    "next": "^16.0.1",
+    "next": "^16.0.7",
     "next-seo": "^6.6.0",
     "next-themes": "^0.4.4",
     "pdfjs-dist": "^5.4.449",
@@ -33,7 +33,7 @@
     "autoprefixer": "^10.4.20",
     "baseline-browser-mapping": "^2.8.32",
     "eslint": "^9.39.1",
-    "eslint-config-next": "^16.0.1",
+    "eslint-config-next": "^16.0.7",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.6.2"
